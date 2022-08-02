@@ -118,6 +118,7 @@ Console.WriteLine();
 Console.WriteLine("Enter assignment name that you want data");
 string? assignmentNameData = Console.ReadLine();
 employeeDataService.GetDataByDepartNameProjectNameEmployeeName(assignmentName: assignmentNameData);
+Console.WriteLine();
 
 //Query for returning result by employee name wise.
 
