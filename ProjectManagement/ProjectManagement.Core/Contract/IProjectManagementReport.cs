@@ -1,4 +1,5 @@
 ﻿using ProjectManagement.Core.Entities;
+using ProjectManagement.Core.Model;
 using System.Collections;
 
 namespace ProjectManagement.Core.Contract
@@ -25,7 +26,7 @@ namespace ProjectManagement.Core.Contract
 
         public IEnumerable EmployeeSalary();
 
-        public IEnumerable GetDataByDepartNameProjectNameEmployeeName(int? deptId = null, string? deptName = null, string? projectName = null, string?
-                                                                      assignmentName = null, string? employeeName = null);
+        public IEnumerable<ProjectResourceDetails> GetDataByDepartNameProjectNameEmployeeName();
+        public IEnumerable<ProjectResourceDetails> GetDataBySearchMethod(string searchData);
     }
 }

@@ -1,5 +1,6 @@
 ﻿using ProjectManagement.Core.Contract;
 using ProjectManagement.Core.Entities;
+using ProjectManagement.Core.Model;
 using System.Collections;
 using static ProjectManagement.Infrastructure.Data.ProjectManagementDataInMemory;
 namespace ProjectManagement.Infrastructure.Services
@@ -49,6 +50,7 @@ namespace ProjectManagement.Infrastructure.Services
         // Display list of project 
         public IEnumerable<Project> GetProjects(int? deptId = null, string? deptName = null)
         {
+
             if (deptId != null || deptName != null)
             {
                 var projectData = from pro in GetProjects()
@@ -59,6 +61,7 @@ namespace ProjectManagement.Infrastructure.Services
                                   select pro;
                 return projectData;
             }
+
             return GetProjects();
 
         }
@@ -143,7 +146,7 @@ namespace ProjectManagement.Infrastructure.Services
 
         // Query for returning DepartmentName, Project Name, Assignment Name, Employee Name 
 
-        public IEnumerable GetDataByDepartNameProjectNameEmployeeName(int? deptId = null, string? deptName = null, string? projectName = null, string? assignmentName = null, string? employeeName = null)
+        public IEnumerable<ProjectResourceDetails> GetDataByDepartNameProjectNameEmployeeName()
         {
             var toatlData = (from dept in GetDepartments()
                              join pro in GetProjects()
@@ -152,8 +155,6 @@ namespace ProjectManagement.Infrastructure.Services
                              on pro.DepartmentId equals emp.DepartmentId
                              join ass in GetAssignments()
                              on emp.EmployeeNumber equals ass.EmployeeNumber
-                             where (deptId == null || dept.DepartmentId == (deptId)) && (deptName == null || dept.DepartmentName.Contains(deptName)) && (projectName == null || pro.ProjectName.Contains(projectName))
-                                   && (assignmentName == null || ass.AssignmentName.Contains(assignmentName)) && (employeeName == null || emp.EmployeeName.Contains(employeeName))
                              select new
                              {
                                  DepartmentName = dept.DepartmentName,
@@ -162,12 +163,33 @@ namespace ProjectManagement.Infrastructure.Services
                                  EmployeeName = emp.EmployeeName
                              }).Distinct();
 
-            foreach (var item in toatlData)
-            {
-                Console.WriteLine($"DeptName :{item.DepartmentName},\t Project Name: {item.ProjectName},\t Assignment Name: {item.AssignmentName},\tEmployee Name: {item.EmployeeName}.");
-            }
-            return toatlData;
 
+            var data = from v in toatlData
+                       select new ProjectResourceDetails() { DepartmentName = v.DepartmentName, EmployeeName = v.EmployeeName, ProjectName = v.ProjectName, AssignmentName = v.AssignmentName };
+
+            return data;
+        }
+
+        public void GetDataByDepartment(int? deptId = null, string? deptName = null)
+        {
+            var getDeptData = from data in GetDataByDepartNameProjectNameEmployeeName()
+                              join dept in GetDepartments() on data.DepartmentName equals dept.DepartmentName
+                              where (deptId == null || dept.DepartmentId == (deptId)) && (deptName == null || data.DepartmentName.Contains(deptName))
+                              select data;
+            foreach (var dept in getDeptData)
+            {
+                Console.WriteLine($"DeptName :{dept.DepartmentName},\t Project Name: {dept.ProjectName},\t Assignment Name: {dept.AssignmentName},\tEmployee Name: {dept.EmployeeName}.");
+            }
+        }
+
+        public IEnumerable<ProjectResourceDetails> GetDataBySearchMethod(string searchData)
+        {
+
+            var findData = from d in GetDataByDepartNameProjectNameEmployeeName()
+                           where d.DepartmentName.Contains(searchData) || d.EmployeeName.Contains(searchData) || d.ProjectName.Contains(searchData) || d.AssignmentName.Contains(searchData)
+                           select d;
+
+            return findData;
         }
 
     }
