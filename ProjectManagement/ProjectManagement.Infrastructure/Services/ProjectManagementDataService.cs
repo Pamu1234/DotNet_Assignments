@@ -32,7 +32,6 @@ namespace ProjectManagement.Infrastructure.Services
             return GetDepartments();
         }
 
-
         // Project data
         public List<Project> GetProjects()
         {
@@ -84,8 +83,6 @@ namespace ProjectManagement.Infrastructure.Services
         {
             return department;
         }
-
-
 
         public List<Employee> GetEmployees()
         {
@@ -186,11 +183,15 @@ namespace ProjectManagement.Infrastructure.Services
         {
 
             var findData = from d in GetDataByDepartNameProjectNameEmployeeName()
-                           where d.DepartmentName.Contains(searchData) || d.EmployeeName.Contains(searchData) || d.ProjectName.Contains(searchData) || d.AssignmentName.Contains(searchData)
+                           where d.DepartmentName.ToLower().Contains(searchData) || d.EmployeeName.ToLower().Contains(searchData) || d.ProjectName.ToLower().Contains(searchData) || d.AssignmentName.ToLower().Contains(searchData)
                            select d;
 
             return findData;
         }
 
+        public void AllException()
+        {
+
+        }
     }
 }
