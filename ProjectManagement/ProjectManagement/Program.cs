@@ -1,17 +1,19 @@
 ﻿using ProjectManagement.Infrastructure.Services;
 using Serilog;
+using static ProjectManagement.Infrastructure.Validations.Validations;
 using System.Collections.Generic;
 
 
 ProjectManagementDataService employeeDataService = new ProjectManagementDataService();
+
 // Logger
+
 Log.Logger = new LoggerConfiguration()
     .MinimumLevel.Debug()
     .WriteTo.Console()
     .WriteTo.File("logs/ProjectManagement.txt",rollingInterval:RollingInterval.Day)
     .CreateLogger();
-Log.Information("This in my first logging on console and file.");
-
+Log.Information("Program execution is started");
 
 string choiceValue;
 do
@@ -52,51 +54,56 @@ do
 
         case 2:
             // Department details for the department Id.
-
-            Console.WriteLine("----Department details for the department Id---");
             try
             {
-                
-                var deptId = employeeDataService.GetDepartmentsData(5);
-                Log.Debug($"Passing invalid dept id: {deptId}");
-                if (!deptId.Any())
-                {
-                    throw new ArgumentOutOfRangeException();
+                Console.WriteLine("Enter Department Id:");
+                int deptId = Convert.ToInt32(Console.ReadLine());
+                var deptIdData =  employeeDataService.GetDepartmentsData(deptId);
+                Console.WriteLine();
+                //if (!deptIdData.Any())
+                //{
+                //    
+                //}
+                if (Validate(deptIdData)) { 
+                employeeDataService.DisplayDepartmentServiceData(deptIdData);
+                    break;
                 }
-                employeeDataService.DisplayDepartmentServiceData(deptId);
+                Log.Debug($"Passing invalid dept id: {deptId}");
+                throw new ArgumentOutOfRangeException();
+
             }
             catch (ArgumentOutOfRangeException a)
             {
                 Log.Error(a,$"Something is wrong:{a.Message}");
-                //Console.WriteLine(a.Message);
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Log.Error(e.Message);
             }
             Console.WriteLine();
             break;
 
         case 3:
             // Department details for the Department Name
-
-            Console.WriteLine("---Department details for the department name---");
             try
             {
-                var deptName = employeeDataService.GetDepartmentsData(DepartmentName: "Finance");
-                if (!deptName.Any())
+                Console.WriteLine("Enter Department Name:");
+                string? deptName = Console.ReadLine();
+                var deptNameData = employeeDataService.GetDepartmentsData(DepartmentName:deptName);
+                if (!deptNameData.Any())
                 {
+                    Log.Debug($"Passing invalid department name: {deptName}");
                     throw new InvalidDataException("Invalid department name:");
                 }
-                employeeDataService.DisplayDepartmentServiceData(deptName);
+                employeeDataService.DisplayDepartmentServiceData(deptNameData);
             }
             catch (InvalidDataException i)
             {
-                Console.WriteLine(i.Message); ;
+                Log.Error(i, $"Something is wrong: {i.Message}, entering wrong department name.");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Log.Error(ex.Message);
             }
             Console.WriteLine();
             break;
@@ -107,53 +114,56 @@ do
             Console.WriteLine("---All projects for each department ----");
             var projectData = employeeDataService.GetProjects();
             employeeDataService.DisplayProjectData(projectData);
+            //Log.Error("Getting Data");
             Console.WriteLine();
             break;
 
         case 5:
             // The list of projects there for the department Id.
-
-            Console.WriteLine("---The list of projects there for the department Id---");
             try
             {
-                var deptIdinProject = employeeDataService.GetProjects(2);
+                Console.WriteLine("Enter department id to see project list for specific department.");
+                int deptid = Convert.ToInt32(Console.ReadLine());
+                var deptIdinProject = employeeDataService.GetProjects(deptid);
                 if (!deptIdinProject.Any())
                 {
+                    Log.Debug($"Enter wrong department id: {deptid}");
                     throw new ArgumentOutOfRangeException(nameof(deptIdinProject), "Enter valid department id");
                 }
                 employeeDataService.DisplayProjectData(deptIdinProject);
             }
             catch (ArgumentOutOfRangeException a)
             {
-                Console.WriteLine(a.Message);
+                Log.Error(a, $"Something is wrong: {a.Message}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Log.Error(ex.Message);
             }
             Console.WriteLine();
             break;
 
         case 6:
             // List of projects there for the Department Name.
-
-            Console.WriteLine("---List of projects there for the Department Name---");
             try
             {
-                var deptNameinProject = employeeDataService.GetProjects(deptName: "Accounting");
+                Console.WriteLine("Enter department name to see project list for specific department.");
+                string deptName = Console.ReadLine();
+                var deptNameinProject = employeeDataService.GetProjects(deptName: deptName);
                 if (!deptNameinProject.Any())
                 {
+                    Log.Debug($"Passing invalid department name:{deptName} ");
                     throw new InvalidDataException("Invalid deptName");
                 }
                 employeeDataService.DisplayProjectData(deptNameinProject);
             }
             catch (InvalidDataException i)
             {
-                Console.WriteLine(i.Message);
+                Log.Error(i, $"Something is wrong: {i.Message}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Log.Error(ex.Message);
             }
             Console.WriteLine();
             break;
@@ -171,23 +181,26 @@ do
 
             // The list of employees there for the department Id.
 
-            Console.WriteLine("The list of employees there for the department Id");
+            //Console.WriteLine("The list of employees there for the department Id");
             try
             {
-                var empGetDataByPassingDeptId = employeeDataService.GetEmpData(1);
+                Console.WriteLine("Enter department id: ");
+                int empDataByPassingDeptId = Convert.ToInt32( Console.ReadLine());
+                var empGetDataByPassingDeptId = employeeDataService.GetEmpData(empDataByPassingDeptId);
                 if (!empGetDataByPassingDeptId.Any())
                 {
+                    Log.Debug($"Passing invalid depatment id: {empDataByPassingDeptId}");
                     throw new ArgumentOutOfRangeException(nameof(empGetDataByPassingDeptId), "Invalid department id:");
                 }
                 employeeDataService.DisplayEmployee(empGetDataByPassingDeptId);
             }
             catch (ArgumentOutOfRangeException a)
             {
-                Console.WriteLine(a.Message);
+                Log.Error(a, $"Something is wrong: {a.Message}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Log.Error(ex.Message);
             }
             Console.WriteLine();
             break;
@@ -198,9 +211,11 @@ do
             Console.WriteLine("---The employees details for the Employee Id---");
             try
             {
-                var empGetDataByPassingEmpId = employeeDataService.GetEmpData(employeeNumber: 111);
+                int empId = Convert.ToInt32( Console.ReadLine());
+                var empGetDataByPassingEmpId = employeeDataService.GetEmpData(employeeNumber: empId);
                 if (!empGetDataByPassingEmpId.Any())
                 {
+                    Log.Debug($"Passing invalid employee number: {empId}");
                     throw new ArgumentOutOfRangeException(nameof(empGetDataByPassingEmpId), "Invalid employee id:");
                 }
                 employeeDataService.DisplayEmployee(empGetDataByPassingEmpId);
@@ -208,11 +223,11 @@ do
             }
             catch (ArgumentOutOfRangeException a)
             {
-                Console.WriteLine(a.Message);
+               Log.Error(a,$"Something is wrong: {a.Message}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Log.Error(ex.Message);
             }
             Console.WriteLine();
             break;
@@ -265,23 +280,24 @@ do
             {
                 int deptIdData = Convert.ToInt32(Console.ReadLine());
 
-                if (deptIdData <= 0 || deptIdData > 3)
+                if (deptIdData >0)
                 {
+                    employeeDataService.GetDataByDepartment(deptId: deptIdData);
+                }
+                else
+                {
+                    Log.Debug($"Passing invalid department id: {deptIdData}");
                     throw new ArgumentOutOfRangeException(nameof(deptIdData), "Please enter valid dept id");
                 }
-                employeeDataService.GetDataByDepartment(deptId: deptIdData);
-            }
-            catch (FormatException)
-            {
-                Console.WriteLine("Plese enter department id that you want data.");
+
             }
             catch (ArgumentOutOfRangeException a)
             {
-                Console.WriteLine(a.Message);
+                Log.Error(a, $"Something is wrong: {a.Message}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Log.Error(ex.Message);
             }
             Console.WriteLine();
             break;
@@ -297,29 +313,31 @@ do
 
                 if (string.IsNullOrWhiteSpace(deptNameData))
                 {
+                    Log.Debug($"Nothing is entred: {deptNameData}");
                     throw new FormatException("Department name can't be empty.");
                 }
                 if (deptNameData != "Marketing" && deptNameData != "Finance" && deptNameData != "Accounting")
                 {
+                    Log.Debug($"Entred data is miss-match: {deptNameData}");
                     throw new InvalidDataException("Please enter valid department name");
                 }
                 employeeDataService.GetDataByDepartment(deptName: deptNameData);
             }
             catch (FormatException f)
             {
-                Console.WriteLine(f.Message);
+                Log.Error(f, $"Something is wrong: {f.Message}");
             }
             catch (InvalidDataException i)
             {
-                Console.WriteLine(i.Message);
+                Log.Error(i, $"Something is wrong: {i.Message}");
             }
             catch (Exception e)
             {
-                Console.WriteLine(e.Message);
+                Log.Error(e.Message);
             }
             Console.WriteLine();
             break;
-
+            
         case 16:
             Console.WriteLine("------------Search Data------------------");
             try
@@ -327,12 +345,14 @@ do
                 string searchData = Console.ReadLine().ToLower();
                 if (string.IsNullOrWhiteSpace(searchData))
                 {
+                    Log.Debug($"Entering data is empty: {searchData}");
                     throw new InvalidDataException("Without enter any thing it is not possileble to search data");
                 }
 
                 var searchResult = employeeDataService.GetDataBySearchMethod(searchData);
                 if (!searchResult.Any())
                 {
+                    Log.Debug($"Entering data is not matching: {searchResult}");
                     throw new ArgumentNullException("Data Match Not found");
                 }
                 foreach (var item in searchResult)
@@ -342,15 +362,15 @@ do
             }
             catch (InvalidDataException i)
             {
-                Console.WriteLine(i.Message);
+                Log.Error(i,$"Something is wrong: {i.Message}");
             }
-            catch (ArgumentNullException anex)
+            catch (ArgumentNullException a)
             {
-                Console.WriteLine(anex.Message);
+                Log.Error(a, $"Something is wrong: {a.Message}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine(ex.Message);
+                Log.Error(ex.Message);
             }
             break;
 

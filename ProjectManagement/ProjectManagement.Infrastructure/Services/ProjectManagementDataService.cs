@@ -189,9 +189,5 @@ namespace ProjectManagement.Infrastructure.Services
             return findData;
         }
 
-        public void AllException()
-        {
-
-        }
     }
 }
