@@ -1,4 +1,6 @@
-﻿namespace ProjectManagement.Infrastructure.Validations
+﻿using ProjectManagement.Infrastructure.Services;
+
+namespace ProjectManagement.Infrastructure.Validations
 {
     public static class Validations
     {
