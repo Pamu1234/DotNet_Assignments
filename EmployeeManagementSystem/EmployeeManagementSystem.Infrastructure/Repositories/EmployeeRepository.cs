@@ -2,11 +2,6 @@
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Models;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
@@ -36,8 +31,8 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
                                           Contact = employee.Contact,
                                           Address = employee.Address,
                                           Salary = employee.Salary,
-                                          DepartmentName = employee.DepartmentId,
-                                          RoleId = employee.RoleId,
+                                          DepartmentName = employee.Department.DepartmentName,
+                                          Role = employee.Role.RoleName
 
                                       }).ToListAsync();
             return employeeList;

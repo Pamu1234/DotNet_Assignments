@@ -53,7 +53,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<IEnumerator <Employee>>> Put(int id, [FromBody] EmployeeVm employeeVm )
+        public async Task<ActionResult<IEnumerable <Employee>>> Put(int id, [FromBody] EmployeeVm employeeVm )
         {
             var employee = new Employee
             {

@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using EmployeeManagementSystem.Core.Entities;
+﻿using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace EmployeeManagementSystem.Infrastructure.Models
 {

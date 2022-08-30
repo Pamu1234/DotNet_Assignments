@@ -15,7 +15,7 @@ namespace EmployeeManagementSystem.Core.Dtos
         public string Contact { get; set; } = null!;
         public string Address { get; set; } = null!;
         public decimal Salary { get; set; }
-        public int? DepartmentName { get; set; }
-        public int? RoleId { get; set; }
+        public string? DepartmentName { get; set; }
+        public string? Role { get; set; }
     }
 }

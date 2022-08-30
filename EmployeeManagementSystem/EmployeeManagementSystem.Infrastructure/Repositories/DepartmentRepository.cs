@@ -30,10 +30,6 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
                                           DepartmentId = department.DepartmentId,
                                           DepartmentName = department.DepartmentName,
                                           Description = department.Description,
-                                          CreatedBy = department.CreatedBy,
-                                          CreatedDate = department.CreatedDate,
-                                          UpdatedBy = department.UpdatedBy,
-                                          UpdatedDate = department.UpdatedDate,
 
                                       }).ToListAsync();
             return employeeList;
