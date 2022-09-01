@@ -1,10 +1,6 @@
-﻿using EmployeeManagementSystem.Core.Entities;
-using System;
-using System.Collections.Generic;
-
-namespace EmployeeManagementSystem.Core.Entities
+﻿namespace EmployeeManagementSystemAPI.ViewModels
 {
-    public partial class Leave
+    public class LeaveVm
     {
         public int LeaveTypeId { get; set; }
         public string LeaveTypeName { get; set; } = null!;
@@ -13,7 +9,5 @@ namespace EmployeeManagementSystem.Core.Entities
         public DateTime CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
-
-        public virtual LeaveBalance? LeaveBalance { get; set; }
     }
 }

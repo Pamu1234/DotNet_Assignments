@@ -1,17 +1,22 @@
 ﻿using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
-using EmployeeManagementSystem.Infrastructure.Models;
+using EmployeeManagementSystem.Infrastructure.Data;
 using EmployeeManagementSystem.Infrastructure.Repositories.EntityFramework;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
+using Dapper;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
     public class DepartmentRepository : IDepartmentRepository
     {
         private readonly EmployeeManagementDataDbContext _employeeManagementDataDbContext;
-        public DepartmentRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext)
+        private readonly IDbConnection _dapperConnection;
+
+        public DepartmentRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext, IDbConnection dapperConnection)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
+            _dapperConnection = dapperConnection;
         }
 
         public async Task<Department> CreateAsync(Department department)
@@ -24,23 +29,24 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<DepartmentDto>> GetDepartmentsAsync()
         {
-            var employeeList = await (from department in _employeeManagementDataDbContext.Departments
-                                      select new DepartmentDto()
-                                      {
-                                          DepartmentId = department.DepartmentId,
-                                          DepartmentName = department.DepartmentName,
-                                          Description = department.Description,
-                                          CreatedBy = department.CreatedBy,
-                                          CreatedDate = department.CreatedDate,
-                                          UpdatedBy = department.UpdatedBy,
-                                          UpdatedDate = department.UpdatedDate,
+            //var employeeList = await (from department in _employeeManagementDataDbContext.Departments
+            //                          select new DepartmentDto()
+            //                          {
+            //                              DepartmentId = department.DepartmentId,
+            //                              DepartmentName = department.DepartmentName,
+            //                              Description = department.Description,
 
-                                      }).ToListAsync();
-            return employeeList;
+            //                          }).ToListAsync();
+            var getDepartmentQuery = "select * from Departments";
+            var result = await _dapperConnection.QueryAsync<DepartmentDto>(getDepartmentQuery);
+            //return employeeList;
+            return result;
         }
 
         public async Task<Department> GetDepartmentAsync(int departmentId)
         {
+            //var getDepartmentQueryById = "select * from Departments where DepartmentId = @departmentId";
+            //return (await _dapperConnection.QueryAsync<DepartmentDto>(getDepartmentQueryById, new { departmentId })).FirstOrDefault();
             return await _employeeManagementDataDbContext.Departments.FindAsync(departmentId);
         }
         public async Task<Department> UpdateAsync(int departmentId, Department department)

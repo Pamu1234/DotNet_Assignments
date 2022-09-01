@@ -6,10 +6,10 @@ using System.Threading.Tasks;
 
 namespace EmployeeManagementSystem.Core.Dtos
 {
-    public class LeaveDto
+    public class LeaveStatusDto
     {
-        public string LeaveTypeName { get; set; } = null!;
+        public int StatusId { get; set; }
+        public string Status { get; set; } = null!;
         public string? Description { get; set; }
-
     }
 }

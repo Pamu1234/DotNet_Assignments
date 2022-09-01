@@ -1,11 +1,11 @@
 ﻿using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
-using EmployeeManagementSystem.Infrastructure.Models;
+using EmployeeManagementSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
-    public class RoleRepository
+    public class RoleRepository : IRoleRepository
     {
         private readonly EmployeeManagementDataDbContext _employeeManagementDataDbContext;
         public RoleRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext)
@@ -15,7 +15,7 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 
         public async Task<Role> CreateAsync(Role role)
         {
-            _employeeManagementDataDbContext.Roles .Add(role);
+            _employeeManagementDataDbContext.Roles.Add(role);
             await _employeeManagementDataDbContext.SaveChangesAsync();
             return role;
         }
@@ -23,16 +23,12 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         public async Task<IEnumerable<RoleDto>> GetRolesAsync()
         {
             var rolesData = await (from role in _employeeManagementDataDbContext.Roles
-                                      select new RoleDto()
-                                      {
-                                          RoleId = role.RoleId,
-                                          RoleName = role.RoleName,
-                                          CreatedBy = role.CreatedBy,
-                                          CreatedDate = role.CreatedDate,
-                                          UpdatedBy = role.UpdatedBy,
-                                          UpdatedDate = role.UpdatedDate
+                                   select new RoleDto()
+                                   {
+                                       RoleId = role.RoleId,
+                                       CreatedBy = role.CreatedBy,
 
-                                      }).ToListAsync();
+                                   }).ToListAsync();
             return rolesData;
         }
 

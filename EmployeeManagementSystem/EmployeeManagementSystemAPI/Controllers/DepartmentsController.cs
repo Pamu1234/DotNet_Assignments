@@ -31,7 +31,7 @@ namespace EmployeeManagementSystemAPI.Controllers
             return Ok(result);
         }
 
-        // Insert data:
+        // Insert 
         [HttpPost]
         public async Task<ActionResult<Employee>> Post([FromBody] DepartmentVm departmentVm)
         {
@@ -47,7 +47,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         {
             var department = new Department
             {
-                DepartmentId = departmentVm.DepartmentId,
+                DepartmentId = (int)departmentVm.DepartmentId,
                 DepartmentName = departmentVm.DepartmentName,
                 Description = departmentVm.Description,
                 CreatedBy = departmentVm.CreatedBy,
