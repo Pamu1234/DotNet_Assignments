@@ -1,6 +1,6 @@
 ﻿using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
-using EmployeeManagementSystem.Infrastructure.Models;
+using EmployeeManagementSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories

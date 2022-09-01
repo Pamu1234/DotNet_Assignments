@@ -1,6 +1,6 @@
 ﻿using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
-using EmployeeManagementSystem.Infrastructure.Models;
+using EmployeeManagementSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
@@ -25,7 +25,7 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             var rolesData = await (from role in _employeeManagementDataDbContext.Roles
                                    select new RoleDto()
                                    {
-                                       RoleName = role.RoleName,
+                                       RoleId = role.RoleId,
                                        CreatedBy = role.CreatedBy,
 
                                    }).ToListAsync();

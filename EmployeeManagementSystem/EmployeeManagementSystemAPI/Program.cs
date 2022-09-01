@@ -1,22 +1,22 @@
-using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
-using EmployeeManagementSystem.Infrastructure.Models;
-using EmployeeManagementSystem.Infrastructure.Repositories;
-using EmployeeManagementSystem.Infrastructure.Repositories.EntityFramework;
-using EmployeeManagementSystem.Infrastructure.Services;
+using AutoMapper;
+using EmployeeManagementSystem.Infrastructure.Data;
+using EmployeeManagementSystemAPI.Configurations;
 using EmployeeManagementSystemAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.RegisterSystemService();
-builder.Services.RegisterApplicationService();
+#region Configure and Register Automapper
+var config = new MapperConfiguration(config => config.AddProfile(new AutoMapperProfile()));
+IMapper mapper = config.CreateMapper();
+builder.Services.AddSingleton<IMapper>(mapper);
+#endregion
 
 IConfiguration configuration = builder.Configuration;
-builder.Services.AddDbContext<EmployeeManagementDataDbContext>(data => 
-{
-    data.UseSqlServer(configuration.GetConnectionString("EmployeeDbContext"));
-    
-});
+builder.Services.RegisterSystemService(configuration);
+builder.Services.RegisterApplicationService();
+
+
 
 
 var app = builder.Build();

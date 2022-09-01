@@ -9,24 +9,22 @@ using System.Threading.Tasks;
 
 namespace EmployeeManagementSystem.Infrastructure.EntityConfigurations
 {
-    internal class LeaveEntityTypeConfiguration : IEntityTypeConfiguration<Leave>
+    internal class LeaveStatusEntityTypeConfiguration : IEntityTypeConfiguration<LeaveStatus>
     {
-        public void Configure(EntityTypeBuilder<Leave> builder)
+        public void Configure(EntityTypeBuilder<LeaveStatus> builder)
         {
-            builder.HasKey(e => e.LeaveTypeId)
-                .HasName("PK__Leaves__43BE8F140CA2BED1");
+            builder.HasKey(e => e.StatusId)
+    .HasName("PK__LeaveSta__C8EE20634A50E4AB");
 
-            builder.Property(e => e.CreatedDate).HasColumnType("datetime");
+            builder.ToTable("LeaveStatus");
 
             builder.Property(e => e.Description)
                 .HasMaxLength(200)
                 .IsUnicode(false);
 
-            builder.Property(e => e.LeaveTypeName)
+            builder.Property(e => e.Status)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-
-            builder.Property(e => e.UpdatedDate).HasColumnType("date");
         }
     }
 }

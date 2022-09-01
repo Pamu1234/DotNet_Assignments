@@ -1,12 +1,7 @@
 ﻿using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
-using EmployeeManagementSystem.Infrastructure.Models;
+using EmployeeManagementSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
@@ -27,14 +22,14 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<LeaveDto>> GetLeavesAsync()
         {
-            var rolesData = await (from leave in _employeeManagementDataDbContext.Leaves
+            var leavesData = await (from leave in _employeeManagementDataDbContext.Leaves
                                    select new LeaveDto()
                                    {
                                       LeaveTypeName = leave.LeaveTypeName,
                                        Description = leave.Description,
 
                                    }).ToListAsync();
-            return rolesData;
+            return leavesData;
         }
 
         public async Task<Leave> GetLeaveDataAsync(int leaveId)

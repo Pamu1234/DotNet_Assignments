@@ -16,6 +16,9 @@ namespace EmployeeManagementSystem.Infrastructure.Extensions
             modelBuilder.ApplyConfiguration(new DepartmentEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new LeaveEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new RoleEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new LeaveBalanceEntityConfiguration());
+            modelBuilder.ApplyConfiguration(new LeaveStatusEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new RoleEntityTypeConfiguration());
 
         }
     }

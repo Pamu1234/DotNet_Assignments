@@ -1,4 +1,5 @@
-﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+﻿using AutoMapper;
+using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Repositories;
 using EmployeeManagementSystemAPI.ViewModels;
@@ -13,9 +14,11 @@ namespace EmployeeManagementSystemAPI.Controllers
     public class EmployeesController : ControllerBase
     {
         private readonly IEmployeeService _employeeService;
-        public EmployeesController(IEmployeeService employeeService)
+        private readonly IMapper _mapper;
+        public EmployeesController(IEmployeeService employeeService, IMapper mapper)
         {
-          _employeeService = employeeService;
+            _employeeService = employeeService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -35,39 +38,41 @@ namespace EmployeeManagementSystemAPI.Controllers
 
         // Insert data
         [HttpPost]
-        public async Task <ActionResult<IEnumerable<Employee >>>Post([FromBody] EmployeeVm employeeVm)
+        public async Task<ActionResult<IEnumerable<Employee>>> Post([FromBody] EmployeeVm employeeVm)
         {
-            var employee = new Employee
-            {
-                FirstName = employeeVm.FirstName,
-                LastName = employeeVm.LastName,
-                EmailId = employeeVm.EmailId,
-                Contact = employeeVm.Contact,
-                Address = employeeVm.Address,
-                Salary = employeeVm.Salary,
-                DepartmentId = employeeVm.DepartmentId,
-                RoleId = employeeVm.RoleId,
-            };
+            Employee employee =  _mapper.Map<EmployeeVm, Employee>(employeeVm);
+            //var employee = new Employee
+            //{
+            //    FirstName = employeeVm.FirstName,
+            //    LastName = employeeVm.LastName,
+            //    EmailId = employeeVm.EmailId,
+            //    Contact = employeeVm.Contact,
+            //    Address = employeeVm.Address,
+            //    Salary = employeeVm.Salary,
+            //    DepartmentId = employeeVm.DepartmentId,
+            //    RoleId = employeeVm.RoleId,
+            //};
             var result = await _employeeService.CreateAsync(employee);
             return Ok(result);
         }
 
         [HttpPut("{id}")]
-        public async Task<ActionResult<IEnumerable <Employee>>> Put(int id, [FromBody] EmployeeVm employeeVm )
+        public async Task<ActionResult<IEnumerable<Employee>>> Put(int id, [FromBody] EmployeeVm employeeVm)
         {
-            var employee = new Employee
-            {
-                EmployeeId = employeeVm.EmployeeId,
-                FirstName = employeeVm.FirstName,
-                LastName = employeeVm.LastName,
-                EmailId = employeeVm.EmailId,
-                Contact = employeeVm.Contact,
-                Address = employeeVm.Address,
-                Salary = employeeVm.Salary,
-                DepartmentId = employeeVm.DepartmentId,
-                RoleId = employeeVm.RoleId,
+            Employee employee = _mapper.Map<EmployeeVm, Employee>(employeeVm); 
+            //var employee = new Employee
+            //{
+            //    EmployeeId = employeeVm.EmployeeId,
+            //    FirstName = employeeVm.FirstName,
+            //    LastName = employeeVm.LastName,
+            //    EmailId = employeeVm.EmailId,
+            //    Contact = employeeVm.Contact,
+            //    Address = employeeVm.Address,
+            //    Salary = employeeVm.Salary,
+            //    DepartmentId = employeeVm.DepartmentId,
+            //    RoleId = employeeVm.RoleId,
 
-            };
+            //};
             var result = await _employeeService.UpdateAsync(id, employee);
             return Ok(result);
         }

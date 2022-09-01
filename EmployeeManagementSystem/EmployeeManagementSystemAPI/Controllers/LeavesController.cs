@@ -28,8 +28,8 @@ namespace EmployeeManagementSystemAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Role>>  Get(int id)
         {
-            var result = await _leavesService.GetLeaveDataAsync(id);
-            return Ok(result);
+
+            return Ok(await _leavesService.GetLeaveDataAsync(id));
         }
 
         // Insert data

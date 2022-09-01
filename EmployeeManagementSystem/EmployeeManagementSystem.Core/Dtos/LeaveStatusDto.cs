@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace EmployeeManagementSystem.Core.Dtos
 {
-    public class RoleDto
+    public class LeaveStatusDto
     {
-        public int RoleId { get; set; } 
-        public int CreatedBy { get; set; }
+        public int StatusId { get; set; }
+        public string Status { get; set; } = null!;
+        public string? Description { get; set; }
     }
 }
