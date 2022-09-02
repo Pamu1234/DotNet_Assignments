@@ -1,9 +1,11 @@
-﻿using EmployeeManagementSystem.Core.Dtos;
+﻿using Dapper;
+using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +15,11 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
     public class LeaveBalanceRepository : ILeaveBalanceRepository
     {
         private readonly EmployeeManagementDataDbContext _employeeManagementDataDbContext;
-        public LeaveBalanceRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext)
+        private readonly IDbConnection _dapperConnection;
+        public LeaveBalanceRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext,IDbConnection dbConnection)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
+            _dapperConnection = dbConnection;
         }
 
         public async Task<LeaveBalance> CreateAsync(LeaveBalance leaveBalance)
@@ -27,21 +31,15 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<LeaveBalanceDto>> GetLeavesBalanceAsync()
         {
-            var leaveBalanceData = await (from leaveBalance in _employeeManagementDataDbContext.LeaveBalances
-                                          select new LeaveBalanceDto()
-                                          {
-                                              LeaveBalanceId = leaveBalance.LeaveBalanceId,
-                                              EmployeeId = leaveBalance.EmployeeId,
-                                              LeaveTypeId = leaveBalance.LeaveTypeId,
-                                              Balance = leaveBalance.Balance,
-
-                                          }).ToListAsync();
-            return leaveBalanceData;
+            var getLeaveBalanceDataQuery = "select * from LeaveBalance";
+            var result = await _dapperConnection.QueryAsync<LeaveBalanceDto>(getLeaveBalanceDataQuery);
+            return result;
         }
 
         public async Task<LeaveBalance> GetLeaveBalanceDataByIdAsync(int leaveBalanceId)
         {
-            return await _employeeManagementDataDbContext.LeaveBalances.FindAsync(leaveBalanceId);
+            var getLeaveBalanceDataByIdQuery = "select * from LeaveBalance where LeaveBalanceId = @leaveBalanceId";
+            return await _dapperConnection.QueryFirstOrDefaultAsync<LeaveBalance>(getLeaveBalanceDataByIdQuery, new { leaveBalanceId });
         }
 
         public async Task<LeaveBalance> UpdateAsync(int leaveBalanceId, LeaveBalance leaveBalance)

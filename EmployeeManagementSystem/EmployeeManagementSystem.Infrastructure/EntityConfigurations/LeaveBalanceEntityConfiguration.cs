@@ -26,7 +26,7 @@ namespace EmployeeManagementSystem.Infrastructure.EntityConfigurations
                 .HasForeignKey<LeaveBalance>(d => d.EmployeeId)
                 .HasConstraintName("FK__LeaveBala__Emplo__5629CD9C");
 
-            builder.HasOne(d => d.Leave)
+            builder.HasOne(d => d.LeaveType)
                 .WithOne(p => p.LeaveBalance)
                 .HasForeignKey<LeaveBalance>(d => d.LeaveTypeId)
                 .HasConstraintName("FK__LeaveBala__Leave__571DF1D5");

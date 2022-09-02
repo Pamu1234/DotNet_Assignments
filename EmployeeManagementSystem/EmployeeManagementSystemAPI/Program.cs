@@ -14,7 +14,7 @@ builder.Services.AddSingleton<IMapper>(mapper);
 
 IConfiguration configuration = builder.Configuration;
 builder.Services.RegisterSystemService(configuration);
-builder.Services.RegisterApplicationService();
+builder.Services.RegisterApplicationService(configuration);
 
 
 

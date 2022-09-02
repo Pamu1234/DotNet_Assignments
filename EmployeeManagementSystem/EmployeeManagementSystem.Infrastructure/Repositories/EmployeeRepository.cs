@@ -1,16 +1,20 @@
-﻿using EmployeeManagementSystem.Core.Dtos;
+﻿using Dapper;
+using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
     public class EmployeeRepository : IEmployeeRepository
     {
         private readonly EmployeeManagementDataDbContext _employeeManagementDataDbContext;
-        public EmployeeRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext)
+        private readonly IDbConnection _dapperConnection;
+        public EmployeeRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext,IDbConnection dbConnection)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
+            _dapperConnection = dbConnection;
         }
         public async Task<Employee> CreateAsync(Employee employee)
         {
@@ -21,21 +25,10 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         }
         public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync()
         {
-            var employeeList = await (from employee in _employeeManagementDataDbContext.Employees.Include(d => d.Department).Include(r => r.Role)
-                                      select new EmployeeDto()
-                                      {
-                                          EmployeeId = employee.EmployeeId,
-                                          FirstName = employee.FirstName,
-                                          LastName = employee.LastName,
-                                          EmailId = employee.EmailId,
-                                          Contact = employee.Contact,
-                                          Address = employee.Address,
-                                          Salary = employee.Salary,
-                                          DepartmentName = employee.Department.DepartmentName,
-                                          Role = employee.Role.RoleName
+            var getEmployeesQuery = "select * from Employees";
+            var result = await _dapperConnection.QueryAsync<EmployeeDto>(getEmployeesQuery);
+            return result;
 
-                                      }).ToListAsync();
-            return employeeList;
         }
         public async Task<Employee> UpdateAsync(int employeeId, Employee employee)
         {
@@ -55,7 +48,8 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         }
         public async Task<Employee> GetEmployeeAsync(int employeeId)
         {
-            return await _employeeManagementDataDbContext.Employees.FindAsync(employeeId);
+            var getEmployeeByIdQuery = "select * from Employees where EmployeeId = @employeeId";
+            return await _dapperConnection.QueryFirstOrDefaultAsync<Employee>(getEmployeeByIdQuery, new { employeeId });
         }
         public async Task DeleteEmployeeAsync(int employeeId)
         {

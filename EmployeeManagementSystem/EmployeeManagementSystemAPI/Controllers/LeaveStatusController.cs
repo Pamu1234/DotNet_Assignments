@@ -1,4 +1,5 @@
-﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+﻿using AutoMapper;
+using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +13,11 @@ namespace EmployeeManagementSystemAPI.Controllers
     public class LeaveStatusController : ControllerBase
     {
         private readonly ILeaveStatusService _leaveStatusService;
-        public LeaveStatusController(ILeaveStatusService leaveStatusService)
+        private readonly IMapper _mapper;
+        public LeaveStatusController(ILeaveStatusService leaveStatusService, IMapper mapper)
         {
             _leaveStatusService = leaveStatusService;
+            _mapper = mapper;
         }
 
 
@@ -34,23 +37,16 @@ namespace EmployeeManagementSystemAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<IEnumerable<LeaveStatus>>> Post([FromBody] LeaveStatusVm leaveStatusVm)
         {
-            var leaveStatus = new LeaveStatus
-            {
-                Description = leaveStatusVm.Description,
-                Status = leaveStatusVm.Status,
-            };
+            LeaveStatus leaveStatus = _mapper.Map<LeaveStatusVm, LeaveStatus>(leaveStatusVm);
             return Ok(await _leaveStatusService.CreateAsync(leaveStatus));
         }
 
         [HttpPut("{id}")]
         public async Task <ActionResult<LeaveStatus>> Put(int id, [FromBody] LeaveStatusVm leaveStatusVm)
         {
-            var leaveUpdate = new LeaveStatus
-            {
-                Description = leaveStatusVm.Description,
-                Status = leaveStatusVm.Status,
-            };
-            return Ok(await _leaveStatusService.UpdateAsync(id,leaveUpdate));
+            LeaveStatus leaveStatus = _mapper.Map<LeaveStatusVm, LeaveStatus>(leaveStatusVm);
+
+            return Ok(await _leaveStatusService.UpdateAsync(id, leaveStatus));
         }
 
         // DELETE api/<LeaveStatusController>/5

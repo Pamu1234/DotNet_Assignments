@@ -1,10 +1,10 @@
-﻿using EmployeeManagementSystem.Core.Dtos;
+﻿using Dapper;
+using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Data;
 using EmployeeManagementSystem.Infrastructure.Repositories.EntityFramework;
-using Microsoft.EntityFrameworkCore;
 using System.Data;
-using Dapper;
+using AutoMapper;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
@@ -12,11 +12,13 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
     {
         private readonly EmployeeManagementDataDbContext _employeeManagementDataDbContext;
         private readonly IDbConnection _dapperConnection;
+        private readonly IMapper _mapper;
 
-        public DepartmentRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext, IDbConnection dapperConnection)
+        public DepartmentRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext, IDbConnection dapperConnection, IMapper mapper)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
             _dapperConnection = dapperConnection;
+            _mapper = mapper;
         }
 
         public async Task<Department> CreateAsync(Department department)
@@ -29,25 +31,15 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<DepartmentDto>> GetDepartmentsAsync()
         {
-            //var employeeList = await (from department in _employeeManagementDataDbContext.Departments
-            //                          select new DepartmentDto()
-            //                          {
-            //                              DepartmentId = department.DepartmentId,
-            //                              DepartmentName = department.DepartmentName,
-            //                              Description = department.Description,
-
-            //                          }).ToListAsync();
             var getDepartmentQuery = "select * from Departments";
             var result = await _dapperConnection.QueryAsync<DepartmentDto>(getDepartmentQuery);
-            //return employeeList;
             return result;
         }
 
         public async Task<Department> GetDepartmentAsync(int departmentId)
         {
-            //var getDepartmentQueryById = "select * from Departments where DepartmentId = @departmentId";
-            //return (await _dapperConnection.QueryAsync<DepartmentDto>(getDepartmentQueryById, new { departmentId })).FirstOrDefault();
-            return await _employeeManagementDataDbContext.Departments.FindAsync(departmentId);
+            var getDepartmentQueryById = "select * from Departments where DepartmentId = @departmentId";
+            return await _dapperConnection.QueryFirstOrDefaultAsync<Department>(getDepartmentQueryById, new { departmentId });
         }
         public async Task<Department> UpdateAsync(int departmentId, Department department)
         {

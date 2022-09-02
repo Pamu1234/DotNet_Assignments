@@ -1,16 +1,21 @@
-﻿using EmployeeManagementSystem.Core.Dtos;
+﻿using Dapper;
+using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
     public class LeaveRepository : ILeaveRepository
     {
         private readonly EmployeeManagementDataDbContext _employeeManagementDataDbContext;
-        public LeaveRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext)
+        private readonly IDbConnection _dapperConnection;
+
+        public LeaveRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext, IDbConnection dbConnection)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
+            _dapperConnection = dbConnection;
         }
 
         public async Task<Leave> CreateAsync(Leave leave)
@@ -22,19 +27,15 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<LeaveDto>> GetLeavesAsync()
         {
-            var leavesData = await (from leave in _employeeManagementDataDbContext.Leaves
-                                   select new LeaveDto()
-                                   {
-                                      LeaveTypeName = leave.LeaveTypeName,
-                                       Description = leave.Description,
-
-                                   }).ToListAsync();
-            return leavesData;
+            var getLeavesDataQuery = "select * from Leaves";
+            var result = await _dapperConnection.QueryAsync<LeaveDto>(getLeavesDataQuery);
+            return result;
         }
 
         public async Task<Leave> GetLeaveDataAsync(int leaveId)
         {
-            return await _employeeManagementDataDbContext.Leaves.FindAsync(leaveId);
+            var getLeavesDataByIdQuery = "select * from Leaves where LeaveTypeId = @leaveId";
+            return await _dapperConnection.QueryFirstOrDefaultAsync<Leave>(getLeavesDataByIdQuery, new { leaveId });
         }
 
         public async Task<Leave> UpdateAsync(int leaveId, Leave leave)

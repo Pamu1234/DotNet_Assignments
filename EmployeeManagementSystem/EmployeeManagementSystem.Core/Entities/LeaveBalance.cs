@@ -11,6 +11,6 @@ namespace EmployeeManagementSystem.Core.Entities
         public int Balance { get; set; }
 
         public virtual Employee? Employee { get; set; }
-        public virtual Leave? Leave { get; set; }
+        public virtual Leave? LeaveType { get; set; }
     }
 }

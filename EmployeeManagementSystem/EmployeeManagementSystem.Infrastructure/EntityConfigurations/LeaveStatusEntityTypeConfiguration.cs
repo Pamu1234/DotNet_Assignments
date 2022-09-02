@@ -14,7 +14,7 @@ namespace EmployeeManagementSystem.Infrastructure.EntityConfigurations
         public void Configure(EntityTypeBuilder<LeaveStatus> builder)
         {
             builder.HasKey(e => e.StatusId)
-    .HasName("PK__LeaveSta__C8EE20634A50E4AB");
+                    .HasName("PK__LeaveSta__C8EE20634A50E4AB");
 
             builder.ToTable("LeaveStatus");
 

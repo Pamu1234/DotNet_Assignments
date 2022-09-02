@@ -1,4 +1,5 @@
-﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+﻿using AutoMapper;
+using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -12,11 +13,12 @@ namespace EmployeeManagementSystemAPI.Controllers
     public class LeaveBalancesController : ControllerBase
     {
         private readonly ILeaveBalanceService _leaveBalanceService;
-        public LeaveBalancesController(ILeaveBalanceService leaveBalanceService)
+        private readonly IMapper _mapper;
+        public LeaveBalancesController(ILeaveBalanceService leaveBalanceService, IMapper mapper)
         {
             _leaveBalanceService = leaveBalanceService;
+            _mapper = mapper;
         }
-
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LeaveBalance>>>  Get()
@@ -36,29 +38,16 @@ namespace EmployeeManagementSystemAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<LeaveBalance>> Post([FromBody] LeaveBalanceVm leaveBalanceVm)
         {
-            var leaveBlance = new LeaveBalance
-            {
-
-                EmployeeId = leaveBalanceVm.EmployeeId,
-                LeaveTypeId = leaveBalanceVm.LeaveTypeId,
-                Balance = leaveBalanceVm.Balance,
-            };
-            var result = await _leaveBalanceService.CreateAsync(leaveBlance);
-            return Ok(result);
+            LeaveBalance leaveBalance = _mapper.Map<LeaveBalanceVm, LeaveBalance>(leaveBalanceVm);
+           return Ok( await _leaveBalanceService.CreateAsync(leaveBalance));
 
         }
 
         [HttpPut("{id}")]
         public async Task <ActionResult<IEnumerable<LeaveBalance>>>  Put(int id, [FromBody] LeaveBalanceVm leaveBalanceVm)
         {
-            var leaveBlance = new LeaveBalance
-            {
-                EmployeeId = leaveBalanceVm.EmployeeId,
-                LeaveTypeId = leaveBalanceVm.LeaveTypeId,
-                Balance = leaveBalanceVm.Balance,
-            };
-            var result = await _leaveBalanceService.UpdateAsync(id, leaveBlance);
-            return Ok(result);
+            LeaveBalance leaveBalance = _mapper.Map<LeaveBalanceVm, LeaveBalance>(leaveBalanceVm);
+            return Ok(await _leaveBalanceService.UpdateAsync(id, leaveBalance));           
         }
 
         // DELETE api/<LeaveBalancesController>/5

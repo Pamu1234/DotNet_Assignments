@@ -14,7 +14,7 @@ namespace EmployeeManagementSystem.Infrastructure.EntityConfigurations
         public void Configure(EntityTypeBuilder<Leave> builder)
         {
             builder.HasKey(e => e.LeaveTypeId)
-                .HasName("PK__Leaves__43BE8F140CA2BED1");
+                   .HasName("PK__Leaves__43BE8F140CA2BED1");
 
             builder.Property(e => e.CreatedDate).HasColumnType("datetime");
 

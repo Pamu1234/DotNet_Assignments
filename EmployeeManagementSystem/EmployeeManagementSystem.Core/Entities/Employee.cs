@@ -17,6 +17,7 @@ namespace EmployeeManagementSystem.Core.Entities
 
         public virtual Department? Department { get; set; }
         public virtual Role? Role { get; set; }
+        public virtual LeaveApplication? LeaveApplication { get; set; }
         public virtual LeaveBalance? LeaveBalance { get; set; }
     }
 }

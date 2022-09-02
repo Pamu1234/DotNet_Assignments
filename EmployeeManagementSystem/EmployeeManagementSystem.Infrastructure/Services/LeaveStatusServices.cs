@@ -1,4 +1,5 @@
-﻿using EmployeeManagementSystem.Core.Dtos;
+﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Repositories;
 using System;
@@ -9,10 +10,10 @@ using System.Threading.Tasks;
 
 namespace EmployeeManagementSystem.Infrastructure.Services
 {
-    public class LeaveStatusServices: ILeaveStatusRepository
+    public class LeaveStatusServices: ILeaveStatusService
     {
-        private readonly LeaveStatusRepository _leaveStatusRepository;
-        public LeaveStatusServices(LeaveStatusRepository leaveStatusRepository)
+        private readonly ILeaveStatusRepository _leaveStatusRepository;
+        public LeaveStatusServices(ILeaveStatusRepository leaveStatusRepository)
         {
             _leaveStatusRepository = leaveStatusRepository;
         }

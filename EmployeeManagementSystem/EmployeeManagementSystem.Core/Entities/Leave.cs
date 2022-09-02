@@ -13,7 +13,9 @@ namespace EmployeeManagementSystem.Core.Entities
         public DateTime CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public int? NoOfDays { get; set; }
 
+        public virtual LeaveApplication? LeaveApplication { get; set; }
         public virtual LeaveBalance? LeaveBalance { get; set; }
     }
 }

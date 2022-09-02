@@ -41,17 +41,6 @@ namespace EmployeeManagementSystemAPI.Controllers
         public async Task<ActionResult<IEnumerable<Employee>>> Post([FromBody] EmployeeVm employeeVm)
         {
             Employee employee =  _mapper.Map<EmployeeVm, Employee>(employeeVm);
-            //var employee = new Employee
-            //{
-            //    FirstName = employeeVm.FirstName,
-            //    LastName = employeeVm.LastName,
-            //    EmailId = employeeVm.EmailId,
-            //    Contact = employeeVm.Contact,
-            //    Address = employeeVm.Address,
-            //    Salary = employeeVm.Salary,
-            //    DepartmentId = employeeVm.DepartmentId,
-            //    RoleId = employeeVm.RoleId,
-            //};
             var result = await _employeeService.CreateAsync(employee);
             return Ok(result);
         }
@@ -60,19 +49,6 @@ namespace EmployeeManagementSystemAPI.Controllers
         public async Task<ActionResult<IEnumerable<Employee>>> Put(int id, [FromBody] EmployeeVm employeeVm)
         {
             Employee employee = _mapper.Map<EmployeeVm, Employee>(employeeVm); 
-            //var employee = new Employee
-            //{
-            //    EmployeeId = employeeVm.EmployeeId,
-            //    FirstName = employeeVm.FirstName,
-            //    LastName = employeeVm.LastName,
-            //    EmailId = employeeVm.EmailId,
-            //    Contact = employeeVm.Contact,
-            //    Address = employeeVm.Address,
-            //    Salary = employeeVm.Salary,
-            //    DepartmentId = employeeVm.DepartmentId,
-            //    RoleId = employeeVm.RoleId,
-
-            //};
             var result = await _employeeService.UpdateAsync(id, employee);
             return Ok(result);
         }

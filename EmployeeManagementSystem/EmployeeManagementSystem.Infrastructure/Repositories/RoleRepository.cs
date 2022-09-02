@@ -1,16 +1,21 @@
-﻿using EmployeeManagementSystem.Core.Dtos;
+﻿using Dapper;
+using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
     public class RoleRepository : IRoleRepository
     {
         private readonly EmployeeManagementDataDbContext _employeeManagementDataDbContext;
-        public RoleRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext)
+        private readonly IDbConnection _dapperConnection;
+
+        public RoleRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext, IDbConnection dbConnection)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
+            _dapperConnection = dbConnection;
         }
 
         public async Task<Role> CreateAsync(Role role)
@@ -22,19 +27,16 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<RoleDto>> GetRolesAsync()
         {
-            var rolesData = await (from role in _employeeManagementDataDbContext.Roles
-                                   select new RoleDto()
-                                   {
-                                       RoleId = role.RoleId,
-                                       CreatedBy = role.CreatedBy,
 
-                                   }).ToListAsync();
-            return rolesData;
+            var roleDataQuery = "select * from Roles";
+            var result = await _dapperConnection.QueryAsync<RoleDto>(roleDataQuery);
+            return result;
         }
 
         public async Task<Role> GetRoleDataAsync(int roleId)
         {
-            return await _employeeManagementDataDbContext.Roles.FindAsync(roleId);
+            var getRoleDataByIdQuery = "select * from Roles where RoleId = @roleId";
+            return await _dapperConnection.QueryFirstOrDefaultAsync<Role>(getRoleDataByIdQuery, new { roleId });
         }
 
         public async Task<Role> UpdateAsync(int roleId, Role role)

@@ -3,7 +3,9 @@ using EmployeeManagementSystem.Infrastructure.Data;
 using EmployeeManagementSystem.Infrastructure.Repositories;
 using EmployeeManagementSystem.Infrastructure.Repositories.EntityFramework;
 using EmployeeManagementSystem.Infrastructure.Services;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace EmployeeManagementSystemAPI.Extensions
 {
@@ -14,8 +16,12 @@ namespace EmployeeManagementSystemAPI.Extensions
             services.AddDbContext<EmployeeManagementDataDbContext>(data =>
             {
                 data.UseSqlServer(configuration.GetConnectionString("EmployeeDbContext"));
-
             });
+
+            // Dapper
+            services.AddTransient<IDbConnection>(db => new SqlConnection(
+                                configuration.GetConnectionString("EmployeeDbContext")));
+
             // Add services to the container.
             services.AddControllers();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -23,17 +29,8 @@ namespace EmployeeManagementSystemAPI.Extensions
             services.AddSwaggerGen();
             
         }
-        public static void RegisterApplicationService(this IServiceCollection services)
+        public static void RegisterApplicationService(this IServiceCollection services, IConfiguration configuration)
         {
-            //var builder = WebApplication.CreateBuilder(args);
-
-            //IConfiguration configuration = builder.Configuration;
-            //builder.Services.AddDbContext<EmployeeManagementDataDbContext>(data =>
-            //{
-            //    data.UseSqlServer(configuration.GetConnectionString("EmployeeDbContext"));
-
-            //});
-
 
             // Repositories
             services.AddTransient<IDepartmentRepository, DepartmentRepository>();
@@ -50,12 +47,10 @@ namespace EmployeeManagementSystemAPI.Extensions
             services.AddTransient<ILeaveApplicationService, LeaveApplicationServices>();
             services.AddTransient<ILeaveBalanceService, LeaveBalanceServices>();
             services.AddTransient<ILeavesService, LeaveService>();
-
             services.AddTransient<ILeaveStatusService, LeaveStatusServices>();
-
             services.AddTransient<IRolesService, RoleService>();
 
-
+            
 
         }
 

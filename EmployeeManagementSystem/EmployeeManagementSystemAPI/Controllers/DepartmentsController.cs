@@ -1,4 +1,5 @@
-﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+﻿using AutoMapper;
+using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +13,11 @@ namespace EmployeeManagementSystemAPI.Controllers
     public class DepartmentsController : ControllerBase
     {
         private readonly IDepartmentService _departmentService;
-        public DepartmentsController(IDepartmentService departmentService)
+        private readonly IMapper _mapper;
+        public DepartmentsController(IDepartmentService departmentService, IMapper mapper)
         {
             _departmentService = departmentService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -33,30 +36,19 @@ namespace EmployeeManagementSystemAPI.Controllers
 
         // Insert 
         [HttpPost]
-        public async Task<ActionResult<Employee>> Post([FromBody] DepartmentVm departmentVm)
+        public async Task<ActionResult<Department>> Post([FromBody] DepartmentVm departmentVm)
         {
-            var department = new Department { 
-                DepartmentName = departmentVm.DepartmentName, Description = departmentVm.Description, CreatedBy = departmentVm.CreatedBy, CreatedDate = departmentVm.CreatedDate, UpdatedBy = departmentVm.UpdatedBy, UpdatedDate = departmentVm.UpdatedDate};
-            var result = await _departmentService.CreateAsync(department);
-            return Ok(result);
+            Department department = _mapper.Map<DepartmentVm, Department>(departmentVm);
+            return Ok( await _departmentService.CreateAsync(department));
+            
         }
 
         // Update
         [HttpPut("{id}")]
         public async Task<ActionResult<Department>> Put(int id, [FromBody] DepartmentVm departmentVm)
         {
-            var department = new Department
-            {
-                DepartmentId = (int)departmentVm.DepartmentId,
-                DepartmentName = departmentVm.DepartmentName,
-                Description = departmentVm.Description,
-                CreatedBy = departmentVm.CreatedBy,
-                CreatedDate = departmentVm.CreatedDate,
-                UpdatedBy = departmentVm.UpdatedBy,
-                UpdatedDate = departmentVm.UpdatedDate
-            };
-            var result = await _departmentService.UpdateAsync(id, department);
-            return Ok(result);
+            Department department = _mapper.Map<DepartmentVm, Department>(departmentVm);
+            return Ok(await _departmentService.UpdateAsync(id, department));
         }
 
         [HttpDelete("{id}")]

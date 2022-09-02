@@ -1,9 +1,11 @@
-﻿using EmployeeManagementSystem.Core.Dtos;
+﻿using Dapper;
+using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -13,9 +15,11 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
     public class LeaveApplicationRepository : ILeaveApplicationRepository
     {
         private readonly EmployeeManagementDataDbContext _employeeManagementDataDbContext;
-        public LeaveApplicationRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext)
+        private readonly IDbConnection _dapperConnection;
+        public LeaveApplicationRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext, IDbConnection dbConnection)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
+            _dapperConnection = dbConnection;
         }
 
         public async Task<LeaveApplication> CreateAsync(LeaveApplication leaveApplication)
@@ -28,26 +32,15 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<LeaveApplicationDto>> GetLeaveApplicationAsync()
         {
-            var employeeLeaveList = await (from leaveApplication in _employeeManagementDataDbContext.LeaveApplications
-                                      select new LeaveApplicationDto()
-                                      {
-                                          EmployeeId = leaveApplication.EmployeeId,
-                                          LeaveTypeId = leaveApplication.LeaveTypeId,
-                                          Purpose = leaveApplication.Purpose,
-                                          NoOfDays = leaveApplication.NoOfDays,
-                                          DateOfApplication = leaveApplication.DateOfApplication,
-                                          DateOfApproval = leaveApplication.DateOfApproval,
-                                          StatusId = leaveApplication.StatusId,
-                                          CreatedDate = leaveApplication.CreatedDate,
-                                          UpdatedDate = leaveApplication.UpdatedDate
-
-                                      }).ToListAsync();
-            return employeeLeaveList;
+            var getLeaveApplicationDataQuery = "select * from LeaveApplication";
+            var result = await _dapperConnection.QueryAsync<LeaveApplicationDto>(getLeaveApplicationDataQuery);
+            return result;
         }
 
         public async Task<LeaveApplication> GetLeaveDataByIdAsync(int leaveId)
         {
-            return await _employeeManagementDataDbContext.LeaveApplications.FindAsync(leaveId);
+            var getEmployeeByIdQuery = "select * from LeaveApplication where EmployeeId = @leaveId";
+            return await _dapperConnection.QueryFirstOrDefaultAsync<LeaveApplication>(getEmployeeByIdQuery, new { leaveId });
         }
 
         public async Task<LeaveApplication> UpdateAsync(int leaveId, LeaveApplication leaveApplication)

@@ -1,4 +1,5 @@
-﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+﻿using AutoMapper;
+using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +13,11 @@ namespace EmployeeManagementSystemAPI.Controllers
     public class LeavesController : ControllerBase
     {
         private readonly ILeavesService _leavesService;
-        public LeavesController(ILeavesService leavesService)
+        private readonly IMapper _mapper;
+        public LeavesController(ILeavesService leavesService, IMapper mapper)
         {
             _leavesService = leavesService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -23,7 +26,6 @@ namespace EmployeeManagementSystemAPI.Controllers
             var result = await _leavesService.GetLeavesAsync();
             return Ok(result);
         }
-
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Role>>  Get(int id)
@@ -36,41 +38,18 @@ namespace EmployeeManagementSystemAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<IEnumerable<Role>>> Post([FromBody] LeaveVm leaveVm)
         {
-            var leave = new Leave
-            {
-                LeaveTypeName = leaveVm.LeaveTypeName,
-                Description = leaveVm.Description,
-                CreatedBy = leaveVm.CreatedBy,
-                CreatedDate = leaveVm.CreatedDate,
-                UpdatedBy = leaveVm.UpdatedBy,
-                UpdatedDate = leaveVm.UpdatedDate
-                //RoleName = roleVm.RoleName,
-                //CreatedBy = roleVm.CreatedBy,
-                //CreatedDate = roleVm.CreatedDate,
-                //UpdatedBy = roleVm.UpdatedBy,
-                //UpdatedDate = roleVm.UpdatedDate,
-            };
-            var result = await _leavesService.CreateAsync(leave);
-            return Ok(result);
+            Leave leave = _mapper.Map<LeaveVm, Leave>(leaveVm);
+            return Ok(await _leavesService.CreateAsync(leave));
+
         }
 
         // Update Data
         [HttpPut("{id}")]
         public async Task<ActionResult<IEnumerable<Leave>>>  Put(int id, [FromBody] LeaveVm leaveVm )
         {
-            var leave = new Leave
-            {
-                LeaveTypeId = leaveVm.LeaveTypeId,
-                LeaveTypeName = leaveVm.LeaveTypeName,
-                Description = leaveVm.Description,
-                CreatedBy = leaveVm.CreatedBy,
-                CreatedDate = leaveVm.CreatedDate,
-                UpdatedBy = leaveVm.UpdatedBy,
-                UpdatedDate = leaveVm.UpdatedDate
+            Leave leave = _mapper.Map<LeaveVm, Leave>(leaveVm);
 
-            };
-            var result = await _leavesService.UpdateAsync(id, leave);
-            return Ok(result);
+            return Ok( await _leavesService.UpdateAsync(id, leave));
         }
 
         [HttpDelete("{id}")]

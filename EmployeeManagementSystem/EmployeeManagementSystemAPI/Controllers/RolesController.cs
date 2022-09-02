@@ -1,4 +1,5 @@
-﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+﻿using AutoMapper;
+using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +13,11 @@ namespace EmployeeManagementSystemAPI.Controllers
     public class RolesController : ControllerBase
     {
         private readonly IRolesService _roleService;
-        public RolesController(IRolesService roleService)
+        private readonly IMapper _mapper;
+        public RolesController(IRolesService roleService, IMapper mapper)
         {
             _roleService = roleService;
+            _mapper = mapper;
         }
 
 
@@ -35,14 +38,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         [HttpPost]
         public async Task <ActionResult<IEnumerable<Role>>> Post([FromBody] RoleVm roleVm)
         {
-            var role = new Role
-            {
-                RoleName = roleVm.RoleName,
-                CreatedBy = roleVm.CreatedBy,
-                CreatedDate = roleVm.CreatedDate,
-                UpdatedBy = roleVm.UpdatedBy,
-                UpdatedDate = roleVm.UpdatedDate
-            };
+            Role role = _mapper.Map<RoleVm, Role>(roleVm);
             return Ok(await _roleService.CreateAsync(role));
         }
 
@@ -50,15 +46,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         [HttpPut("{id}")]
         public async Task <ActionResult<Role>> Put(int id, [FromBody] RoleVm roleVm)
         {
-            var role = new Role
-            {
-                RoleId = roleVm.RoleId,
-                RoleName = roleVm.RoleName,
-                CreatedBy = roleVm.CreatedBy,
-                CreatedDate = roleVm.CreatedDate,
-                UpdatedBy = roleVm.UpdatedBy,
-                UpdatedDate = roleVm.UpdatedDate
-            };
+            Role role = _mapper.Map<RoleVm, Role>(roleVm);
             return Ok(await _roleService.UpdateAsync(id, role));
         }
 

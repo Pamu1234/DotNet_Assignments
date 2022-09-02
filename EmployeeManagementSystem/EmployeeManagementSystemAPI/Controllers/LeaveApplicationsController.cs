@@ -1,4 +1,5 @@
-﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+﻿using AutoMapper;
+using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -12,9 +13,11 @@ namespace EmployeeManagementSystemAPI.Controllers
     public class LeaveApplicationsController : ControllerBase
     {
         private readonly ILeaveApplicationService _leaveApplicationService;
-        public LeaveApplicationsController(ILeaveApplicationService leaveApplicationService)
+        private readonly IMapper _mapper;
+        public LeaveApplicationsController(ILeaveApplicationService leaveApplicationService, IMapper mapper)
         {
             _leaveApplicationService = leaveApplicationService;
+            _mapper = mapper;
         }
 
         [HttpGet]
@@ -24,7 +27,6 @@ namespace EmployeeManagementSystemAPI.Controllers
             return Ok(result);
         }
 
-        // GET api/<LeaveApplicationsController>/5
         [HttpGet("{id}")]
         public async Task <ActionResult<LeaveApplication>> Get(int id)
         {
@@ -35,46 +37,17 @@ namespace EmployeeManagementSystemAPI.Controllers
         [HttpPost]
         public async Task<ActionResult<LeaveApplication>> Post([FromBody] LeaveApplicationVm leaveApplicationVm)
         {
-            var leaveApplication = new LeaveApplication
-            {
-                EmployeeId = leaveApplicationVm.EmployeeId,
-                LeaveTypeId = leaveApplicationVm.LeaveTypeId,
-                StartDate = leaveApplicationVm.StartDate,
-                EndDatew=leaveApplicationVm.EndDatew,
-                Purpose = leaveApplicationVm.Purpose,
-                NoOfDays = leaveApplicationVm.NoOfDays,
-                DateOfApplication = leaveApplicationVm.DateOfApplication,
-                DateOfApproval = leaveApplicationVm.DateOfApproval,
-                StatusId = leaveApplicationVm.StatusId,
-                CreatedDate = leaveApplicationVm.CreatedDate,
-                UpdatedDate = leaveApplicationVm.UpdatedDate
-            };
-            var result = await _leaveApplicationService.CreateAsync(leaveApplication);
-            return Ok(result);
+            LeaveApplication leaveApplication = _mapper.Map<LeaveApplicationVm, LeaveApplication>(leaveApplicationVm);
+            return Ok(await _leaveApplicationService.CreateAsync(leaveApplication));
         }
 
-        // PUT api/<LeaveApplicationsController>/5
         [HttpPut("{id}")]
         public async Task<ActionResult<IEnumerable<LeaveApplication>>> Put(int id, [FromBody] LeaveApplicationVm leaveApplicationVm)
         {
-            var leaveApplication = new LeaveApplication
-            {
-                EmployeeId = leaveApplicationVm.EmployeeId,
-                LeaveTypeId = leaveApplicationVm.LeaveTypeId,
-                StartDate = leaveApplicationVm.StartDate,
-                EndDatew = leaveApplicationVm.EndDatew,
-                Purpose = leaveApplicationVm.Purpose,
-                NoOfDays = leaveApplicationVm.NoOfDays,
-                DateOfApplication = leaveApplicationVm.DateOfApplication,
-                DateOfApproval = leaveApplicationVm.DateOfApproval,
-                StatusId = leaveApplicationVm.StatusId,
-                UpdatedDate = leaveApplicationVm.UpdatedDate
-            };
-            var result = await _leaveApplicationService.UpdateAsync(id,leaveApplication);
-            return Ok(result);
+            LeaveApplication leaveApplication = _mapper.Map<LeaveApplicationVm, LeaveApplication>(leaveApplicationVm);
+            return Ok(await _leaveApplicationService.UpdateAsync(id, leaveApplication));
         }
 
-        // DELETE api/<LeaveApplicationsController>/5
         [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
