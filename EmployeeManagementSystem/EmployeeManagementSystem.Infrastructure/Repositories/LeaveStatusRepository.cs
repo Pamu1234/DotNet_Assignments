@@ -32,7 +32,7 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 
         public async Task<LeaveStatus> GetLeaveStatusDataByIdAsync(int leaveStatusId)
         {
-            var leaveStatusDataByIdQuery = "select * from Leaves where LeaveStatus = @leaveStatusId";
+            var leaveStatusDataByIdQuery = "select * from LeaveStatus where StatusId = @leaveStatusId";
             return await _dapperConnection.QueryFirstOrDefaultAsync<LeaveStatus>(leaveStatusDataByIdQuery, new { leaveStatusId });
         }
 

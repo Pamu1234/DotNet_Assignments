@@ -3,6 +3,7 @@ using EmployeeManagementSystem.Infrastructure.Data;
 using EmployeeManagementSystemAPI.Configurations;
 using EmployeeManagementSystemAPI.Extensions;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -11,6 +12,9 @@ var config = new MapperConfiguration(config => config.AddProfile(new AutoMapperP
 IMapper mapper = config.CreateMapper();
 builder.Services.AddSingleton<IMapper>(mapper);
 #endregion
+
+Log.Logger = new LoggerConfiguration().CreateBootstrapLogger();
+builder.Host.UseSerilog(((ctx, lc) => lc.ReadFrom.Configuration(ctx.Configuration)));
 
 IConfiguration configuration = builder.Configuration;
 builder.Services.RegisterSystemService(configuration);

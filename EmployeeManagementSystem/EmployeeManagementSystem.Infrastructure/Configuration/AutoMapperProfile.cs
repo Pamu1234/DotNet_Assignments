@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using EmployeeManagementSystem.Core.Entities;
 
 namespace EmployeeManagementSystem.Infrastructure.Configuration
 {
@@ -6,7 +7,7 @@ namespace EmployeeManagementSystem.Infrastructure.Configuration
     {
         internal AutoMapperProfile()
         {
-            //CreateMap<DepartmentVm, Department>();
+            CreateMap<Department, Department>();
             //CreateMap<EmployeeVm, Employee>();
             //CreateMap<LeaveVm, Leave>();
             //CreateMap<LeaveApplicationVm, LeaveApplication>();

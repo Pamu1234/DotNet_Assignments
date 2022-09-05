@@ -14,15 +14,27 @@ namespace EmployeeManagementSystemAPI.Controllers
     {
         private readonly ILeaveBalanceService _leaveBalanceService;
         private readonly IMapper _mapper;
-        public LeaveBalancesController(ILeaveBalanceService leaveBalanceService, IMapper mapper)
+        private readonly ILogger<LeaveBalancesController> _logger;
+        public LeaveBalancesController(ILeaveBalanceService leaveBalanceService, IMapper mapper, ILogger<LeaveBalancesController> logger)
         {
             _leaveBalanceService = leaveBalanceService;
             _mapper = mapper;
+            _logger = logger;
+        }
+
+        [HttpPost]
+        public async Task<ActionResult<LeaveBalance>> Post([FromBody] LeaveBalanceVm leaveBalanceVm)
+        {
+            _logger.LogInformation("Inserting data to LeaveBalance entity.");
+            LeaveBalance leaveBalance = _mapper.Map<LeaveBalanceVm, LeaveBalance>(leaveBalanceVm);
+            return Ok(await _leaveBalanceService.CreateAsync(leaveBalance));
+
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<LeaveBalance>>>  Get()
         {
+            _logger.LogInformation("Getting list of all LeaveBalance entity.");
             var result = await _leaveBalanceService.GetLeavesBalanceAsync();
             return Ok(result);
         }
@@ -30,27 +42,26 @@ namespace EmployeeManagementSystemAPI.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<LeaveBalance>> Get(int id)
         {
+            _logger.LogInformation("Getting list of  LeaveBalance by ID:{id},", id);
             var result = await _leaveBalanceService.GetLeaveBalanceDataByIdAsync(id);
+            if (result is null)
+                return NotFound();
             return Ok(result);
-        }
-
-        // POST api/<LeaveBalancesController>
-        [HttpPost]
-        public async Task<ActionResult<LeaveBalance>> Post([FromBody] LeaveBalanceVm leaveBalanceVm)
-        {
-            LeaveBalance leaveBalance = _mapper.Map<LeaveBalanceVm, LeaveBalance>(leaveBalanceVm);
-           return Ok( await _leaveBalanceService.CreateAsync(leaveBalance));
-
         }
 
         [HttpPut("{id}")]
         public async Task <ActionResult<IEnumerable<LeaveBalance>>>  Put(int id, [FromBody] LeaveBalanceVm leaveBalanceVm)
         {
+            if (id <= 0 || id != leaveBalanceVm.LeaveTypeId)
+            {
+                _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
+                return BadRequest();
+            }
+
             LeaveBalance leaveBalance = _mapper.Map<LeaveBalanceVm, LeaveBalance>(leaveBalanceVm);
             return Ok(await _leaveBalanceService.UpdateAsync(id, leaveBalance));           
         }
 
-        // DELETE api/<LeaveBalancesController>/5
         [HttpDelete("{id}")]
         public async Task Delete(int id)
         {

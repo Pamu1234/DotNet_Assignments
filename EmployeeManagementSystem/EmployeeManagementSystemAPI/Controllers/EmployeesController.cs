@@ -15,39 +15,51 @@ namespace EmployeeManagementSystemAPI.Controllers
     {
         private readonly IEmployeeService _employeeService;
         private readonly IMapper _mapper;
-        public EmployeesController(IEmployeeService employeeService, IMapper mapper)
+        private readonly ILogger<DepartmentsController> _logger;
+        public EmployeesController(IEmployeeService employeeService, IMapper mapper, ILogger<DepartmentsController> logger)
         {
             _employeeService = employeeService;
             _mapper = mapper;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employee>>> Get()
-        {
-            var result = await _employeeService.GetEmployeesAsync();
-            return Ok(result);
-        }
-
-
-        [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> Get(int id)
-        {
-            var result = await _employeeService.GetEmployeeAsync(id);
-            return Ok(result);
+            _logger = logger;
         }
 
         // Insert data
         [HttpPost]
         public async Task<ActionResult<IEnumerable<Employee>>> Post([FromBody] EmployeeVm employeeVm)
         {
-            Employee employee =  _mapper.Map<EmployeeVm, Employee>(employeeVm);
+            _logger.LogInformation("Inserting data to Employee entity.");
+            Employee employee = _mapper.Map<EmployeeVm, Employee>(employeeVm);
             var result = await _employeeService.CreateAsync(employee);
+            return Ok(result);
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<Employee>>> Get()
+        {
+            _logger.LogInformation("Getting list of all Employee's.");
+            var result = await _employeeService.GetEmployeesAsync();
+            if (result is null)
+                return NotFound();
+            return Ok(result);
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<Employee>> Get(int id)
+        {
+            _logger.LogInformation("Getting list of  department by ID:{id},", id);
+
+            var result = await _employeeService.GetEmployeeAsync(id);
             return Ok(result);
         }
 
         [HttpPut("{id}")]
         public async Task<ActionResult<IEnumerable<Employee>>> Put(int id, [FromBody] EmployeeVm employeeVm)
         {
+            if (id <= 0 || id != employeeVm.EmployeeId)
+            {
+                _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
+                return BadRequest();
+            }
             Employee employee = _mapper.Map<EmployeeVm, Employee>(employeeVm); 
             var result = await _employeeService.UpdateAsync(id, employee);
             return Ok(result);

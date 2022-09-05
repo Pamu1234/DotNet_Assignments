@@ -43,17 +43,15 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         }
         public async Task<Department> UpdateAsync(int departmentId, Department department)
         {
-            var departmentToBeUpdate = await GetDepartmentAsync(departmentId);
-            departmentToBeUpdate.DepartmentId = department.DepartmentId;
-            departmentToBeUpdate.DepartmentName = department.DepartmentName;
-            departmentToBeUpdate.Description = department.Description;
-            departmentToBeUpdate.CreatedBy = department.CreatedBy;
-            departmentToBeUpdate.CreatedDate = department.CreatedDate;
-            departmentToBeUpdate.UpdatedBy = department.UpdatedBy;
-            departmentToBeUpdate.UpdatedDate = department.UpdatedDate;
-            _employeeManagementDataDbContext.Departments.Update(departmentToBeUpdate);
+            var departmentToBeUpdatet = await GetDepartmentAsync(departmentId);
+            department.UpdatedBy = 1;
+            department.UpdatedDate = DateTime.UtcNow;
+            department.DepartmentId = departmentId;
+            department.CreatedBy = departmentToBeUpdatet.CreatedBy;
+            department.CreatedDate = departmentToBeUpdatet.CreatedDate;
+            _employeeManagementDataDbContext.Departments.Update(department);
             _employeeManagementDataDbContext.SaveChanges();
-            return departmentToBeUpdate;
+            return department;
         }
 
         public async Task DeleteDepartmentAsync(int departmentId)

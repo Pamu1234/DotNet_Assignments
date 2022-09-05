@@ -14,38 +14,46 @@ namespace EmployeeManagementSystemAPI.Controllers
     {
         private readonly IRolesService _roleService;
         private readonly IMapper _mapper;
-        public RolesController(IRolesService roleService, IMapper mapper)
+        private readonly ILogger<RolesController> _logger;
+
+        public RolesController(IRolesService roleService, IMapper mapper, ILogger<RolesController> logger)
         {
             _roleService = roleService;
             _mapper = mapper;
+            _logger = logger;
         }
 
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<Role>>> Post([FromBody] RoleVm roleVm)
+        {
+            _logger.LogInformation("Inserting data to Role entity.");
+            Role role = _mapper.Map<RoleVm, Role>(roleVm);
+            return Ok(await _roleService.CreateAsync(role));
+        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Role>>>  Get()
         {
-         
+
+            _logger.LogInformation("Getting list of all Role entity.");
             return Ok(await _roleService.GetRolesAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Role>>  Get(int id)
         {
+            _logger.LogInformation("Getting list of  Role by ID:{id},", id);
             return Ok(await _roleService.GetRoleDataAsync(id));
         }
 
-        // Insert Data
-        [HttpPost]
-        public async Task <ActionResult<IEnumerable<Role>>> Post([FromBody] RoleVm roleVm)
-        {
-            Role role = _mapper.Map<RoleVm, Role>(roleVm);
-            return Ok(await _roleService.CreateAsync(role));
-        }
-
-        // Update Data
         [HttpPut("{id}")]
         public async Task <ActionResult<Role>> Put(int id, [FromBody] RoleVm roleVm)
         {
+            if (id <= 0 || id != roleVm.RoleId)
+            {
+                _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
+                return BadRequest();
+            }
             Role role = _mapper.Map<RoleVm, Role>(roleVm);
             return Ok(await _roleService.UpdateAsync(id, role));
         }
