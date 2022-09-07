@@ -8,9 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class DepartmentsController : ControllerBase
+
+    public class DepartmentsController : ApiControllerBase
     {
         private readonly IDepartmentService _departmentService;
         private readonly IMapper _mapper;
@@ -27,7 +26,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         public async Task<ActionResult<Department>> Post([FromBody] DepartmentVm departmentVm)
         {
             _logger.LogInformation("Inserting data to department entity.");
-            Department department = _mapper.Map<DepartmentVm, Department>(departmentVm);
+            var  department = _mapper.Map<DepartmentVm, Department>(departmentVm);
             return Ok(await _departmentService.CreateAsync(department));
 
         }
@@ -54,13 +53,13 @@ namespace EmployeeManagementSystemAPI.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Department>> Put(int id, [FromBody] DepartmentVm departmentVm)
         {
-            if (id <= 0 || id != departmentVm.Id)
+            Department department = _mapper.Map<DepartmentVm, Department>(departmentVm);
+            if (id <= 0 || id != department.DepartmentId)
             {
                 _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
                 return BadRequest();
             }
 
-            Department department = _mapper.Map<DepartmentVm, Department>(departmentVm);
             return Ok(await _departmentService.UpdateAsync(id, department));
         }
 

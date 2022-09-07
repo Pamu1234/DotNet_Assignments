@@ -1,17 +1,15 @@
 ﻿using Dapper;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
-using EmployeeManagementSystem.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
     public class EmployeeRepository : IEmployeeRepository
     {
-        private readonly EmployeeManagementDataDbContext _employeeManagementDataDbContext;
+        private readonly EmployeemanagementDbContext _employeeManagementDataDbContext;
         private readonly IDbConnection _dapperConnection;
-        public EmployeeRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext,IDbConnection dbConnection)
+        public EmployeeRepository(EmployeemanagementDbContext employeeManagementDataDbContext,IDbConnection dbConnection)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
             _dapperConnection = dbConnection;

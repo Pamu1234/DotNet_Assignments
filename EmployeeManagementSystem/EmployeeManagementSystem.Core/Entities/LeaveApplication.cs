@@ -5,10 +5,11 @@ namespace EmployeeManagementSystem.Core.Entities
 {
     public partial class LeaveApplication
     {
+        public int LeaveApplicationId { get; set; }
         public int? EmployeeId { get; set; }
         public int? LeaveTypeId { get; set; }
         public DateTime StartDate { get; set; }
-        public DateTime EndDate { get; set; }
+        public DateTime EndDatew { get; set; }
         public string Purpose { get; set; } = null!;
         public int NoOfDays { get; set; }
         public DateTime DateOfApplication { get; set; }
@@ -18,7 +19,6 @@ namespace EmployeeManagementSystem.Core.Entities
         public DateTime CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
-        public int LeaveApplicationId { get; set; }
 
         public virtual Employee? Employee { get; set; }
         public virtual Leave? LeaveType { get; set; }

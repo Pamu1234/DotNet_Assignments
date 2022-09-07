@@ -26,6 +26,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
 
         public Task<Department> GetDepartmentAsync(int departmentId)
         {
+
             return _departmentRepository.GetDepartmentAsync(departmentId);
         }
 
@@ -38,5 +39,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
         {
             return _departmentRepository.DeleteDepartmentAsync(departmentId);
         }
+
+ 
     }
 }

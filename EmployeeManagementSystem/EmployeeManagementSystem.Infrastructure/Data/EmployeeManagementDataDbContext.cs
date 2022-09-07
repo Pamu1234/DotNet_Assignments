@@ -1,15 +1,15 @@
-﻿using EmployeeManagementSystem.Core.Entities;
-using EmployeeManagementSystem.Infrastructure.Extensions;
+﻿using EmployeeManagementSystem.Infrastructure.Extensions;
 using Microsoft.EntityFrameworkCore;
-namespace EmployeeManagementSystem.Infrastructure.Data
+
+namespace EmployeeManagementSystem.Core.Entities
 {
-    public partial class EmployeeManagementDataDbContext : DbContext
+    public partial class EmployeemanagementDbContext : DbContext
     {
-        public EmployeeManagementDataDbContext()
+        public EmployeemanagementDbContext()
         {
         }
 
-        public EmployeeManagementDataDbContext(DbContextOptions<EmployeeManagementDataDbContext> options)
+        public EmployeemanagementDbContext(DbContextOptions<EmployeemanagementDbContext> options)
             : base(options)
         {
         }
@@ -24,16 +24,17 @@ namespace EmployeeManagementSystem.Infrastructure.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-//            if (!optionsBuilder.IsConfigured)
-//            {
-//#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-//                optionsBuilder.UseSqlServer("Server=(localDb)\\MSSQLLocalDB;Database=EmployeeManagementDataDb;Trusted_Connection=True;");
-//            }
+            if (!optionsBuilder.IsConfigured)
+            {
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+                optionsBuilder.UseSqlServer("Server=(localDb)\\MSSQLLocalDB;Database=EmployeemanagementDb;Trusted_Connection=True;");
+            }
         }
+
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
             modelBuilder.RegisterEntityConfigurations();
+
             OnModelCreatingPartial(modelBuilder);
         }
 

@@ -1,8 +1,6 @@
 using AutoMapper;
-using EmployeeManagementSystem.Infrastructure.Data;
 using EmployeeManagementSystemAPI.Configurations;
 using EmployeeManagementSystemAPI.Extensions;
-using Microsoft.EntityFrameworkCore;
 using Serilog;
 
 var builder = WebApplication.CreateBuilder(args);

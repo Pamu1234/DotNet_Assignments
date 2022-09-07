@@ -1,22 +1,15 @@
 ﻿using Dapper;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
-using EmployeeManagementSystem.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
     public class LeaveBalanceRepository : ILeaveBalanceRepository
     {
-        private readonly EmployeeManagementDataDbContext _employeeManagementDataDbContext;
+        private readonly EmployeemanagementDbContext _employeeManagementDataDbContext;
         private readonly IDbConnection _dapperConnection;
-        public LeaveBalanceRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext,IDbConnection dbConnection)
+        public LeaveBalanceRepository(EmployeemanagementDbContext employeeManagementDataDbContext,IDbConnection dbConnection)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
             _dapperConnection = dbConnection;
@@ -42,16 +35,22 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             return await _dapperConnection.QueryFirstOrDefaultAsync<LeaveBalance>(getLeaveBalanceDataByIdQuery, new { leaveBalanceId });
         }
 
+        public async Task<IEnumerable<LeaveBalance>> GetRemainingLeavesByEmpId(int empId)
+        {
+            var remainingLeaves = "select * from LeaveBalance where EmployeeId=@empId";
+            return await _dapperConnection.QueryAsync<LeaveBalance>(remainingLeaves, new { empId });
+        }
+
         public async Task<LeaveBalance> UpdateAsync(int leaveBalanceId, LeaveBalance leaveBalance)
         {
             var leaveBalanceToBeUpdate = await GetLeaveBalanceDataByIdAsync(leaveBalanceId);
-            leaveBalanceToBeUpdate.LeaveBalanceId = leaveBalance.LeaveBalanceId;
-            leaveBalanceToBeUpdate.EmployeeId = leaveBalance.EmployeeId;
-            leaveBalanceToBeUpdate.LeaveTypeId = leaveBalance.LeaveTypeId;
-            leaveBalanceToBeUpdate.Balance = leaveBalance.Balance;
-            _employeeManagementDataDbContext.LeaveBalances.Update(leaveBalanceToBeUpdate);
+            leaveBalance.LeaveBalanceId = leaveBalance.LeaveBalanceId;
+            leaveBalance.EmployeeId = leaveBalance.EmployeeId;
+            leaveBalance.LeaveTypeId = leaveBalance.LeaveTypeId;
+            leaveBalance.Balance = leaveBalance.Balance;
+            _employeeManagementDataDbContext.LeaveBalances.Update(leaveBalance);
             _employeeManagementDataDbContext.SaveChanges();
-            return leaveBalanceToBeUpdate;
+            return leaveBalance;
         }
 
         public async Task DeleteLeaveBalanceDataByIdAsync(int leaveBalanceId)

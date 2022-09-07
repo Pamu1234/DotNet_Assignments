@@ -1,10 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace EmployeeManagementSystem.Core.Entities
+﻿namespace EmployeeManagementSystem.Core.Entities
 {
     public partial class Employee
     {
+        public Employee()
+        {
+            LeaveApplications = new HashSet<LeaveApplication>();
+            LeaveBalances = new HashSet<LeaveBalance>();
+        }
+
         public int EmployeeId { get; set; }
         public string FirstName { get; set; } = null!;
         public string LastName { get; set; } = null!;
@@ -17,7 +20,7 @@ namespace EmployeeManagementSystem.Core.Entities
 
         public virtual Department? Department { get; set; }
         public virtual Role? Role { get; set; }
-        public virtual LeaveApplication? LeaveApplication { get; set; }
-        public virtual LeaveBalance? LeaveBalance { get; set; }
+        public virtual ICollection<LeaveApplication> LeaveApplications { get; set; }
+        public virtual ICollection<LeaveBalance> LeaveBalances { get; set; }
     }
 }

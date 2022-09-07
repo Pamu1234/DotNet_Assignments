@@ -1,5 +1,5 @@
 ﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
-using EmployeeManagementSystem.Infrastructure.Data;
+using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Repositories;
 using EmployeeManagementSystem.Infrastructure.Repositories.EntityFramework;
 using EmployeeManagementSystem.Infrastructure.Services;
@@ -13,7 +13,7 @@ namespace EmployeeManagementSystemAPI.Extensions
     {
         public static void RegisterSystemService(this IServiceCollection services, IConfiguration configuration)
         {
-            services.AddDbContext<EmployeeManagementDataDbContext>(data =>
+            services.AddDbContext<EmployeemanagementDbContext>(data =>
             {
                 data.UseSqlServer(configuration.GetConnectionString("EmployeeDbContext"));
             });

@@ -20,6 +20,17 @@ namespace EmployeeManagementSystem.Infrastructure.Services
 
         public Task<LeaveApplication> CreateAsync(LeaveApplication leaveApplication)
         {
+            leaveApplication.NoOfDays = leaveApplication.NoOfDays;
+            leaveApplication.StartDate = DateTime.UtcNow;
+            leaveApplication.EndDatew = DateTime.UtcNow;
+            leaveApplication.DateOfApplication = DateTime.UtcNow;
+            leaveApplication.StatusId = 1;
+
+            //if (leaveApplication.StatusId == 2)
+            //{
+            //    leaveApplicationRecord.StartDate = DateTime.Now;
+            //    leaveApplicationRecord.EndDatew = DateTime.UtcNow;
+            //}
             return _leaveApplicationRepository.CreateAsync(leaveApplication);
         }
 

@@ -8,9 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class LeaveApplicationsController : ControllerBase
+
+    public class LeaveApplicationsController : ApiControllerBase
     {
         private readonly ILeaveApplicationService _leaveApplicationService;
         private readonly IMapper _mapper;

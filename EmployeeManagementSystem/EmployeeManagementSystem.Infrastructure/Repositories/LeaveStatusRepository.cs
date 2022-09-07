@@ -1,17 +1,16 @@
 ﻿using Dapper;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
-using EmployeeManagementSystem.Infrastructure.Data;
 using System.Data;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
     public class LeaveStatusRepository : ILeaveStatusRepository
     {
-        private readonly EmployeeManagementDataDbContext _employeeManagementDataDbContext;
+        private readonly EmployeemanagementDbContext _employeeManagementDataDbContext;
         private readonly IDbConnection _dapperConnection;
 
-        public LeaveStatusRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext, IDbConnection dbConnection)
+        public LeaveStatusRepository(EmployeemanagementDbContext employeeManagementDataDbContext, IDbConnection dbConnection)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
             _dapperConnection = dbConnection;
@@ -39,12 +38,12 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         public async Task<LeaveStatus> UpdateAsync(int leaveStatusId, LeaveStatus leaveStatus)
         {
             var leaveStatusToBeUpdate = await GetLeaveStatusDataByIdAsync(leaveStatusId);
-            leaveStatusToBeUpdate.StatusId = leaveStatus.StatusId;
-            leaveStatusToBeUpdate.Description = leaveStatus.Description;
-            leaveStatusToBeUpdate.Status = leaveStatus.Status;
-            _employeeManagementDataDbContext.LeaveStatuses.Update(leaveStatusToBeUpdate);
+            leaveStatus.StatusId = leaveStatus.StatusId;
+            leaveStatus.Description = leaveStatus.Description;
+            leaveStatus.Status = leaveStatus.Status;
+            _employeeManagementDataDbContext.LeaveStatuses.Update(leaveStatus);
             _employeeManagementDataDbContext.SaveChanges();
-            return leaveStatusToBeUpdate;
+            return leaveStatus;
         }
 
         public async Task DeleteLeaveAsync(int leaveStatusId)

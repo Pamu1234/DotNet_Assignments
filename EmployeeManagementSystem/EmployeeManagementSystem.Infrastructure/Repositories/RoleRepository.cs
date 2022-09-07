@@ -1,18 +1,16 @@
 ﻿using Dapper;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
-using EmployeeManagementSystem.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
     public class RoleRepository : IRoleRepository
     {
-        private readonly EmployeeManagementDataDbContext _employeeManagementDataDbContext;
+        private readonly EmployeemanagementDbContext _employeeManagementDataDbContext;
         private readonly IDbConnection _dapperConnection;
 
-        public RoleRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext, IDbConnection dbConnection)
+        public RoleRepository(EmployeemanagementDbContext employeeManagementDataDbContext, IDbConnection dbConnection)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
             _dapperConnection = dbConnection;
@@ -42,15 +40,15 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         public async Task<Role> UpdateAsync(int roleId, Role role)
         {
             var roleToBeUpdate = await GetRoleDataAsync(roleId);
-            roleToBeUpdate.RoleId = role.RoleId;
-            roleToBeUpdate.RoleName = role.RoleName;
-            roleToBeUpdate.CreatedBy = role.CreatedBy;
-            roleToBeUpdate.CreatedDate = role.CreatedDate;
-            roleToBeUpdate.UpdatedBy = role.UpdatedBy;
-            roleToBeUpdate.UpdatedDate = role.UpdatedDate;
-            _employeeManagementDataDbContext.Roles.Update(roleToBeUpdate);
+            role.RoleId = role.RoleId;
+            role.RoleName = role.RoleName;
+            role.CreatedBy = role.CreatedBy;
+            role.CreatedDate = role.CreatedDate;
+            role.UpdatedBy = role.UpdatedBy;
+            role.UpdatedDate = role.UpdatedDate;
+            _employeeManagementDataDbContext.Roles.Update(role);
             _employeeManagementDataDbContext.SaveChanges();
-            return roleToBeUpdate;
+            return role;
         }
 
         public async Task DeleteRoleAsync(int roleId)

@@ -8,9 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class LeaveStatusController : ControllerBase
+
+    public class LeaveStatusController : ApiControllerBase
     {
         private readonly ILeaveStatusService _leaveStatusService;
         private readonly IMapper _mapper;
@@ -52,12 +51,12 @@ namespace EmployeeManagementSystemAPI.Controllers
         [HttpPut("{id}")]
         public async Task <ActionResult<LeaveStatus>> Put(int id, [FromBody] LeaveStatusVm leaveStatusVm)
         {
-            if (id <= 0 || id != leaveStatusVm.StatusId)
+            LeaveStatus leaveStatus = _mapper.Map<LeaveStatusVm, LeaveStatus>(leaveStatusVm);
+            if (id <= 0 || id != leaveStatus.StatusId)
             {
                 _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
                 return BadRequest();
             }
-            LeaveStatus leaveStatus = _mapper.Map<LeaveStatusVm, LeaveStatus>(leaveStatusVm);
 
             return Ok(await _leaveStatusService.UpdateAsync(id, leaveStatus));
         }

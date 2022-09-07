@@ -8,9 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class LeaveBalancesController : ControllerBase
+
+    public class LeaveBalancesController : ApiControllerBase
     {
         private readonly ILeaveBalanceService _leaveBalanceService;
         private readonly IMapper _mapper;
@@ -49,6 +48,12 @@ namespace EmployeeManagementSystemAPI.Controllers
             return Ok(result);
         }
 
+        [HttpGet("leaves/{empId}")]
+        public async Task<ActionResult> GetEmployeesRemainingleaves(int empId)
+        {
+            var remainingLeaves = await _leaveBalanceService.GetRemainingLeavesByEmpId(empId);
+            return Ok(remainingLeaves);
+        }
         [HttpPut("{id}")]
         public async Task <ActionResult<IEnumerable<LeaveBalance>>>  Put(int id, [FromBody] LeaveBalanceVm leaveBalanceVm)
         {

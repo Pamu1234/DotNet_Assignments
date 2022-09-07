@@ -1,20 +1,19 @@
-﻿using Dapper;
+﻿using AutoMapper;
+using Dapper;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
-using EmployeeManagementSystem.Infrastructure.Data;
 using EmployeeManagementSystem.Infrastructure.Repositories.EntityFramework;
 using System.Data;
-using AutoMapper;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
     public class DepartmentRepository : IDepartmentRepository
     {
-        private readonly EmployeeManagementDataDbContext _employeeManagementDataDbContext;
+        private readonly EmployeemanagementDbContext _employeeManagementDataDbContext;
         private readonly IDbConnection _dapperConnection;
         private readonly IMapper _mapper;
 
-        public DepartmentRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext, IDbConnection dapperConnection, IMapper mapper)
+        public DepartmentRepository(EmployeemanagementDbContext employeeManagementDataDbContext, IDbConnection dapperConnection, IMapper mapper)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
             _dapperConnection = dapperConnection;
@@ -28,6 +27,7 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             return department;
 
         }
+
 
         public async Task<IEnumerable<DepartmentDto>> GetDepartmentsAsync()
         {

@@ -14,7 +14,7 @@ namespace EmployeeManagementSystem.Infrastructure.EntityConfigurations
         public void Configure(EntityTypeBuilder<Leave> builder)
         {
             builder.HasKey(e => e.LeaveTypeId)
-                   .HasName("PK__Leaves__43BE8F140CA2BED1");
+                    .HasName("PK__Leaves__43BE8F14865D89E6");
 
             builder.Property(e => e.CreatedDate).HasColumnType("datetime");
 
@@ -25,6 +25,7 @@ namespace EmployeeManagementSystem.Infrastructure.EntityConfigurations
             builder.Property(e => e.LeaveTypeName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
+            builder.Property(e => e.NoOfDays).IsRequired();
 
             builder.Property(e => e.UpdatedDate).HasColumnType("date");
         }

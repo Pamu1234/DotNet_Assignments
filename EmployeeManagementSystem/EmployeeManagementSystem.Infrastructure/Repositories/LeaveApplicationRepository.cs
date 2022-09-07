@@ -1,22 +1,16 @@
 ﻿using Dapper;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
-using EmployeeManagementSystem.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
     public class LeaveApplicationRepository : ILeaveApplicationRepository
     {
-        private readonly EmployeeManagementDataDbContext _employeeManagementDataDbContext;
+        private readonly EmployeemanagementDbContext _employeeManagementDataDbContext;
         private readonly IDbConnection _dapperConnection;
-        public LeaveApplicationRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext, IDbConnection dbConnection)
+
+        public LeaveApplicationRepository(EmployeemanagementDbContext employeeManagementDataDbContext, IDbConnection dbConnection)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
             _dapperConnection = dbConnection;
@@ -46,17 +40,16 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         public async Task<LeaveApplication> UpdateAsync(int leaveId, LeaveApplication leaveApplication)
         {
             var leaveApplicationToBeUpdate = await GetLeaveDataByIdAsync(leaveId);
-            leaveApplicationToBeUpdate.EmployeeId = leaveApplication.EmployeeId;
-            leaveApplicationToBeUpdate.LeaveTypeId = leaveApplication.LeaveTypeId;
-            leaveApplicationToBeUpdate.Purpose = leaveApplication.Purpose;
-            leaveApplicationToBeUpdate.NoOfDays = leaveApplication.NoOfDays;
-            leaveApplicationToBeUpdate.DateOfApproval = leaveApplication.DateOfApproval;
-            leaveApplicationToBeUpdate.StatusId = leaveApplication.StatusId;
-            leaveApplicationToBeUpdate.UpdatedDate = leaveApplication.UpdatedDate;
-            leaveApplicationToBeUpdate = leaveApplication;
-            _employeeManagementDataDbContext.LeaveApplications.Update(leaveApplicationToBeUpdate);
+            leaveApplication.EmployeeId = leaveApplication.EmployeeId;
+            leaveApplication.LeaveTypeId = leaveApplication.LeaveTypeId;
+            leaveApplication.DateOfApproval = DateTime.UtcNow;
+            leaveApplication.StartDate = DateTime.UtcNow;
+            leaveApplication.EndDatew = DateTime.UtcNow;
+            leaveApplication.StatusId = leaveApplication.StatusId;
+            leaveApplication.UpdatedDate = DateTime.UtcNow; 
+            _employeeManagementDataDbContext.LeaveApplications.Update(leaveApplication);
             _employeeManagementDataDbContext.SaveChanges();
-            return leaveApplicationToBeUpdate;
+            return leaveApplication;
         }
 
         public async Task DeleteLeaveApplicationAsync(int leaveId)

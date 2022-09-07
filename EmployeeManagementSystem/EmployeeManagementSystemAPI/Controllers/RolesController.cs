@@ -8,9 +8,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class RolesController : ControllerBase
+
+    public class RolesController : ApiControllerBase
     {
         private readonly IRolesService _roleService;
         private readonly IMapper _mapper;
@@ -49,12 +48,12 @@ namespace EmployeeManagementSystemAPI.Controllers
         [HttpPut("{id}")]
         public async Task <ActionResult<Role>> Put(int id, [FromBody] RoleVm roleVm)
         {
-            if (id <= 0 || id != roleVm.RoleId)
+            Role role = _mapper.Map<RoleVm, Role>(roleVm);
+            if (id <= 0 || id != role.RoleId)
             {
                 _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
                 return BadRequest();
             }
-            Role role = _mapper.Map<RoleVm, Role>(roleVm);
             return Ok(await _roleService.UpdateAsync(id, role));
         }
 
