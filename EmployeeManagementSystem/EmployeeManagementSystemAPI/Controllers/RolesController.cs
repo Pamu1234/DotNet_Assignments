@@ -1,4 +1,5 @@
-﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+﻿using AutoMapper;
+using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -7,58 +8,52 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class RolesController : ControllerBase
+
+    public class RolesController : ApiControllerBase
     {
         private readonly IRolesService _roleService;
-        public RolesController(IRolesService roleService)
+        private readonly IMapper _mapper;
+        private readonly ILogger<RolesController> _logger;
+
+        public RolesController(IRolesService roleService, IMapper mapper, ILogger<RolesController> logger)
         {
             _roleService = roleService;
+            _mapper = mapper;
+            _logger = logger;
         }
 
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<Role>>> Post([FromBody] RoleVm roleVm)
+        {
+            _logger.LogInformation("Inserting data to Role entity.");
+            Role role = _mapper.Map<RoleVm, Role>(roleVm);
+            return Ok(await _roleService.CreateAsync(role));
+        }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Role>>>  Get()
         {
-         
+
+            _logger.LogInformation("Getting list of all Role entity.");
             return Ok(await _roleService.GetRolesAsync());
         }
 
         [HttpGet("{id}")]
         public async Task<ActionResult<Role>>  Get(int id)
         {
+            _logger.LogInformation("Getting list of  Role by ID:{id},", id);
             return Ok(await _roleService.GetRoleDataAsync(id));
         }
 
-        // Insert Data
-        [HttpPost]
-        public async Task <ActionResult<IEnumerable<Role>>> Post([FromBody] RoleVm roleVm)
-        {
-            var role = new Role
-            {
-                RoleName = roleVm.RoleName,
-                CreatedBy = roleVm.CreatedBy,
-                CreatedDate = roleVm.CreatedDate,
-                UpdatedBy = roleVm.UpdatedBy,
-                UpdatedDate = roleVm.UpdatedDate
-            };
-            return Ok(await _roleService.CreateAsync(role));
-        }
-
-        // Update Data
         [HttpPut("{id}")]
         public async Task <ActionResult<Role>> Put(int id, [FromBody] RoleVm roleVm)
         {
-            var role = new Role
+            Role role = _mapper.Map<RoleVm, Role>(roleVm);
+            if (id <= 0 || id != role.RoleId)
             {
-                RoleId = roleVm.RoleId,
-                RoleName = roleVm.RoleName,
-                CreatedBy = roleVm.CreatedBy,
-                CreatedDate = roleVm.CreatedDate,
-                UpdatedBy = roleVm.UpdatedBy,
-                UpdatedDate = roleVm.UpdatedDate
-            };
+                _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
+                return BadRequest();
+            }
             return Ok(await _roleService.UpdateAsync(id, role));
         }
 

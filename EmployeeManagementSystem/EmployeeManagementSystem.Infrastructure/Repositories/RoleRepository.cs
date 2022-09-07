@@ -1,16 +1,19 @@
-﻿using EmployeeManagementSystem.Core.Dtos;
+﻿using Dapper;
+using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
-using EmployeeManagementSystem.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
+using System.Data;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
     public class RoleRepository : IRoleRepository
     {
-        private readonly EmployeeManagementDataDbContext _employeeManagementDataDbContext;
-        public RoleRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext)
+        private readonly EmployeemanagementDbContext _employeeManagementDataDbContext;
+        private readonly IDbConnection _dapperConnection;
+
+        public RoleRepository(EmployeemanagementDbContext employeeManagementDataDbContext, IDbConnection dbConnection)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
+            _dapperConnection = dbConnection;
         }
 
         public async Task<Role> CreateAsync(Role role)
@@ -22,33 +25,30 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<RoleDto>> GetRolesAsync()
         {
-            var rolesData = await (from role in _employeeManagementDataDbContext.Roles
-                                   select new RoleDto()
-                                   {
-                                       RoleId = role.RoleId,
-                                       CreatedBy = role.CreatedBy,
 
-                                   }).ToListAsync();
-            return rolesData;
+            var roleDataQuery = "select * from Roles";
+            var result = await _dapperConnection.QueryAsync<RoleDto>(roleDataQuery);
+            return result;
         }
 
         public async Task<Role> GetRoleDataAsync(int roleId)
         {
-            return await _employeeManagementDataDbContext.Roles.FindAsync(roleId);
+            var getRoleDataByIdQuery = "select * from Roles where RoleId = @roleId";
+            return await _dapperConnection.QueryFirstOrDefaultAsync<Role>(getRoleDataByIdQuery, new { roleId });
         }
 
         public async Task<Role> UpdateAsync(int roleId, Role role)
         {
             var roleToBeUpdate = await GetRoleDataAsync(roleId);
-            roleToBeUpdate.RoleId = role.RoleId;
-            roleToBeUpdate.RoleName = role.RoleName;
-            roleToBeUpdate.CreatedBy = role.CreatedBy;
-            roleToBeUpdate.CreatedDate = role.CreatedDate;
-            roleToBeUpdate.UpdatedBy = role.UpdatedBy;
-            roleToBeUpdate.UpdatedDate = role.UpdatedDate;
-            _employeeManagementDataDbContext.Roles.Update(roleToBeUpdate);
+            role.RoleId = role.RoleId;
+            role.RoleName = role.RoleName;
+            role.CreatedBy = role.CreatedBy;
+            role.CreatedDate = role.CreatedDate;
+            role.UpdatedBy = role.UpdatedBy;
+            role.UpdatedDate = role.UpdatedDate;
+            _employeeManagementDataDbContext.Roles.Update(role);
             _employeeManagementDataDbContext.SaveChanges();
-            return roleToBeUpdate;
+            return role;
         }
 
         public async Task DeleteRoleAsync(int roleId)

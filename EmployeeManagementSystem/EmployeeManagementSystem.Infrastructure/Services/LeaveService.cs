@@ -28,7 +28,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
            return _leaveRepository.DeleteLeaveAsync(leaveId);
         }
 
-        public Task<Leave> GetLeaveDataAsync(int leaveId)
+        public  Task<Leave> GetLeaveDataAsync(int leaveId)
         {
             return _leaveRepository.GetLeaveDataAsync(leaveId);
         }

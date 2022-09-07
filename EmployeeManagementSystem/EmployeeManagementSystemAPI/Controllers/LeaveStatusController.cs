@@ -1,4 +1,5 @@
-﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+﻿using AutoMapper;
+using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -7,53 +8,59 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class LeaveStatusController : ControllerBase
+
+    public class LeaveStatusController : ApiControllerBase
     {
         private readonly ILeaveStatusService _leaveStatusService;
-        public LeaveStatusController(ILeaveStatusService leaveStatusService)
+        private readonly IMapper _mapper;
+        private readonly ILogger<LeaveStatusController> _logger;
+
+        public LeaveStatusController(ILeaveStatusService leaveStatusService, IMapper mapper, ILogger<LeaveStatusController> logger)
         {
             _leaveStatusService = leaveStatusService;
+            _mapper = mapper;
+            _logger = logger;
         }
 
+        [HttpPost]
+        public async Task<ActionResult<IEnumerable<LeaveStatus>>> Post([FromBody] LeaveStatusVm leaveStatusVm)
+        {
+            _logger.LogInformation("Inserting data to LeaveStatus entity.");
+            LeaveStatus leaveStatus = _mapper.Map<LeaveStatusVm, LeaveStatus>(leaveStatusVm);
+            return Ok(await _leaveStatusService.CreateAsync(leaveStatus));
+        }
 
         [HttpGet]
         public async  Task<ActionResult<IEnumerable<LeaveStatus>>> Get()
         {
+            _logger.LogInformation("Getting list of all LeaveStatus.");
             return Ok(await _leaveStatusService.GetLeavesStatusAsync());
         }
 
         [HttpGet("{id}")]
         public async Task <ActionResult<LeaveStatus>> Get(int id)
         {
-            return Ok(await _leaveStatusService.GetLeaveStatusDataByIdAsync(id));
-        }
+            _logger.LogInformation("Getting list of  LeaveStatus by ID:{id},", id);
 
-        // POST api/<LeaveStatusController>
-        [HttpPost]
-        public async Task<ActionResult<IEnumerable<LeaveStatus>>> Post([FromBody] LeaveStatusVm leaveStatusVm)
-        {
-            var leaveStatus = new LeaveStatus
-            {
-                Description = leaveStatusVm.Description,
-                Status = leaveStatusVm.Status,
-            };
-            return Ok(await _leaveStatusService.CreateAsync(leaveStatus));
+            var result = await _leaveStatusService.GetLeaveStatusDataByIdAsync(id);
+            if (result is null)
+                return NotFound();
+            return Ok(result);
         }
 
         [HttpPut("{id}")]
         public async Task <ActionResult<LeaveStatus>> Put(int id, [FromBody] LeaveStatusVm leaveStatusVm)
         {
-            var leaveUpdate = new LeaveStatus
+            LeaveStatus leaveStatus = _mapper.Map<LeaveStatusVm, LeaveStatus>(leaveStatusVm);
+            if (id <= 0 || id != leaveStatus.StatusId)
             {
-                Description = leaveStatusVm.Description,
-                Status = leaveStatusVm.Status,
-            };
-            return Ok(await _leaveStatusService.UpdateAsync(id,leaveUpdate));
+                _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
+                return BadRequest();
+            }
+
+            return Ok(await _leaveStatusService.UpdateAsync(id, leaveStatus));
         }
 
-        // DELETE api/<LeaveStatusController>/5
         [HttpDelete("{id}")]
         public async Task Delete(int id)
         {

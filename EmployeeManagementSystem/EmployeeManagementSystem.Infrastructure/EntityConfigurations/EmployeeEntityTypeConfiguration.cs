@@ -14,8 +14,8 @@ namespace EmployeeManagementSystem.Infrastructure.EntityConfigurations
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
             builder.Property(e => e.Address)
-                .HasMaxLength(200)
-                .IsUnicode(false);
+                    .HasMaxLength(200)
+                    .IsUnicode(false);
 
             builder.Property(e => e.Contact)
                 .HasMaxLength(50)

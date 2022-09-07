@@ -8,8 +8,11 @@ namespace EmployeeManagementSystem.Core.Dtos
 {
     public class LeaveDto
     {
+        public int LeaveTypeId { get; set; }
         public string LeaveTypeName { get; set; } = null!;
         public string? Description { get; set; }
+        public int NoOfDays { get; set; }
+
 
     }
 }

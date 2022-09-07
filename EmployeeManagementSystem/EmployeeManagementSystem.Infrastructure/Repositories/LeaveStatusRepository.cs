@@ -1,21 +1,19 @@
-﻿using EmployeeManagementSystem.Core.Dtos;
+﻿using Dapper;
+using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
-using EmployeeManagementSystem.Infrastructure.Data;
-using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
     public class LeaveStatusRepository : ILeaveStatusRepository
     {
-        private readonly EmployeeManagementDataDbContext _employeeManagementDataDbContext;
-        public LeaveStatusRepository(EmployeeManagementDataDbContext employeeManagementDataDbContext)
+        private readonly EmployeemanagementDbContext _employeeManagementDataDbContext;
+        private readonly IDbConnection _dapperConnection;
+
+        public LeaveStatusRepository(EmployeemanagementDbContext employeeManagementDataDbContext, IDbConnection dbConnection)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
+            _dapperConnection = dbConnection;
         }
         public async Task<LeaveStatus> CreateAsync(LeaveStatus leaveStatus)
         {
@@ -26,30 +24,26 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<LeaveStatusDto>> GetLeavesStatusAsync()
         {
-            var leavesStatusData = await (from leaveStatus in _employeeManagementDataDbContext.LeaveStatuses
-                                          select new LeaveStatusDto()
-                                          {
-                                              StatusId = leaveStatus.StatusId,
-                                              Description = leaveStatus.Description,
-                                              Status = leaveStatus.Status,
-                                          }).ToListAsync();
-            return leavesStatusData;
+            var leaveStatusDataQuery = "select * from LeaveStatus";
+            var result = await _dapperConnection.QueryAsync<LeaveStatusDto>(leaveStatusDataQuery);
+            return result;
         }
 
         public async Task<LeaveStatus> GetLeaveStatusDataByIdAsync(int leaveStatusId)
         {
-            return await _employeeManagementDataDbContext.LeaveStatuses.FindAsync(leaveStatusId);
+            var leaveStatusDataByIdQuery = "select * from LeaveStatus where StatusId = @leaveStatusId";
+            return await _dapperConnection.QueryFirstOrDefaultAsync<LeaveStatus>(leaveStatusDataByIdQuery, new { leaveStatusId });
         }
 
         public async Task<LeaveStatus> UpdateAsync(int leaveStatusId, LeaveStatus leaveStatus)
         {
             var leaveStatusToBeUpdate = await GetLeaveStatusDataByIdAsync(leaveStatusId);
-            leaveStatusToBeUpdate.StatusId = leaveStatus.StatusId;
-            leaveStatusToBeUpdate.Description = leaveStatus.Description;
-            leaveStatusToBeUpdate.Status = leaveStatus.Status;
-            _employeeManagementDataDbContext.LeaveStatuses.Update(leaveStatusToBeUpdate);
+            leaveStatus.StatusId = leaveStatus.StatusId;
+            leaveStatus.Description = leaveStatus.Description;
+            leaveStatus.Status = leaveStatus.Status;
+            _employeeManagementDataDbContext.LeaveStatuses.Update(leaveStatus);
             _employeeManagementDataDbContext.SaveChanges();
-            return leaveStatusToBeUpdate;
+            return leaveStatus;
         }
 
         public async Task DeleteLeaveAsync(int leaveStatusId)

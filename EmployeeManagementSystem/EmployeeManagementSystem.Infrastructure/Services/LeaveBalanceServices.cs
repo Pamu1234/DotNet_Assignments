@@ -13,9 +13,12 @@ namespace EmployeeManagementSystem.Infrastructure.Services
     public class LeaveBalanceServices : ILeaveBalanceService
     {
         private readonly ILeaveBalanceRepository _leaveBalanceRepository;
-        public LeaveBalanceServices(ILeaveBalanceRepository leaveBalanceRepository)
+        private readonly EmployeemanagementDbContext _employeeManagementDataDbContext;
+
+        public LeaveBalanceServices(ILeaveBalanceRepository leaveBalanceRepository, EmployeemanagementDbContext employeemanagementDbContext)
         {
             _leaveBalanceRepository = leaveBalanceRepository;
+            _employeeManagementDataDbContext = employeemanagementDbContext;
         }
 
         public Task<LeaveBalance> CreateAsync(LeaveBalance leaveBalance)
@@ -35,7 +38,23 @@ namespace EmployeeManagementSystem.Infrastructure.Services
 
         public Task<IEnumerable<LeaveBalanceDto>> GetLeavesBalanceAsync()
         {
+
             return _leaveBalanceRepository.GetLeavesBalanceAsync();
+        }
+
+        public Task<IEnumerable<LeaveBalance>> GetRemainingLeavesByEmpId(int empId)
+        {
+            //var leaveBalancesOfEmployee = (from emp in _employeeManagementDataDbContext.Employees
+            //                               join LeaveBalance in _employeeManagementDataDbContext.LeaveBalances
+            //                               on emp.EmployeeId equals LeaveBalance.EmployeeId
+            //                               where LeaveBalance.EmployeeId == empId
+            //                               select new LeaveBalanceDto
+            //                               {
+            //                                   Balance = LeaveBalance.Balance,
+            //                                   EmployeeId = empId,
+
+            //                               }).FirstOrDefault();
+            return _leaveBalanceRepository.GetRemainingLeavesByEmpId(empId);
         }
 
         public Task<LeaveBalance> UpdateAsync(int leaveBalanceId, LeaveBalance leaveBalance)

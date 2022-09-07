@@ -8,7 +8,6 @@ namespace EmployeeManagementSystem.Core.Dtos
 {
     public class LeaveStatusDto
     {
-        public int StatusId { get; set; }
         public string Status { get; set; } = null!;
         public string? Description { get; set; }
     }

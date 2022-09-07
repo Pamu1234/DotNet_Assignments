@@ -5,6 +5,7 @@ namespace EmployeeManagementSystem.Core.Entities
 {
     public partial class LeaveApplication
     {
+        public int LeaveApplicationId { get; set; }
         public int? EmployeeId { get; set; }
         public int? LeaveTypeId { get; set; }
         public DateTime StartDate { get; set; }

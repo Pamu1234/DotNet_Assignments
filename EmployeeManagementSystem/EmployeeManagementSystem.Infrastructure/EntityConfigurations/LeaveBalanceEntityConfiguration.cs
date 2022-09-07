@@ -15,21 +15,15 @@ namespace EmployeeManagementSystem.Infrastructure.EntityConfigurations
         {
             builder.ToTable("LeaveBalance");
 
-            builder.HasIndex(e => e.LeaveTypeId, "UQ__LeaveBal__43BE8F15AD7316DB")
-                .IsUnique();
-
-            builder.HasIndex(e => e.EmployeeId, "UQ__LeaveBal__7AD04F104C4CD26D")
-                .IsUnique();
-
             builder.HasOne(d => d.Employee)
-                .WithOne(p => p.LeaveBalance)
-                .HasForeignKey<LeaveBalance>(d => d.EmployeeId)
-                .HasConstraintName("FK__LeaveBala__Emplo__5629CD9C");
+                .WithMany(p => p.LeaveBalances)
+                .HasForeignKey(d => d.EmployeeId)
+                .HasConstraintName("FK__LeaveBala__Emplo__403A8C7D");
 
-            builder.HasOne(d => d.Leave)
-                .WithOne(p => p.LeaveBalance)
-                .HasForeignKey<LeaveBalance>(d => d.LeaveTypeId)
-                .HasConstraintName("FK__LeaveBala__Leave__571DF1D5");
+            builder.HasOne(d => d.LeaveType)
+                .WithMany(p => p.LeaveBalances)
+                .HasForeignKey(d => d.LeaveTypeId)
+                .HasConstraintName("FK__LeaveBala__Leave__412EB0B6");
         }
     }
 }

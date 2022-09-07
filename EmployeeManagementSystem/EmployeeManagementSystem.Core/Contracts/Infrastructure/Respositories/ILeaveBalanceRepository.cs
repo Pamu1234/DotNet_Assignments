@@ -5,6 +5,7 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
     public interface ILeaveBalanceRepository
     {
+        Task<IEnumerable<LeaveBalance>> GetRemainingLeavesByEmpId(int empId);
         Task<LeaveBalance> CreateAsync(LeaveBalance leaveBalance);
         Task DeleteLeaveBalanceDataByIdAsync(int leaveBalanceId);
         Task<LeaveBalance> GetLeaveBalanceDataByIdAsync(int leaveBalanceId);

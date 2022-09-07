@@ -1,4 +1,5 @@
-﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+﻿using AutoMapper;
+using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -7,74 +8,59 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class LeaveApplicationsController : ControllerBase
+
+    public class LeaveApplicationsController : ApiControllerBase
     {
         private readonly ILeaveApplicationService _leaveApplicationService;
-        public LeaveApplicationsController(ILeaveApplicationService leaveApplicationService)
+        private readonly IMapper _mapper;
+        private readonly ILogger<LeaveApplicationsController> _logger;
+
+        public LeaveApplicationsController(ILeaveApplicationService leaveApplicationService, IMapper mapper, ILogger<LeaveApplicationsController> logger)
         {
             _leaveApplicationService = leaveApplicationService;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<LeaveApplication>>> Get()
-        {
-            var result = await _leaveApplicationService.GetLeaveApplicationAsync();
-            return Ok(result);
-        }
-
-        // GET api/<LeaveApplicationsController>/5
-        [HttpGet("{id}")]
-        public async Task <ActionResult<LeaveApplication>> Get(int id)
-        {
-            var result = await _leaveApplicationService.GetLeaveDataByIdAsync(id);
-            return Ok(result);
+            _mapper = mapper;
+            _logger = logger;
         }
 
         [HttpPost]
         public async Task<ActionResult<LeaveApplication>> Post([FromBody] LeaveApplicationVm leaveApplicationVm)
         {
-            var leaveApplication = new LeaveApplication
-            {
-                EmployeeId = leaveApplicationVm.EmployeeId,
-                LeaveTypeId = leaveApplicationVm.LeaveTypeId,
-                StartDate = leaveApplicationVm.StartDate,
-                EndDatew=leaveApplicationVm.EndDatew,
-                Purpose = leaveApplicationVm.Purpose,
-                NoOfDays = leaveApplicationVm.NoOfDays,
-                DateOfApplication = leaveApplicationVm.DateOfApplication,
-                DateOfApproval = leaveApplicationVm.DateOfApproval,
-                StatusId = leaveApplicationVm.StatusId,
-                CreatedDate = leaveApplicationVm.CreatedDate,
-                UpdatedDate = leaveApplicationVm.UpdatedDate
-            };
-            var result = await _leaveApplicationService.CreateAsync(leaveApplication);
+            _logger.LogInformation("Inserting data to leaveApplication entity.");
+            var leaveApplication = _mapper.Map<LeaveApplicationVm, LeaveApplication>(leaveApplicationVm);
+            return Ok(await _leaveApplicationService.CreateAsync(leaveApplication));
+        }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<LeaveApplication>>> Get()
+        {
+            _logger.LogInformation("Getting list of all leaveApplication entity.");
+            var result = await _leaveApplicationService.GetLeaveApplicationAsync();
             return Ok(result);
         }
 
-        // PUT api/<LeaveApplicationsController>/5
+        [HttpGet("{id}")]
+        public async Task <ActionResult<LeaveApplication>> Get(int id)
+        {
+            _logger.LogInformation("Getting list of  leaveApplication by ID:{id},", id);
+            var result = await _leaveApplicationService.GetLeaveDataByIdAsync(id);
+            if (result is null)
+                return NotFound();
+            return Ok(result);
+
+        }
+
         [HttpPut("{id}")]
         public async Task<ActionResult<IEnumerable<LeaveApplication>>> Put(int id, [FromBody] LeaveApplicationVm leaveApplicationVm)
         {
-            var leaveApplication = new LeaveApplication
+            if (id <= 0 || id != leaveApplicationVm.LeaveTypeId)
             {
-                EmployeeId = leaveApplicationVm.EmployeeId,
-                LeaveTypeId = leaveApplicationVm.LeaveTypeId,
-                StartDate = leaveApplicationVm.StartDate,
-                EndDatew = leaveApplicationVm.EndDatew,
-                Purpose = leaveApplicationVm.Purpose,
-                NoOfDays = leaveApplicationVm.NoOfDays,
-                DateOfApplication = leaveApplicationVm.DateOfApplication,
-                DateOfApproval = leaveApplicationVm.DateOfApproval,
-                StatusId = leaveApplicationVm.StatusId,
-                UpdatedDate = leaveApplicationVm.UpdatedDate
-            };
-            var result = await _leaveApplicationService.UpdateAsync(id,leaveApplication);
-            return Ok(result);
+                _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
+                return BadRequest();
+            }
+            LeaveApplication leaveApplication = _mapper.Map<LeaveApplicationVm, LeaveApplication>(leaveApplicationVm);
+            return Ok(await _leaveApplicationService.UpdateAsync(id, leaveApplication));
         }
 
-        // DELETE api/<LeaveApplicationsController>/5
         [HttpDelete("{id}")]
         public async Task Delete(int id)
         {

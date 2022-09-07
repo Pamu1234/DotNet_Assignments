@@ -2,11 +2,6 @@
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Repositories.EntityFramework;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeManagementSystem.Infrastructure.Services
 {
@@ -31,6 +26,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
 
         public Task<Department> GetDepartmentAsync(int departmentId)
         {
+
             return _departmentRepository.GetDepartmentAsync(departmentId);
         }
 
@@ -43,5 +39,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
         {
             return _departmentRepository.DeleteDepartmentAsync(departmentId);
         }
+
+ 
     }
 }

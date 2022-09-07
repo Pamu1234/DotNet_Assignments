@@ -6,6 +6,12 @@ namespace EmployeeManagementSystem.Core.Entities
 {
     public partial class Leave
     {
+        public Leave()
+        {
+            LeaveApplications = new HashSet<LeaveApplication>();
+            LeaveBalances = new HashSet<LeaveBalance>();
+        }
+
         public int LeaveTypeId { get; set; }
         public string LeaveTypeName { get; set; } = null!;
         public string? Description { get; set; }
@@ -13,7 +19,9 @@ namespace EmployeeManagementSystem.Core.Entities
         public DateTime CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
+        public int NoOfDays { get; set; }
 
-        public virtual LeaveBalance? LeaveBalance { get; set; }
+        public virtual ICollection<LeaveApplication> LeaveApplications { get; set; }
+        public virtual ICollection<LeaveBalance> LeaveBalances { get; set; }
     }
 }

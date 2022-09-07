@@ -1,4 +1,5 @@
-﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+﻿using AutoMapper;
+using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -7,37 +8,44 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers
 {
-    [Route("[controller]")]
-    [ApiController]
-    public class DepartmentsController : ControllerBase
+
+    public class DepartmentsController : ApiControllerBase
     {
         private readonly IDepartmentService _departmentService;
-        public DepartmentsController(IDepartmentService departmentService)
+        private readonly IMapper _mapper;
+        private readonly ILogger<DepartmentsController> _logger;
+        public DepartmentsController(IDepartmentService departmentService, IMapper mapper, ILogger<DepartmentsController> logger)
         {
             _departmentService = departmentService;
+            _mapper = mapper;
+            _logger = logger;
+        }
+
+        // Insert 
+        [HttpPost]
+        public async Task<ActionResult<Department>> Post([FromBody] DepartmentVm departmentVm)
+        {
+            _logger.LogInformation("Inserting data to department entity.");
+            var  department = _mapper.Map<DepartmentVm, Department>(departmentVm);
+            return Ok(await _departmentService.CreateAsync(department));
+
         }
 
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Department>>> Get()
         {
+            _logger.LogInformation("Getting list of all departments.");
             var result = await _departmentService.GetDepartmentsAsync();
             return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Department>>  Get(int id)
+        public async Task<ActionResult<IEnumerable<Department>>>  Get(int id)
         {
+            _logger.LogInformation("Getting list of  department by ID:{id},", id);
             var result = await _departmentService.GetDepartmentAsync(id);
-            return Ok(result);
-        }
-
-        // Insert 
-        [HttpPost]
-        public async Task<ActionResult<Employee>> Post([FromBody] DepartmentVm departmentVm)
-        {
-            var department = new Department { 
-                DepartmentName = departmentVm.DepartmentName, Description = departmentVm.Description, CreatedBy = departmentVm.CreatedBy, CreatedDate = departmentVm.CreatedDate, UpdatedBy = departmentVm.UpdatedBy, UpdatedDate = departmentVm.UpdatedDate};
-            var result = await _departmentService.CreateAsync(department);
+            if (result is null)
+                return NotFound();
             return Ok(result);
         }
 
@@ -45,18 +53,14 @@ namespace EmployeeManagementSystemAPI.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<Department>> Put(int id, [FromBody] DepartmentVm departmentVm)
         {
-            var department = new Department
+            Department department = _mapper.Map<DepartmentVm, Department>(departmentVm);
+            if (id <= 0 || id != department.DepartmentId)
             {
-                DepartmentId = (int)departmentVm.DepartmentId,
-                DepartmentName = departmentVm.DepartmentName,
-                Description = departmentVm.Description,
-                CreatedBy = departmentVm.CreatedBy,
-                CreatedDate = departmentVm.CreatedDate,
-                UpdatedBy = departmentVm.UpdatedBy,
-                UpdatedDate = departmentVm.UpdatedDate
-            };
-            var result = await _departmentService.UpdateAsync(id, department);
-            return Ok(result);
+                _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
+                return BadRequest();
+            }
+
+            return Ok(await _departmentService.UpdateAsync(id, department));
         }
 
         [HttpDelete("{id}")]
