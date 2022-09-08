@@ -8,7 +8,7 @@ namespace EmployeeManagementSystem.Core.Dtos
 {
     public class LeaveBalanceDto
     {
-        public string? LeaveType { get; set; }
+        public string LeaveType { get; set; }
         public int EmployeeId { get; set; }
         public int Balance { get; set; }
     }

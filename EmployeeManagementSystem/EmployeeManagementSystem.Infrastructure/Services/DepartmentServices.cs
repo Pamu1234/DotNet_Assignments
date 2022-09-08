@@ -24,7 +24,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return _departmentRepository.GetDepartmentsAsync();
         }
 
-        public Task<Department> GetDepartmentAsync(int departmentId)
+        public Task<DepartmentDto> GetDepartmentAsync(int departmentId)
         {
 
             return _departmentRepository.GetDepartmentAsync(departmentId);

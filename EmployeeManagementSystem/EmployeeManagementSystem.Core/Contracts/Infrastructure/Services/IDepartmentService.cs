@@ -8,7 +8,7 @@ namespace EmployeeManagementSystem.Core.Contracts.Infrastructure.Services
         //Task CreateRangeAsync(IEnumerable<Department> departments);
         Task<Department> CreateAsync(Department department);
         Task DeleteDepartmentAsync(int departmentId);
-        Task<Department> GetDepartmentAsync(int departmentId);
+        Task<DepartmentDto> GetDepartmentAsync(int departmentId);
         Task<IEnumerable<DepartmentDto>> GetDepartmentsAsync();
         Task<Department> UpdateAsync(int departmentId, Department department);
     }

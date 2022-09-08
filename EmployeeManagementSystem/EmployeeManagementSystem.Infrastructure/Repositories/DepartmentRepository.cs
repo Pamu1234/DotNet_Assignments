@@ -36,10 +36,10 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<Department> GetDepartmentAsync(int departmentId)
+        public async Task<DepartmentDto> GetDepartmentAsync(int departmentId)
         {
-            var getDepartmentQueryById = "select * from Departments where DepartmentId = @departmentId";
-            return await _dapperConnection.QueryFirstOrDefaultAsync<Department>(getDepartmentQueryById, new { departmentId });
+            var getDepartmentQueryById = "SELECT * FROM Departments where DepartmentId = @departmentId";
+            return await _dapperConnection.QueryFirstOrDefaultAsync<DepartmentDto>(getDepartmentQueryById, new { departmentId });
         }
         public async Task<Department> UpdateAsync(int departmentId, Department department)
         {
@@ -47,8 +47,8 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             department.UpdatedBy = 1;
             department.UpdatedDate = DateTime.UtcNow;
             department.DepartmentId = departmentId;
-            department.CreatedBy = departmentToBeUpdatet.CreatedBy;
-            department.CreatedDate = departmentToBeUpdatet.CreatedDate;
+            //department.CreatedBy = departmentToBeUpdatet.CreatedBy;
+            //department.CreatedDate = departmentToBeUpdatet.CreatedDate;
             _employeeManagementDataDbContext.Departments.Update(department);
             _employeeManagementDataDbContext.SaveChanges();
             return department;
@@ -57,7 +57,7 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         public async Task DeleteDepartmentAsync(int departmentId)
         {
             var departmentToBeDeleted = await GetDepartmentAsync(departmentId);
-            _employeeManagementDataDbContext.Departments.Remove(departmentToBeDeleted);
+            //_employeeManagementDataDbContext.Departments.Remove(departmentToBeDeleted);
             await _employeeManagementDataDbContext.SaveChangesAsync();
         }
 

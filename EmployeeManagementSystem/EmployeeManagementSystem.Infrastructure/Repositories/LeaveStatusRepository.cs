@@ -46,12 +46,12 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             return leaveStatus;
         }
 
-        public async Task DeleteLeaveAsync(int leaveStatusId)
-        {
-            var leaveStatusToBeDeleted = await GetLeaveStatusDataByIdAsync(leaveStatusId);
-            _employeeManagementDataDbContext.LeaveStatuses.Remove(leaveStatusToBeDeleted);
-            await _employeeManagementDataDbContext.SaveChangesAsync();
-        }
+        //public async Task DeleteLeaveAsync(int leaveStatusId)
+        //{
+        //    var leaveStatusToBeDeleted = await GetLeaveStatusDataByIdAsync(leaveStatusId);
+        //    _employeeManagementDataDbContext.LeaveStatuses.Remove(leaveStatusToBeDeleted);
+        //    await _employeeManagementDataDbContext.SaveChangesAsync();
+        //}
 
     }
 }

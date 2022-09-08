@@ -1,4 +1,5 @@
-﻿using System;
+﻿using EmployeeManagementSystem.Core.Enum;
+using System;
 using System.Collections.Generic;
 
 namespace EmployeeManagementSystem.Core.Entities
@@ -19,6 +20,7 @@ namespace EmployeeManagementSystem.Core.Entities
         public DateTime CreatedDate { get; set; }
         public int? UpdatedBy { get; set; }
         public DateTime? UpdatedDate { get; set; }
+       // public LeaveAprovalStatus? LeaveStatus { get; set; } = 0;
 
         public virtual Employee? Employee { get; set; }
         public virtual Leave? LeaveType { get; set; }

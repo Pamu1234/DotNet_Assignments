@@ -9,10 +9,13 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
     {
         private readonly EmployeemanagementDbContext _employeeManagementDataDbContext;
         private readonly IDbConnection _dapperConnection;
-        public LeaveBalanceRepository(EmployeemanagementDbContext employeeManagementDataDbContext,IDbConnection dbConnection)
+        private readonly ILeaveRepository _leaveRepository;
+
+        public LeaveBalanceRepository(EmployeemanagementDbContext employeeManagementDataDbContext,IDbConnection dbConnection,ILeaveRepository leaveRepository)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
             _dapperConnection = dbConnection;
+            _leaveRepository = leaveRepository;
         }
 
         public async Task<LeaveBalance> CreateAsync(LeaveBalance leaveBalance)
@@ -22,10 +25,17 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             return leaveBalance;
         }
 
-        public async Task<IEnumerable<LeaveBalanceDto>> GetLeavesBalanceAsync()
+        public async Task CreateRangeAsync(IEnumerable<LeaveBalance> leaveBalances)
         {
-            var getLeaveBalanceDataQuery = "select * from LeaveBalance";
-            var result = await _dapperConnection.QueryAsync<LeaveBalanceDto>(getLeaveBalanceDataQuery);
+            _employeeManagementDataDbContext.LeaveBalances.AddRange(leaveBalances);
+            await _employeeManagementDataDbContext.SaveChangesAsync();
+
+        }
+
+        public async Task<IEnumerable<LeaveBalance>> GetLeavesBalanceAsync()
+        {
+            var getLeaveBalanceDataQuery = "select * from LeaveBalance ";
+            var result = await _dapperConnection.QueryAsync<LeaveBalance>(getLeaveBalanceDataQuery);
             return result;
         }
 
@@ -34,7 +44,20 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             var getLeaveBalanceDataByIdQuery = "select * from LeaveBalance where LeaveBalanceId = @leaveBalanceId";
             return await _dapperConnection.QueryFirstOrDefaultAsync<LeaveBalance>(getLeaveBalanceDataByIdQuery, new { leaveBalanceId });
         }
-
+        //public async Task<IEnumerable<LeaveBalanceDto>> GetLeavesDetails()
+        //{
+        //    var leaveData = from leaveBalance in _employeeManagementDataDbContext.LeaveBalances
+        //                    join leave in _employeeManagementDataDbContext.Leaves
+        //                    on leaveBalance.LeaveTypeId equals leave.LeaveTypeId
+        //                    join Employee in _employeeManagementDataDbContext.Employees
+        //                    on 
+        //                    select new LeaveBalanceDto()
+        //                    {
+        //                        Balance = leaveBalance.Balance,
+        //                        EmployeeId = leaveBalance.Employee.EmployeeId,
+        //                          LeaveType = leave.LeaveTypeName,
+        //                    };
+        //}
         public async Task<IEnumerable<LeaveBalance>> GetRemainingLeavesByEmpId(int empId)
         {
             var remainingLeaves = "select * from LeaveBalance where EmployeeId=@empId";
@@ -59,5 +82,6 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             _employeeManagementDataDbContext.LeaveBalances.Remove(leaveBalanceToBeDeleted);
             await _employeeManagementDataDbContext.SaveChangesAsync();
         }
+
     }
 }
