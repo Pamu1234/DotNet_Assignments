@@ -1,5 +1,4 @@
-﻿using EmployeeManagementSystem.Core.Entities;
-using System;
+﻿using System;
 using System.Collections.Generic;
 
 namespace EmployeeManagementSystem.Core.Entities

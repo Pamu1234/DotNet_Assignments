@@ -26,7 +26,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         {
             _logger.LogInformation("Inserting data to LeaveBalance entity.");
             LeaveBalance leaveBalance = _mapper.Map<LeaveBalanceVm, LeaveBalance>(leaveBalanceVm);
-            return Ok(await _leaveBalanceService.CreateAsync(leaveBalance));
+            return Ok(await _leaveBalanceService.CreateRangeAsync(leaveBalance));
 
         }
 
@@ -57,13 +57,13 @@ namespace EmployeeManagementSystemAPI.Controllers
         [HttpPut("{id}")]
         public async Task <ActionResult<IEnumerable<LeaveBalance>>>  Put(int id, [FromBody] LeaveBalanceVm leaveBalanceVm)
         {
-            if (id <= 0 || id != leaveBalanceVm.LeaveTypeId)
+            LeaveBalance leaveBalance = _mapper.Map<LeaveBalanceVm, LeaveBalance>(leaveBalanceVm);
+            if (id <= 0 || id != leaveBalance.LeaveTypeId)
             {
                 _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
                 return BadRequest();
             }
 
-            LeaveBalance leaveBalance = _mapper.Map<LeaveBalanceVm, LeaveBalance>(leaveBalanceVm);
             return Ok(await _leaveBalanceService.UpdateAsync(id, leaveBalance));           
         }
 

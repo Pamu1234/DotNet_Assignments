@@ -21,7 +21,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             _employeeManagementDataDbContext = employeemanagementDbContext;
         }
 
-        public Task<LeaveBalance> CreateAsync(LeaveBalance leaveBalance)
+        public Task<LeaveBalance> CreateRangeAsync(LeaveBalance leaveBalance)
         {
             return _leaveBalanceRepository.CreateAsync(leaveBalance);
         }
@@ -36,11 +36,14 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return _leaveBalanceRepository.GetLeaveBalanceDataByIdAsync(leaveBalanceId);
         }
 
-        public Task<IEnumerable<LeaveBalanceDto>> GetLeavesBalanceAsync()
+        public async Task<IEnumerable<LeaveBalance>> GetLeavesBalanceAsync()
         {
 
-            return _leaveBalanceRepository.GetLeavesBalanceAsync();
+            var leaveBalance = await _leaveBalanceRepository.GetLeavesBalanceAsync();
+            return leaveBalance;
+
         }
+
 
         public Task<IEnumerable<LeaveBalance>> GetRemainingLeavesByEmpId(int empId)
         {

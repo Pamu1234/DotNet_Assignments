@@ -7,9 +7,11 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
     {
         Task<IEnumerable<LeaveBalance>> GetRemainingLeavesByEmpId(int empId);
         Task<LeaveBalance> CreateAsync(LeaveBalance leaveBalance);
+        Task CreateRangeAsync(IEnumerable<LeaveBalance> leaveBalances);
         Task DeleteLeaveBalanceDataByIdAsync(int leaveBalanceId);
         Task<LeaveBalance> GetLeaveBalanceDataByIdAsync(int leaveBalanceId);
-        Task<IEnumerable<LeaveBalanceDto>> GetLeavesBalanceAsync();
+        Task<IEnumerable<LeaveBalance>> GetLeavesBalanceAsync();
         Task<LeaveBalance> UpdateAsync(int leaveBalanceId, LeaveBalance leaveBalance);
+        
     }
 }

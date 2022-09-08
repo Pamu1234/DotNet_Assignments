@@ -52,12 +52,12 @@ namespace EmployeeManagementSystemAPI.Controllers
         [HttpPut("{id}")]
         public async Task<ActionResult<IEnumerable<LeaveApplication>>> Put(int id, [FromBody] LeaveApplicationVm leaveApplicationVm)
         {
-            if (id <= 0 || id != leaveApplicationVm.LeaveTypeId)
+            LeaveApplication leaveApplication = _mapper.Map<LeaveApplicationVm, LeaveApplication>(leaveApplicationVm);
+            if (id <= 0 || id != leaveApplication.LeaveTypeId)
             {
                 _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
                 return BadRequest();
             }
-            LeaveApplication leaveApplication = _mapper.Map<LeaveApplicationVm, LeaveApplication>(leaveApplicationVm);
             return Ok(await _leaveApplicationService.UpdateAsync(id, leaveApplication));
         }
 
