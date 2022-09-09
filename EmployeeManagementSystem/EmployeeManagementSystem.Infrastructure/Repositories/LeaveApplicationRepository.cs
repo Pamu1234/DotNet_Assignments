@@ -44,9 +44,8 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             leaveApplication.LeaveTypeId = leaveApplication.LeaveTypeId;
             leaveApplication.DateOfApproval = DateTime.UtcNow;
             leaveApplication.StartDate = DateTime.UtcNow;
-            leaveApplication.EndDatew = DateTime.UtcNow;
+            leaveApplication.EndDate = DateTime.UtcNow;
             leaveApplication.StatusId = leaveApplication.StatusId;
-            leaveApplication.UpdatedDate = DateTime.UtcNow; 
             _employeeManagementDataDbContext.LeaveApplications.Update(leaveApplication);
             _employeeManagementDataDbContext.SaveChanges();
             return leaveApplication;

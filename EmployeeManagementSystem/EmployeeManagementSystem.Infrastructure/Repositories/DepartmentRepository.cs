@@ -3,6 +3,7 @@ using Dapper;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Repositories.EntityFramework;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
@@ -27,18 +28,16 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             return department;
 
         }
-
-
         public async Task<IEnumerable<DepartmentDto>> GetDepartmentsAsync()
         {
-            var getDepartmentQuery = "select * from Departments";
+            var getDepartmentQuery = "execute GetDepartmentList";
             var result = await _dapperConnection.QueryAsync<DepartmentDto>(getDepartmentQuery);
             return result;
         }
 
         public async Task<DepartmentDto> GetDepartmentAsync(int departmentId)
         {
-            var getDepartmentQueryById = "SELECT * FROM Departments where DepartmentId = @departmentId";
+            var getDepartmentQueryById = "select * from Departments where DepartmentId = @departmentId";
             return await _dapperConnection.QueryFirstOrDefaultAsync<DepartmentDto>(getDepartmentQueryById, new { departmentId });
         }
         public async Task<Department> UpdateAsync(int departmentId, Department department)
@@ -47,8 +46,6 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             department.UpdatedBy = 1;
             department.UpdatedDate = DateTime.UtcNow;
             department.DepartmentId = departmentId;
-            //department.CreatedBy = departmentToBeUpdatet.CreatedBy;
-            //department.CreatedDate = departmentToBeUpdatet.CreatedDate;
             _employeeManagementDataDbContext.Departments.Update(department);
             _employeeManagementDataDbContext.SaveChanges();
             return department;
@@ -56,8 +53,8 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 
         public async Task DeleteDepartmentAsync(int departmentId)
         {
-            var departmentToBeDeleted = await GetDepartmentAsync(departmentId);
-            //_employeeManagementDataDbContext.Departments.Remove(departmentToBeDeleted);
+            var departmentToBeDeleted = await _employeeManagementDataDbContext.Departments.FirstOrDefaultAsync(d => d.DepartmentId == departmentId);
+           _employeeManagementDataDbContext.Departments.Remove(departmentToBeDeleted);
             await _employeeManagementDataDbContext.SaveChangesAsync();
         }
 

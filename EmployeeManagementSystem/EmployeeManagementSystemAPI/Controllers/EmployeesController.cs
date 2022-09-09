@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Repositories;
 using EmployeeManagementSystemAPI.ViewModels;
@@ -33,7 +34,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Employee>>> Get()
+        public async Task<ActionResult<IEnumerable<EmployeeDto>>> Get()
         {
             _logger.LogInformation("Getting list of all Employee's.");
             var result = await _employeeService.GetEmployeesAsync();
@@ -43,12 +44,12 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<Employee>> Get(int id)
+        public async Task<ActionResult> Get(int id)
         {
             _logger.LogInformation("Getting list of  employee by ID:{id},", id);
-
-            var result = await _employeeService.GetEmployeeAsync(id);
-            return Ok(result);
+            var employee = await _employeeService.GetEmployeeAsync(id);
+            //var result = _mapper.Map<EmployeeDto, Employee>(employee);
+            return Ok(employee);
         }
 
         [HttpPut("{id}")]
@@ -67,7 +68,9 @@ namespace EmployeeManagementSystemAPI.Controllers
         [HttpDelete("{id}")]
         public async Task Delete(int id)
         {
-            await _employeeService.DeleteEmployeeAsync(id);
+            //var result = _mapper.Map<EmployeeDto, Employee>();
+            var emloyee = _employeeService.DeleteEmployeeAsync(id);
+            
         }
     }
 }

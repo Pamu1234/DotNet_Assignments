@@ -13,6 +13,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
         private readonly ILeaveBalanceRepository _leaveBalanceRepository;
         private readonly EmployeemanagementDbContext _employeeManagementDataDbContext;
 
+
         public EmployeeService(IEmployeeRepository employeeRepository, ILeaveRepository leaveRepository, ILeaveBalanceRepository leaveBalanceRepository, EmployeemanagementDbContext employeeManagementDataDbContext)
         {
             _employeeRepository = employeeRepository;
@@ -45,52 +46,21 @@ namespace EmployeeManagementSystem.Infrastructure.Services
 
         public Task DeleteEmployeeAsync(int employeeId)
         {
-            return _employeeRepository.DeleteEmployeeAsync(employeeId);
+            return(_employeeRepository.DeleteEmployeeAsync(employeeId));
         }
 
         public async Task<EmployeeDto> GetEmployeeAsync(int employeeId)
         {
-            var remainingLeaves = await (from emp in _employeeManagementDataDbContext.Employees
-                                         join leaveBalance in _employeeManagementDataDbContext.LeaveBalances
-                                         on emp.EmployeeId equals leaveBalance.EmployeeId
+            //
+            var remainingLeaves = await _employeeRepository.GetEmployeeAsync(employeeId);
 
-                                         where emp.EmployeeId == employeeId
-                                         select new EmployeeDto
-                                         {
-                                             EmpId = emp.EmployeeId,
-                                             Role = emp.Role.RoleName,
-                                             FirstName = emp.FirstName,
-                                             LastName = emp.LastName,
-                                             EmailId = emp.EmailId,
-                                             Address = emp.Address,
-                                             Contact = emp.Contact,
-                                             DepartmentName = emp.Department.DepartmentName,
-                                         }).FirstOrDefaultAsync();
             return remainingLeaves;
         }
 
         public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync()
         {
-            var employeeData =await  (from department in _employeeManagementDataDbContext.Departments
-                               join emp in _employeeManagementDataDbContext.Employees
-                               on department.DepartmentId equals emp.DepartmentId
-                               join role in _employeeManagementDataDbContext.Roles
-                               on emp.RoleId equals role.RoleId
-                               select new EmployeeDto
-                               {
-                                   FirstName = emp.FirstName,
-                                   LastName= emp.LastName,
-                                   EmailId= emp.EmailId,
-                                   Contact = emp.Contact,
-                                   Address = emp.Address,
-                                   DepartmentName= department.DepartmentName,
-                                   Role=role.RoleName,
-                                   EmpId=emp.EmployeeId
-
-                               }).ToListAsync();
-
+            var employeeData = await _employeeRepository.GetEmployeesAsync();
             return employeeData;
-            //return _employeeRepository.GetEmployeesAsync();
 
         }
 

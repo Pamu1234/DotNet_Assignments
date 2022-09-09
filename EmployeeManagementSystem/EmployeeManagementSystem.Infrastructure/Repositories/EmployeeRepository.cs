@@ -1,6 +1,8 @@
-﻿using Dapper;
+﻿using AutoMapper;
+using Dapper;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
+using Microsoft.EntityFrameworkCore;
 using System.Data;
 
 namespace EmployeeManagementSystem.Infrastructure.Repositories
@@ -9,11 +11,15 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
     {
         private readonly EmployeemanagementDbContext _employeeManagementDataDbContext;
         private readonly IDbConnection _dapperConnection;
-        public EmployeeRepository(EmployeemanagementDbContext employeeManagementDataDbContext,IDbConnection dbConnection)
+        private readonly IMapper _mapper;
+        public EmployeeRepository(EmployeemanagementDbContext employeeManagementDataDbContext,IDbConnection dbConnection,IMapper mapper)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
             _dapperConnection = dbConnection;
+            _mapper = mapper;
         }
+
+
         public async Task<Employee> CreateAsync(Employee employee)
         {
             _employeeManagementDataDbContext.Employees.Add(employee);
@@ -23,11 +29,17 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         }
         public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync()
         {
-            var getEmployeesQuery = "select * from Employees";
+            var getEmployeesQuery = "execute GetEmployeesDataList";
             var result = await _dapperConnection.QueryAsync<EmployeeDto>(getEmployeesQuery);
             return result;
 
         }
+        public async Task<EmployeeDto> GetEmployeeAsync(int employeeId)
+        {
+            var getEmployeeByIdQuery = "execute GetEmployeesDataById @employeeId";
+            return await _dapperConnection.QueryFirstOrDefaultAsync<EmployeeDto>(getEmployeeByIdQuery, new { employeeId });
+        }
+
         public async Task<Employee> UpdateAsync(int employeeId, Employee employee)
         {
             var employeToBeUpdate = await GetEmployeeAsync(employeeId);
@@ -42,16 +54,14 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             _employeeManagementDataDbContext.SaveChanges();
             return employee;
         }
-        public async Task<Employee> GetEmployeeAsync(int employeeId)
-        {
-            var getEmployeeByIdQuery = "select * from Employees where EmployeeId = @employeeId";
-            return await _dapperConnection.QueryFirstOrDefaultAsync<Employee>(getEmployeeByIdQuery, new { employeeId });
-        }
+
         public async Task DeleteEmployeeAsync(int employeeId)
         {
-            var employeeToBeDeleted = await GetEmployeeAsync(employeeId);
-            _employeeManagementDataDbContext.Employees.Remove(employeeToBeDeleted);
+            var employee = await _employeeManagementDataDbContext.Employees.FirstOrDefaultAsync(s => s.EmployeeId == employeeId);
+            _employeeManagementDataDbContext.Employees.Remove(employee);
             await _employeeManagementDataDbContext.SaveChangesAsync();
         }
+
+        
     }
 }

@@ -36,7 +36,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return _leaveBalanceRepository.GetLeaveBalanceDataByIdAsync(leaveBalanceId);
         }
 
-        public async Task<IEnumerable<LeaveBalance>> GetLeavesBalanceAsync()
+        public async Task<IEnumerable<LeaveBalanceDto>> GetLeavesBalanceAsync()
         {
 
             var leaveBalance = await _leaveBalanceRepository.GetLeavesBalanceAsync();
