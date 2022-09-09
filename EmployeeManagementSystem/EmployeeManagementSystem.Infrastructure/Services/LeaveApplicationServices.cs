@@ -22,9 +22,10 @@ namespace EmployeeManagementSystem.Infrastructure.Services
         {
             leaveApplication.NoOfDays = leaveApplication.NoOfDays;
             leaveApplication.StartDate = DateTime.UtcNow;
-            leaveApplication.EndDatew = DateTime.UtcNow;
+            leaveApplication.EndDate = DateTime.UtcNow;
             leaveApplication.DateOfApplication = DateTime.UtcNow;
             leaveApplication.StatusId = 1;
+            leaveApplication.DateOfApproval = DateTime.UtcNow;
 
             //if (leaveApplication.StatusId == 2)
             //{

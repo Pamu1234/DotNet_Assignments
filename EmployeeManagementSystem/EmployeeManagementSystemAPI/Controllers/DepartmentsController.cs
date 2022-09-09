@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -32,15 +33,16 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Department>>> Get()
+        public async Task<ActionResult<IEnumerable<DepartmentDto>>> Get()
         {
             _logger.LogInformation("Getting list of all departments.");
             var result = await _departmentService.GetDepartmentsAsync();
+
             return Ok(result);
         }
 
         [HttpGet("{id}")]
-        public async Task<ActionResult<IEnumerable<Department>>>  Get(int id)
+        public async Task<ActionResult>  Get(int id)
         {
             _logger.LogInformation("Getting list of  department by ID:{id},", id);
             var result = await _departmentService.GetDepartmentAsync(id);

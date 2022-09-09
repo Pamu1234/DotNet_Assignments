@@ -9,7 +9,7 @@ namespace EmployeeManagementSystem.Core.Contracts.Infrastructure.Services
         Task<LeaveBalance> CreateRangeAsync(LeaveBalance leaveBalance);
         Task DeleteLeaveBalanceDataByIdAsync(int leaveBalanceId);
         Task<LeaveBalance> GetLeaveBalanceDataByIdAsync(int leaveBalanceId);
-        Task<IEnumerable<LeaveBalance>> GetLeavesBalanceAsync();
+        Task<IEnumerable<LeaveBalanceDto>> GetLeavesBalanceAsync();
         Task<LeaveBalance> UpdateAsync(int leaveBalanceId, LeaveBalance leaveBalance);
     }
 }
