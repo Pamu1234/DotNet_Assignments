@@ -2,7 +2,7 @@
 using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
-using EmployeeManagementSystem.Infrastructure.Repositories;
+using EmployeeManagementSystemAPI.Infrastructure.Specs;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers
 {
-
+    [ApiConventionType(typeof(DefaultApiConventions))]
     public class EmployeesController : ApiControllerBase
     {
         private readonly IEmployeeService _employeeService;
@@ -25,6 +25,7 @@ namespace EmployeeManagementSystemAPI.Controllers
 
         // Insert data
         [HttpPost]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<IEnumerable<Employee>>> Post([FromBody] EmployeeVm employeeVm)
         {
             _logger.LogInformation("Inserting data to Employee entity.");
@@ -34,6 +35,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpGet]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<IEnumerable<EmployeeDto>>> Get()
         {
             _logger.LogInformation("Getting list of all Employee's.");
@@ -44,15 +46,16 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult> Get(int id)
         {
             _logger.LogInformation("Getting list of  employee by ID:{id},", id);
             var employee = await _employeeService.GetEmployeeAsync(id);
-            //var result = _mapper.Map<EmployeeDto, Employee>(employee);
             return Ok(employee);
         }
 
         [HttpPut("{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult<IEnumerable<Employee>>> Put(int id, [FromBody] EmployeeVm employeeVm)
         {
             Employee employee = _mapper.Map<EmployeeVm, Employee>(employeeVm); 
@@ -66,11 +69,10 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
         public async Task Delete(int id)
         {
-            //var result = _mapper.Map<EmployeeDto, Employee>();
-            var emloyee = _employeeService.DeleteEmployeeAsync(id);
-            
+            var emloyee = _employeeService.DeleteEmployeeAsync(id);            
         }
     }
 }

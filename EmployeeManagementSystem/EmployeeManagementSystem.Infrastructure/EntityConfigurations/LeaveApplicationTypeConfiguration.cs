@@ -28,15 +28,15 @@ namespace EmployeeManagementSystem.Infrastructure.EntityConfigurations
                 .HasForeignKey(d => d.EmployeeId)
                 .HasConstraintName("FK__LeaveAppl__Emplo__45F365D3");
 
-            builder.HasOne(d => d.Leave)
+            builder.HasOne(d => d.LeaveType)
                 .WithMany(p => p.LeaveApplications)
                 .HasForeignKey(d => d.LeaveTypeId)
                 .HasConstraintName("FK__LeaveAppl__Leave__46E78A0C");
 
-            builder.HasOne(d => d.LeaveStatus)
+            builder.HasOne(d => d.Status)
                .WithMany(p => p.LeaveApplications)
                .HasForeignKey(d => d.StatusId)
-               .HasConstraintName("FK__LeaveAppl__Leave__46E78A0C");
+               .HasConstraintName("FK__LeaveAppl__Statu__47DBAE45");
 
 
         }

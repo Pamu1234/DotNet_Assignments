@@ -3,9 +3,9 @@ using System.Collections.Generic;
 
 namespace EmployeeManagementSystem.Core.Entities
 {
-    public partial class Leave
+    public partial class Leaves
     {
-        public Leave()
+        public Leaves()
         {
             LeaveApplications = new HashSet<LeaveApplication>();
             LeaveBalances = new HashSet<LeaveBalance>();

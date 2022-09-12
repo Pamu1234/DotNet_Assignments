@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Entities;
+using EmployeeManagementSystemAPI.Infrastructure.Specs;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers
 {
-
+    [ApiConventionType(typeof(DefaultApiConventions))]
     public class LeaveApplicationsController : ApiControllerBase
     {
         private readonly ILeaveApplicationService _leaveApplicationService;
@@ -23,14 +24,16 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpPost]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<LeaveApplication>> Post([FromBody] LeaveApplicationVm leaveApplicationVm)
         {
             _logger.LogInformation("Inserting data to leaveApplication entity.");
-            var leaveApplication = _mapper.Map<LeaveApplicationVm, LeaveApplication>(leaveApplicationVm);
+            LeaveApplication leaveApplication = _mapper.Map<LeaveApplicationVm, LeaveApplication>(leaveApplicationVm);
             return Ok(await _leaveApplicationService.CreateAsync(leaveApplication));
         }
 
         [HttpGet]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<IEnumerable<LeaveApplication>>> Get()
         {
             _logger.LogInformation("Getting list of all leaveApplication entity.");
@@ -39,6 +42,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task <ActionResult<LeaveApplication>> Get(int id)
         {
             _logger.LogInformation("Getting list of  leaveApplication by ID:{id},", id);
@@ -50,6 +54,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult<IEnumerable<LeaveApplication>>> Put(int id, [FromBody] LeaveApplicationVm leaveApplicationVm)
         {
             LeaveApplication leaveApplication = _mapper.Map<LeaveApplicationVm, LeaveApplication>(leaveApplicationVm);
@@ -62,6 +67,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
         public async Task Delete(int id)
         {
             await _leaveApplicationService.DeleteLeaveApplicationAsync(id);

@@ -2,6 +2,7 @@
 using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
+using EmployeeManagementSystemAPI.Infrastructure.Specs;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers
 {
-
+    [ApiConventionType(typeof(DefaultApiConventions))]
     public class DepartmentsController : ApiControllerBase
     {
         private readonly IDepartmentService _departmentService;
@@ -24,6 +25,7 @@ namespace EmployeeManagementSystemAPI.Controllers
 
         // Insert 
         [HttpPost]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<Department>> Post([FromBody] DepartmentVm departmentVm)
         {
             _logger.LogInformation("Inserting data to department entity.");
@@ -33,6 +35,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpGet]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<IEnumerable<DepartmentDto>>> Get()
         {
             _logger.LogInformation("Getting list of all departments.");
@@ -42,6 +45,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult>  Get(int id)
         {
             _logger.LogInformation("Getting list of  department by ID:{id},", id);
@@ -53,6 +57,7 @@ namespace EmployeeManagementSystemAPI.Controllers
 
         // Update
         [HttpPut("{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult<Department>> Put(int id, [FromBody] DepartmentVm departmentVm)
         {
             Department department = _mapper.Map<DepartmentVm, Department>(departmentVm);
@@ -66,6 +71,8 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
+
         public async Task  Delete(int id)
         {
             await _departmentService.DeleteDepartmentAsync(id);

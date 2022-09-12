@@ -11,7 +11,7 @@ namespace EmployeeManagementSystemAPI.Configurations
         {
             CreateMap<DepartmentVm, Department>();
             CreateMap<EmployeeVm, Employee>();
-            CreateMap<LeaveVm, Leave>();
+            CreateMap<LeaveVm, Leaves>();
             CreateMap<LeaveApplicationVm, LeaveApplication>();
             CreateMap<LeaveBalanceVm, LeaveBalance>();
             CreateMap<LeaveStatusVm, LeaveStatus>();

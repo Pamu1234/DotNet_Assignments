@@ -9,9 +9,9 @@ using System.Threading.Tasks;
 
 namespace EmployeeManagementSystem.Infrastructure.EntityConfigurations
 {
-    internal class LeaveEntityTypeConfiguration : IEntityTypeConfiguration<Leave>
+    internal class LeaveEntityTypeConfiguration : IEntityTypeConfiguration<Leaves>
     {
-        public void Configure(EntityTypeBuilder<Leave> builder)
+        public void Configure(EntityTypeBuilder<Leaves> builder)
         {
             builder.HasKey(e => e.LeaveTypeId)
                     .HasName("PK__Leaves__43BE8F14865D89E6");
@@ -25,7 +25,7 @@ namespace EmployeeManagementSystem.Infrastructure.EntityConfigurations
             builder.Property(e => e.LeaveTypeName)
                 .HasMaxLength(50)
                 .IsUnicode(false);
-            builder.Property(e => e.NoOfDays).IsRequired();
+           // builder.Property(e => e.NoOfDays).IsRequired();
 
             builder.Property(e => e.UpdatedDate).HasColumnType("date");
         }
