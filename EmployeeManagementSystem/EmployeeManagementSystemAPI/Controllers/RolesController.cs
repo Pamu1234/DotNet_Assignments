@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Entities;
+using EmployeeManagementSystemAPI.Infrastructure.Specs;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers
 {
-
+    [ApiConventionType(typeof(DefaultApiConventions))]
     public class RolesController : ApiControllerBase
     {
         private readonly IRolesService _roleService;
@@ -23,6 +24,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpPost]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<IEnumerable<Role>>> Post([FromBody] RoleVm roleVm)
         {
             _logger.LogInformation("Inserting data to Role entity.");
@@ -31,6 +33,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpGet]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<IEnumerable<Role>>>  Get()
         {
 
@@ -39,6 +42,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<Role>>  Get(int id)
         {
             _logger.LogInformation("Getting list of  Role by ID:{id},", id);
@@ -46,6 +50,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpPut("{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task <ActionResult<Role>> Put(int id, [FromBody] RoleVm roleVm)
         {
             Role role = _mapper.Map<RoleVm, Role>(roleVm);
@@ -58,6 +63,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
         public async Task Delete(int id)
         {
             await _roleService.DeleteRoleAsync(id);

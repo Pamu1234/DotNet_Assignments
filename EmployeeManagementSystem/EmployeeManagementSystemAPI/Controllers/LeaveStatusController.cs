@@ -9,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers
 {
-
+    [ApiConventionType(typeof(DefaultApiConventions))]
     public class LeaveStatusController : ApiControllerBase
     {
         private readonly ILeaveStatusService _leaveStatusService;
@@ -24,6 +24,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpPost]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<IEnumerable<LeaveStatus>>> Post([FromBody] LeaveStatusVm leaveStatusVm)
         {
             _logger.LogInformation("Inserting data to LeaveStatus entity.");
@@ -32,6 +33,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpGet]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async  Task<ActionResult<IEnumerable<LeaveStatusDto>>> Get()
         {
             _logger.LogInformation("Getting list of all LeaveStatus.");
@@ -39,6 +41,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task <ActionResult<LeaveStatus>> Get(int id)
         {
             _logger.LogInformation("Getting list of  LeaveStatus by ID:{id},", id);

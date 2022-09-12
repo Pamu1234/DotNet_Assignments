@@ -31,7 +31,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return _leaveBalanceRepository.DeleteLeaveBalanceDataByIdAsync(leaveBalanceId);
         }
 
-        public Task<LeaveBalance> GetLeaveBalanceDataByIdAsync(int leaveBalanceId)
+        public Task<LeaveBalanceDto> GetLeaveBalanceDataByIdAsync(int leaveBalanceId)
         {
             return _leaveBalanceRepository.GetLeaveBalanceDataByIdAsync(leaveBalanceId);
         }
@@ -43,9 +43,12 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return leaveBalance;
 
         }
+        Task<LeaveBalance> ILeaveBalanceService.GetLeaveBalanceDataByIdAsync(int leaveBalanceId)
+        {
+            throw new NotImplementedException();
+        }
 
-
-        public Task<IEnumerable<LeaveBalance>> GetRemainingLeavesByEmpId(int empId)
+        public Task<LeaveBalanceDto> GetRemainingLeavesByEmpId(int empId)
         {
             //var leaveBalancesOfEmployee = (from emp in _employeeManagementDataDbContext.Employees
             //                               join LeaveBalance in _employeeManagementDataDbContext.LeaveBalances
@@ -64,5 +67,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
         {
             return _leaveBalanceRepository.UpdateAsync(leaveBalanceId, leaveBalance);
         }
+
+       
     }
 }

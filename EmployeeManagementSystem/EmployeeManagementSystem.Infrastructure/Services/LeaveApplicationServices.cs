@@ -1,12 +1,8 @@
 ﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
+using EmployeeManagementSystem.Core.Enum;
 using EmployeeManagementSystem.Infrastructure.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeManagementSystem.Infrastructure.Services
 {
@@ -20,18 +16,10 @@ namespace EmployeeManagementSystem.Infrastructure.Services
 
         public Task<LeaveApplication> CreateAsync(LeaveApplication leaveApplication)
         {
-            leaveApplication.NoOfDays = leaveApplication.NoOfDays;
-            leaveApplication.StartDate = DateTime.UtcNow;
-            leaveApplication.EndDate = DateTime.UtcNow;
+            var totalLeaveDays = (leaveApplication.EndDate-leaveApplication.StartDate).TotalDays;
+            leaveApplication.NoOfDays = (int)totalLeaveDays;
             leaveApplication.DateOfApplication = DateTime.UtcNow;
-            leaveApplication.StatusId = 1;
-            leaveApplication.DateOfApproval = DateTime.UtcNow;
-
-            //if (leaveApplication.StatusId == 2)
-            //{
-            //    leaveApplicationRecord.StartDate = DateTime.Now;
-            //    leaveApplicationRecord.EndDatew = DateTime.UtcNow;
-            //}
+            leaveApplication.StatusId = (int)LeaveApprovalStatus.Pending;
             return _leaveApplicationRepository.CreateAsync(leaveApplication);
         }
 

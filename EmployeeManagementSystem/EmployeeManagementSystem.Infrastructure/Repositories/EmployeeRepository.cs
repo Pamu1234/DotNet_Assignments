@@ -29,15 +29,49 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         }
         public async Task<IEnumerable<EmployeeDto>> GetEmployeesAsync()
         {
-            var getEmployeesQuery = "execute GetEmployeesDataList";
-            var result = await _dapperConnection.QueryAsync<EmployeeDto>(getEmployeesQuery);
-            return result;
+            var getEmployeesQuery = await(from Department in _employeeManagementDataDbContext.Departments
+                                    join Employee in _employeeManagementDataDbContext.Employees
+                                    on Department.DepartmentId equals Employee.DepartmentId
+                                    join Role in _employeeManagementDataDbContext.Roles
+                                    on Employee.RoleId equals Role.RoleId
+                                    select new EmployeeDto()
+                                    {
+                                        EmployeeId = Employee.EmployeeId,
+                                        FirstName = Employee.FirstName,
+                                        LastName = Employee.LastName,
+                                        Salary = Employee.Salary,
+                                        EmailId = Employee.EmailId,
+                                        Address = Employee.Address,
+                                        Contact = Employee.Contact,
+                                        DepartmentName = Department.DepartmentName,
+                                        RoleName = Role.RoleName
 
-        }
+                                    }).ToListAsync();
+            return getEmployeesQuery;
+
+        } 
         public async Task<EmployeeDto> GetEmployeeAsync(int employeeId)
         {
-            var getEmployeeByIdQuery = "execute GetEmployeesDataById @employeeId";
-            return await _dapperConnection.QueryFirstOrDefaultAsync<EmployeeDto>(getEmployeeByIdQuery, new { employeeId });
+            var getEmployeeByIdQuery = await (from Department in _employeeManagementDataDbContext.Departments
+                                              join Employee in _employeeManagementDataDbContext.Employees
+                                              on Department.DepartmentId equals Employee.DepartmentId
+                                              join Role in _employeeManagementDataDbContext.Roles
+                                              on Employee.RoleId equals Role.RoleId
+                                              where Employee.EmployeeId == employeeId
+                                              select new EmployeeDto()
+                                              {
+                                                  EmployeeId = employeeId,
+                                                  FirstName = Employee.FirstName,
+                                                  LastName = Employee.LastName,
+                                                  Salary = Employee.Salary,
+                                                  EmailId = Employee.EmailId,
+                                                  Address = Employee.Address,
+                                                  Contact = Employee.Contact,
+                                                  DepartmentName = Department.DepartmentName,
+                                                  RoleName = Role.RoleName
+
+                                              }).FirstOrDefaultAsync();
+            return getEmployeeByIdQuery;
         }
 
         public async Task<Employee> UpdateAsync(int employeeId, Employee employee)

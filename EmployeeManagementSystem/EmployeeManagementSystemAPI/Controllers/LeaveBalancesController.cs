@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Entities;
+using EmployeeManagementSystemAPI.Infrastructure.Specs;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers
 {
+    [ApiConventionType(typeof(DefaultApiConventions))]
 
     public class LeaveBalancesController : ApiControllerBase
     {
@@ -22,6 +24,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpPost]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<LeaveBalance>> Post([FromBody] LeaveBalanceVm leaveBalanceVm)
         {
             _logger.LogInformation("Inserting data to LeaveBalance entity.");
@@ -31,6 +34,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpGet]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<IEnumerable<LeaveBalance>>>  Get()
         {
             _logger.LogInformation("Getting list of all LeaveBalance entity.");
@@ -39,6 +43,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<LeaveBalance>> Get(int id)
         {
             _logger.LogInformation("Getting list of  LeaveBalance by ID:{id},", id);
@@ -49,12 +54,15 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpGet("leaves/{empId}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult> GetEmployeesRemainingleaves(int empId)
         {
             var remainingLeaves = await _leaveBalanceService.GetRemainingLeavesByEmpId(empId);
             return Ok(remainingLeaves);
         }
         [HttpPut("{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+
         public async Task <ActionResult<IEnumerable<LeaveBalance>>>  Put(int id, [FromBody] LeaveBalanceVm leaveBalanceVm)
         {
             LeaveBalance leaveBalance = _mapper.Map<LeaveBalanceVm, LeaveBalance>(leaveBalanceVm);
@@ -68,6 +76,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
         public async Task Delete(int id)
         {
             await _leaveBalanceService.DeleteLeaveBalanceDataByIdAsync(id);

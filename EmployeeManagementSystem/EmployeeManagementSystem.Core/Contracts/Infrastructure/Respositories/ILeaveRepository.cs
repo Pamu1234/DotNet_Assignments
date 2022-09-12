@@ -5,10 +5,10 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 {
     public interface ILeaveRepository
     {
-        Task<Leave> CreateAsync(Leave leave);
+        Task<Leaves> CreateAsync(Leaves leave);
         Task DeleteLeaveAsync(int leaveId);
-        Task<Leave> GetLeaveDataAsync(int leaveId);
+        Task<Leaves> GetLeaveDataAsync(int leaveId);
         Task<IEnumerable<LeaveDto>> GetLeavesAsync();
-        Task<Leave> UpdateAsync(int leaveId, Leave leave);
+        Task<Leaves> UpdateAsync(int leaveId, Leaves leave);
     }
 }

@@ -16,7 +16,7 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             _dapperConnection = dbConnection;
         }
 
-        public async Task<Leave> CreateAsync(Leave leave)
+        public async Task<Leaves> CreateAsync(Leaves leave)
         {
             _employeeManagementDataDbContext.Leaves.Add(leave);
             await _employeeManagementDataDbContext.SaveChangesAsync();
@@ -30,13 +30,13 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             return result;
         }
 
-        public async Task<Leave> GetLeaveDataAsync(int leaveId)
+        public async Task<Leaves> GetLeaveDataAsync(int leaveId)
         {
             var getLeavesDataByIdQuery = "select * from Leaves where LeaveTypeId = @leaveId";
-            return await _dapperConnection.QueryFirstOrDefaultAsync<Leave>(getLeavesDataByIdQuery, new { leaveId });
+            return await _dapperConnection.QueryFirstOrDefaultAsync<Leaves>(getLeavesDataByIdQuery, new { leaveId });
         }
 
-        public async Task<Leave> UpdateAsync(int leaveId, Leave leave)
+        public async Task<Leaves> UpdateAsync(int leaveId, Leaves leave)
         {
             var leaveToBeUpdate = await GetLeaveDataAsync(leaveId);
             leave.LeaveTypeId = leave.LeaveTypeId;

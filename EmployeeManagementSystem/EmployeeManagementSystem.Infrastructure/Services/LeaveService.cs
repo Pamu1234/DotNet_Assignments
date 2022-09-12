@@ -18,7 +18,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             _leaveRepository = leaveRepository;
         }
 
-        public Task<Leave> CreateAsync(Leave leave)
+        public Task<Leaves> CreateAsync(Leaves leave)
         {
             return _leaveRepository.CreateAsync(leave);
         }
@@ -28,7 +28,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
            return _leaveRepository.DeleteLeaveAsync(leaveId);
         }
 
-        public  Task<Leave> GetLeaveDataAsync(int leaveId)
+        public  Task<Leaves> GetLeaveDataAsync(int leaveId)
         {
             return _leaveRepository.GetLeaveDataAsync(leaveId);
         }
@@ -38,7 +38,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return _leaveRepository.GetLeavesAsync();
         }
 
-        public Task<Leave> UpdateAsync(int leaveId, Leave leave)
+        public Task<Leaves> UpdateAsync(int leaveId, Leaves leave)
         {
             return _leaveRepository.UpdateAsync(leaveId, leave);
         }

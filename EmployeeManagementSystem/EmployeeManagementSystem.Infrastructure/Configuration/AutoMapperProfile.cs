@@ -12,7 +12,7 @@ namespace EmployeeManagementSystem.Infrastructure.Configuration
 
             CreateMap<EmployeeDto, Employee>();
 
-            CreateMap<Leave, LeaveDto>();
+            CreateMap<Leaves, LeaveDto>();
             CreateMap<LeaveApplication, LeaveApplicationDto>();
             CreateMap<LeaveBalance, LeaveBalanceDto>();
             CreateMap<LeaveStatus, LeaveStatusDto>();

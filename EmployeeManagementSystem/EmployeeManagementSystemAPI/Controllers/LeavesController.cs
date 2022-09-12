@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Entities;
+using EmployeeManagementSystemAPI.Infrastructure.Specs;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -8,7 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers
 {
-
+    [ApiConventionType(typeof(DefaultApiConventions))]
     public class LeavesController : ApiControllerBase
     {
         private readonly ILeavesService _leavesService;
@@ -23,16 +24,18 @@ namespace EmployeeManagementSystemAPI.Controllers
 
         // Insert data
         [HttpPost]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<IEnumerable<Role>>> Post([FromBody] LeaveVm leaveVm)
         {
             _logger.LogInformation("Inserting data to Role entity.");
-            Leave leave = _mapper.Map<LeaveVm, Leave>(leaveVm);
+            Leaves leave = _mapper.Map<LeaveVm, Leaves>(leaveVm);
             return Ok(await _leavesService.CreateAsync(leave));
 
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Leave>>> Get()
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<IEnumerable<Leaves>>> Get()
         {
             _logger.LogInformation("Getting list of all Role entity.");
             var result = await _leavesService.GetLeavesAsync();
@@ -40,6 +43,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpGet("{id}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<Role>>  Get(int id)
         {
             _logger.LogInformation("Getting list of  Role by ID:{id},", id);
@@ -51,9 +55,10 @@ namespace EmployeeManagementSystemAPI.Controllers
 
         // Update Data
         [HttpPut("{id}")]
-        public async Task<ActionResult<IEnumerable<Leave>>>  Put(int id, [FromBody] LeaveVm leaveVm )
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        public async Task<ActionResult<IEnumerable<Leaves>>>  Put(int id, [FromBody] LeaveVm leaveVm )
         {
-            Leave leave = _mapper.Map<LeaveVm, Leave>(leaveVm);
+            Leaves leave = _mapper.Map<LeaveVm, Leaves>(leaveVm);
             if (id <= 0 || id != leave.LeaveTypeId)
             {
                 _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
@@ -64,6 +69,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         [HttpDelete("{id}")]
+        [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
         public async Task Delete(int id)
         {
             await _leavesService.DeleteLeaveAsync(id);
