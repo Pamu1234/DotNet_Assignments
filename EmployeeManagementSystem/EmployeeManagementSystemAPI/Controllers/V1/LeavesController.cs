@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace EmployeeManagementSystemAPI.Controllers
+namespace EmployeeManagementSystemAPI.Controllers.V1
 {
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class LeavesController : ApiControllerBase
@@ -44,7 +44,7 @@ namespace EmployeeManagementSystemAPI.Controllers
 
         [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<Role>>  Get(int id)
+        public async Task<ActionResult<Role>> Get(int id)
         {
             _logger.LogInformation("Getting list of  Role by ID:{id},", id);
             var result = await _leavesService.GetLeaveDataAsync(id);
@@ -56,7 +56,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         // Update Data
         [HttpPut("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        public async Task<ActionResult<IEnumerable<Leaves>>>  Put(int id, [FromBody] LeaveVm leaveVm )
+        public async Task<ActionResult<IEnumerable<Leaves>>> Put(int id, [FromBody] LeaveVm leaveVm)
         {
             Leaves leave = _mapper.Map<LeaveVm, Leaves>(leaveVm);
             if (id <= 0 || id != leave.LeaveTypeId)
@@ -65,7 +65,7 @@ namespace EmployeeManagementSystemAPI.Controllers
                 return BadRequest();
             }
 
-            return Ok( await _leavesService.UpdateAsync(id, leave));
+            return Ok(await _leavesService.UpdateAsync(id, leave));
         }
 
         [HttpDelete("{id}")]

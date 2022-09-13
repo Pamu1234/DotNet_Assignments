@@ -9,18 +9,21 @@ namespace EmployeeManagementSystem.Infrastructure.Services
     public class LeaveApplicationServices : ILeaveApplicationService
     {
         private readonly ILeaveApplicationRepository _leaveApplicationRepository;
-        public LeaveApplicationServices(ILeaveApplicationRepository leaveApplicationRepository)
+        private readonly ILeaveBalanceRepository _leaveBalanceRepository;
+        public LeaveApplicationServices(ILeaveApplicationRepository leaveApplicationRepository, ILeaveBalanceRepository leaveBalanceRepository)
         {
             _leaveApplicationRepository = leaveApplicationRepository;
+            _leaveBalanceRepository = leaveBalanceRepository;
         }
 
-        public Task<LeaveApplication> CreateAsync(LeaveApplication leaveApplication)
+        public async Task<LeaveApplication> CreateAsync(LeaveApplication leaveApplication)
         {
-            var totalLeaveDays = (leaveApplication.EndDate-leaveApplication.StartDate).TotalDays;
+            var totalLeaveDays = (leaveApplication.EndDate - leaveApplication.StartDate).TotalDays;
             leaveApplication.NoOfDays = (int)totalLeaveDays;
             leaveApplication.DateOfApplication = DateTime.UtcNow;
             leaveApplication.StatusId = (int)LeaveApprovalStatus.Pending;
-            return _leaveApplicationRepository.CreateAsync(leaveApplication);
+            return await _leaveApplicationRepository.CreateAsync(leaveApplication);
+
         }
 
         public Task DeleteLeaveApplicationAsync(int leaveId)
@@ -41,6 +44,11 @@ namespace EmployeeManagementSystem.Infrastructure.Services
         public Task<LeaveApplication> UpdateAsync(int leaveId, LeaveApplication leaveApplication)
         {
             return _leaveApplicationRepository.UpdateAsync(leaveId, leaveApplication);
+        }
+
+        public Task<IEnumerable<LeaveApplicationDto>> GetEmployeeLeaveRequest (int empId)
+        {
+            return _leaveApplicationRepository.GetEmployeeLeaveRequest(empId);
         }
     }
 }

@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace EmployeeManagementSystemAPI.Controllers
+namespace EmployeeManagementSystemAPI.Controllers.V1
 {
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class LeaveApplicationsController : ApiControllerBase
@@ -23,6 +23,7 @@ namespace EmployeeManagementSystemAPI.Controllers
             _logger = logger;
         }
 
+        [Route("")]
         [HttpPost]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<LeaveApplication>> Post([FromBody] LeaveApplicationVm leaveApplicationVm)
@@ -32,6 +33,7 @@ namespace EmployeeManagementSystemAPI.Controllers
             return Ok(await _leaveApplicationService.CreateAsync(leaveApplication));
         }
 
+        [Route("")]
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<IEnumerable<LeaveApplication>>> Get()
@@ -41,9 +43,10 @@ namespace EmployeeManagementSystemAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
+        [Route("id")]
+        [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task <ActionResult<LeaveApplication>> Get(int id)
+        public async Task<ActionResult<LeaveApplication>> Get(int id)
         {
             _logger.LogInformation("Getting list of  leaveApplication by ID:{id},", id);
             var result = await _leaveApplicationService.GetLeaveDataByIdAsync(id);
@@ -53,7 +56,16 @@ namespace EmployeeManagementSystemAPI.Controllers
 
         }
 
-        [HttpPut("{id}")]
+        [HttpGet("empId")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<IEnumerable<LeaveApplication>>> GetEmployeeLeaveApplicationRequest(int empId)
+        {
+            var leaveApplicationRequest = await _leaveApplicationService.GetEmployeeLeaveRequest(empId);
+            return Ok(leaveApplicationRequest);
+        }
+
+        [Route("id")]
+        [HttpPut]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult<IEnumerable<LeaveApplication>>> Put(int id, [FromBody] LeaveApplicationVm leaveApplicationVm)
         {
@@ -66,7 +78,8 @@ namespace EmployeeManagementSystemAPI.Controllers
             return Ok(await _leaveApplicationService.UpdateAsync(id, leaveApplication));
         }
 
-        [HttpDelete("{id}")]
+        [Route("id")]
+        [HttpDelete()]
         [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
         public async Task Delete(int id)
         {

@@ -8,8 +8,10 @@ using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace EmployeeManagementSystemAPI.Controllers
+namespace EmployeeManagementSystemAPI.Controllers.V1
 {
+    [ApiVersion("1.0")]
+    [ApiVersion("1.1")]
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class DepartmentsController : ApiControllerBase
     {
@@ -24,16 +26,34 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         // Insert 
+        [MapToApiVersion("1.0")]
+        [Route("")]
         [HttpPost]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<Department>> Post([FromBody] DepartmentVm departmentVm)
         {
             _logger.LogInformation("Inserting data to department entity.");
-            var  department = _mapper.Map<DepartmentVm, Department>(departmentVm);
+            var department = _mapper.Map<DepartmentVm, Department>(departmentVm);
             return Ok(await _departmentService.CreateAsync(department));
 
         }
 
+        [MapToApiVersion("1.0")]
+        [Route("approveleave/{empId},{leaveId}")]
+        [HttpPost]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
+        public async Task<ActionResult> ApproveLeave(int empId, int leaveId)
+        {
+            _logger.LogInformation("approving leave request");
+            var leaveApproved = await _departmentService.ApproveLeaveApplication(empId, leaveId);
+            if (leaveApproved == true)
+                return Ok($"Leave approved for leave id : {leaveId}");
+            return BadRequest();
+
+        }
+
+        [MapToApiVersion("1.0")]
+        [Route("")]
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<IEnumerable<DepartmentDto>>> Get()
@@ -44,9 +64,11 @@ namespace EmployeeManagementSystemAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
+        [MapToApiVersion("1.0")]
+        [Route("id")]
+        [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult>  Get(int id)
+        public async Task<ActionResult> Get(int id)
         {
             _logger.LogInformation("Getting list of  department by ID:{id},", id);
             var result = await _departmentService.GetDepartmentAsync(id);
@@ -56,7 +78,9 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         // Update
-        [HttpPut("{id}")]
+        [MapToApiVersion("1.0")]
+        [Route("id")]
+        [HttpPut]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult<Department>> Put(int id, [FromBody] DepartmentVm departmentVm)
         {
@@ -70,10 +94,12 @@ namespace EmployeeManagementSystemAPI.Controllers
             return Ok(await _departmentService.UpdateAsync(id, department));
         }
 
-        [HttpDelete("{id}")]
+        [MapToApiVersion("1.0")]
+        [Route("id")]
+        [HttpDelete]
         [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
 
-        public async Task  Delete(int id)
+        public async Task Delete(int id)
         {
             await _departmentService.DeleteDepartmentAsync(id);
         }
