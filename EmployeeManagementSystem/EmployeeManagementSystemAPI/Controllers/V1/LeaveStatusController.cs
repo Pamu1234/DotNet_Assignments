@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace EmployeeManagementSystemAPI.Controllers
+namespace EmployeeManagementSystemAPI.Controllers.V1
 {
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class LeaveStatusController : ApiControllerBase
@@ -34,7 +34,7 @@ namespace EmployeeManagementSystemAPI.Controllers
 
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async  Task<ActionResult<IEnumerable<LeaveStatusDto>>> Get()
+        public async Task<ActionResult<IEnumerable<LeaveStatusDto>>> Get()
         {
             _logger.LogInformation("Getting list of all LeaveStatus.");
             return Ok(await _leaveStatusService.GetLeavesStatusAsync());
@@ -42,7 +42,7 @@ namespace EmployeeManagementSystemAPI.Controllers
 
         [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task <ActionResult<LeaveStatus>> Get(int id)
+        public async Task<ActionResult<LeaveStatus>> Get(int id)
         {
             _logger.LogInformation("Getting list of  LeaveStatus by ID:{id},", id);
 

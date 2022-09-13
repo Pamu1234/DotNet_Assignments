@@ -9,6 +9,8 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="11.0.1" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
     <PackageReference Include="Serilog.AspNetCore" Version="6.0.1" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.2.3" />
   </ItemGroup>
@@ -16,6 +18,10 @@
   <ItemGroup>
     <ProjectReference Include="..\EmployeeManagementSystem.Core\EmployeeManagementSystem.Core.csproj" />
     <ProjectReference Include="..\EmployeeManagementSystem.Infrastructure\EmployeeManagementSystem.Infrastructure.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Controllers\V2\" />
   </ItemGroup>
 
 </Project>

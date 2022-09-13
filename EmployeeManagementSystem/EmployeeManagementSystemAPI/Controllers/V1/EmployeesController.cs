@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace EmployeeManagementSystemAPI.Controllers
+namespace EmployeeManagementSystemAPI.Controllers.V1
 {
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class EmployeesController : ApiControllerBase
@@ -24,6 +24,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         }
 
         // Insert data
+        [Route("")]
         [HttpPost]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<IEnumerable<Employee>>> Post([FromBody] EmployeeVm employeeVm)
@@ -34,6 +35,7 @@ namespace EmployeeManagementSystemAPI.Controllers
             return Ok(result);
         }
 
+        [Route("")]
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<IEnumerable<EmployeeDto>>> Get()
@@ -45,7 +47,8 @@ namespace EmployeeManagementSystemAPI.Controllers
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
+        [Route("id")]
+        [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult> Get(int id)
         {
@@ -54,11 +57,12 @@ namespace EmployeeManagementSystemAPI.Controllers
             return Ok(employee);
         }
 
-        [HttpPut("{id}")]
+        [Route("id")]
+        [HttpPut]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult<IEnumerable<Employee>>> Put(int id, [FromBody] EmployeeVm employeeVm)
         {
-            Employee employee = _mapper.Map<EmployeeVm, Employee>(employeeVm); 
+            Employee employee = _mapper.Map<EmployeeVm, Employee>(employeeVm);
             if (id <= 0 || id != employee.EmployeeId)
             {
                 _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
@@ -68,11 +72,12 @@ namespace EmployeeManagementSystemAPI.Controllers
             return Ok(result);
         }
 
-        [HttpDelete("{id}")]
+        [Route("id")]
+        [HttpDelete]
         [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
         public async Task Delete(int id)
         {
-            var emloyee = _employeeService.DeleteEmployeeAsync(id);            
+            var emloyee = _employeeService.DeleteEmployeeAsync(id);
         }
     }
 }

@@ -5,10 +5,10 @@ namespace EmployeeManagementSystem.Core.Contracts.Infrastructure.Services
 {
     public interface  ILeaveBalanceService
     {
-        Task<LeaveBalanceDto> GetRemainingLeavesByEmpId(int empId);
+        Task<IEnumerable<LeaveBalanceDto>> GetRemainingLeavesByEmpId(int empId);
         Task<LeaveBalance> CreateRangeAsync(LeaveBalance leaveBalance);
         Task DeleteLeaveBalanceDataByIdAsync(int leaveBalanceId);
-        Task<LeaveBalance> GetLeaveBalanceDataByIdAsync(int leaveBalanceId);
+        Task<LeaveBalanceDto> GetLeaveBalanceDataByIdAsync(int leaveBalanceId);
         Task<IEnumerable<LeaveBalanceDto>> GetLeavesBalanceAsync();
         Task<LeaveBalance> UpdateAsync(int leaveBalanceId, LeaveBalance leaveBalance);
     }

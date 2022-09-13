@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace EmployeeManagementSystemAPI.Controllers
+namespace EmployeeManagementSystemAPI.Controllers.V1
 {
     [ApiConventionType(typeof(DefaultApiConventions))]
 
@@ -35,7 +35,7 @@ namespace EmployeeManagementSystemAPI.Controllers
 
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<IEnumerable<LeaveBalance>>>  Get()
+        public async Task<ActionResult<IEnumerable<LeaveBalance>>> Get()
         {
             _logger.LogInformation("Getting list of all LeaveBalance entity.");
             var result = await _leaveBalanceService.GetLeavesBalanceAsync();
@@ -63,7 +63,7 @@ namespace EmployeeManagementSystemAPI.Controllers
         [HttpPut("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
 
-        public async Task <ActionResult<IEnumerable<LeaveBalance>>>  Put(int id, [FromBody] LeaveBalanceVm leaveBalanceVm)
+        public async Task<ActionResult<IEnumerable<LeaveBalance>>> Put(int id, [FromBody] LeaveBalanceVm leaveBalanceVm)
         {
             LeaveBalance leaveBalance = _mapper.Map<LeaveBalanceVm, LeaveBalance>(leaveBalanceVm);
             if (id <= 0 || id != leaveBalance.LeaveTypeId)
@@ -72,7 +72,7 @@ namespace EmployeeManagementSystemAPI.Controllers
                 return BadRequest();
             }
 
-            return Ok(await _leaveBalanceService.UpdateAsync(id, leaveBalance));           
+            return Ok(await _leaveBalanceService.UpdateAsync(id, leaveBalance));
         }
 
         [HttpDelete("{id}")]

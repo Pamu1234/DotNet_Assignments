@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
 
-namespace EmployeeManagementSystemAPI.Controllers
+namespace EmployeeManagementSystemAPI.Controllers.V1
 {
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class RolesController : ApiControllerBase
@@ -34,7 +34,7 @@ namespace EmployeeManagementSystemAPI.Controllers
 
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<IEnumerable<Role>>>  Get()
+        public async Task<ActionResult<IEnumerable<Role>>> Get()
         {
 
             _logger.LogInformation("Getting list of all Role entity.");
@@ -43,7 +43,7 @@ namespace EmployeeManagementSystemAPI.Controllers
 
         [HttpGet("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<Role>>  Get(int id)
+        public async Task<ActionResult<Role>> Get(int id)
         {
             _logger.LogInformation("Getting list of  Role by ID:{id},", id);
             return Ok(await _roleService.GetRoleDataAsync(id));
@@ -51,7 +51,7 @@ namespace EmployeeManagementSystemAPI.Controllers
 
         [HttpPut("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        public async Task <ActionResult<Role>> Put(int id, [FromBody] RoleVm roleVm)
+        public async Task<ActionResult<Role>> Put(int id, [FromBody] RoleVm roleVm)
         {
             Role role = _mapper.Map<RoleVm, Role>(roleVm);
             if (id <= 0 || id != role.RoleId)
