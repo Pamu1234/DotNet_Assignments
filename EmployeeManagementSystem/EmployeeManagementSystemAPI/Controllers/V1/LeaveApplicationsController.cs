@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystemAPI.Infrastructure.Specs;
 using EmployeeManagementSystemAPI.ViewModels;
@@ -9,6 +10,8 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers.V1
 {
+    [ApiVersion("1.0")]
+    [ApiVersion("1.1")]
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class LeaveApplicationsController : ApiControllerBase
     {
@@ -65,25 +68,20 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
         }
 
         [Route("id")]
-        [HttpPut]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        public async Task<ActionResult<IEnumerable<LeaveApplication>>> Put(int id, [FromBody] LeaveApplicationVm leaveApplicationVm)
-        {
-            LeaveApplication leaveApplication = _mapper.Map<LeaveApplicationVm, LeaveApplication>(leaveApplicationVm);
-            if (id <= 0 || id != leaveApplication.LeaveTypeId)
-            {
-                _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
-                return BadRequest();
-            }
-            return Ok(await _leaveApplicationService.UpdateAsync(id, leaveApplication));
-        }
-
-        [Route("id")]
         [HttpDelete()]
         [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
         public async Task Delete(int id)
         {
             await _leaveApplicationService.DeleteLeaveApplicationAsync(id);
+        }
+
+
+        [Route("id")]
+        [HttpPut]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        public async Task<ActionResult<IEnumerable<LeaveApplication>>> Put(int id, [FromBody] UpdateLeaveApplicationRequestDto leaveApplicationApprove)
+        {
+            return Ok(await _leaveApplicationService.UpdateAsync(id, leaveApplicationApprove));
         }
     }
 }

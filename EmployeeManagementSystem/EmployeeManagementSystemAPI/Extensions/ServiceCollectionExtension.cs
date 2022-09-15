@@ -1,5 +1,7 @@
 ﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
+using EmployeeManagementSystem.Core.Enum;
 using EmployeeManagementSystem.Infrastructure.Repositories;
 using EmployeeManagementSystem.Infrastructure.Repositories.EntityFramework;
 using EmployeeManagementSystem.Infrastructure.Services;
@@ -74,8 +76,9 @@ namespace EmployeeManagementSystemAPI.Extensions
             services.AddTransient<ILeavesService, LeaveService>();
             services.AddTransient<ILeaveStatusService, LeaveStatusServices>();
             services.AddTransient<IRolesService, RoleService>();
+            //services.AddTransient<enum LeaveApprovalStatus, UpdateLeaveApplicationRequestDto>();
 
-            
+
 
         }
 

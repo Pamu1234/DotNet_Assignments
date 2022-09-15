@@ -50,7 +50,32 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             _employeeManagementDataDbContext.SaveChanges();
             return department;
         }
+        //public async Task<Department> GetTotalEmployeeInEachDepartment (int deptId)
+        //{
+        //    var employeeListInDept = await(from emp in _employeeManagementDataDbContext.Employees
+        //                             group emp by emp.DepartmentId into g
+        //                             select new
+        //                             {
+        //                                 emp = g.Key,
+        //                                 count = g.Count()
+        //                             }).ToListAsync();
 
+        //    //List<Employee> employees = new List<Employee>();
+        //    //foreach (var item in employeeListInDept)
+        //    //{
+        //    //    Employee employee = new Employee();
+        //    //    employee.DepartmentId = 
+        //    //}
+        //    //foreach(var employee in employeeListInDept)
+        //    //{
+        //    //    Employee employee = new Employee();
+
+        //    //    //employee.emp
+        //    //    //    employee.count;
+
+        //    //}
+        //    return await employeeListInDept;
+        //}
         public async Task DeleteDepartmentAsync(int departmentId)
         {
             var departmentToBeDeleted = await _employeeManagementDataDbContext.Departments.FirstOrDefaultAsync(d => d.DepartmentId == departmentId);

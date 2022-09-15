@@ -46,23 +46,14 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             return await _dapperConnection.QueryFirstOrDefaultAsync<LeaveBalanceDto>(getLeaveBalanceDataByIdQuery, new { leaveBalanceId });
         }
 
-        public async Task<IEnumerable< LeaveBalanceDto>> GetRemainingLeavesByEmpId(int empId)
+        public async Task<LeaveBalance> GetRemainingLeavesByEmpId(int empId, int leaveTypeId)
         {
 
-            var remainingLeavesOfEmployee = await (from employee in _employeeManagementDataDbContext.Employees
-                                                   join leaveBlance in _employeeManagementDataDbContext.LeaveBalances
-                                                   on employee.EmployeeId equals leaveBlance.EmployeeId
-                                                   join leaveType in _employeeManagementDataDbContext.Leaves
-                                                   on leaveBlance.LeaveTypeId equals leaveType.LeaveTypeId
-                                                   where employee.EmployeeId == empId
-                                                   select new LeaveBalanceDto
-                                                   {
-                                                       FirstName = employee.FirstName,
-                                                       LastName = employee.LastName,
-                                                       LeaveTypeName = leaveType.LeaveTypeName,
-                                                       Balance = leaveBlance.Balance
-                                                   }).ToListAsync();
-            return remainingLeavesOfEmployee;
+            var leaveBalance = await (from leaveBlance in _employeeManagementDataDbContext.LeaveBalances
+                                      where leaveBlance.EmployeeId == empId && leaveBlance.LeaveTypeId == leaveTypeId
+                                      select leaveBlance).FirstOrDefaultAsync();
+            return leaveBalance;
+
         }
 
         public async Task<LeaveBalance> UpdateAsync(int leaveBalanceId, LeaveBalance leaveBalance)
@@ -80,7 +71,7 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         public async Task DeleteLeaveBalanceDataByIdAsync(int leaveBalanceId)
         {
             var leaveBalanceToBeDeleted = await GetLeaveBalanceDataByIdAsync(leaveBalanceId);
-           //_employeeManagementDataDbContext.LeaveBalances.Remove(leaveBalanceToBeDeleted);
+            //_employeeManagementDataDbContext.LeaveBalances.Remove(leaveBalanceToBeDeleted);
             await _employeeManagementDataDbContext.SaveChangesAsync();
         }
 

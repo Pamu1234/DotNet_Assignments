@@ -9,7 +9,7 @@ namespace EmployeeManagementSystem.Core.Contracts.Infrastructure.Services
         Task DeleteEmployeeAsync(int employeeId);
         //Task<Employee> GetEmployeeAsync(int employeeId);
         //Task<IEnumerable<EmployeeDto>> GetEmployeeAsync(int employeeId);
-        Task<EmployeeDto> GetEmployeeAsync(int employeeId);
+        Task<IEnumerable< EmployeeDto>> GetEmployeeAsync(int employeeId);
         Task<IEnumerable<EmployeeDto>> GetEmployeesAsync();
         Task<Employee> UpdateAsync(int employeeId, Employee employee);
     }

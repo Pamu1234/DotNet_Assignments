@@ -41,9 +41,27 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return _leaveApplicationRepository.GetLeaveDataByIdAsync(leaveId);
         }
 
-        public Task<LeaveApplication> UpdateAsync(int leaveId, LeaveApplication leaveApplication)
+        public async Task<bool> UpdateAsync (int leaveId, UpdateLeaveApplicationRequestDto leaveApplication)
         {
-            return _leaveApplicationRepository.UpdateAsync(leaveId, leaveApplication);
+            if (leaveApplication.Status == LeaveApprovalStatus.Cancelled)
+            {
+                await _leaveApplicationRepository.UpdateAsync(leaveId, leaveApplication,new LeaveApplication());
+                return false;
+            }
+
+            var leaveApplicationData = await _leaveApplicationRepository.GetLeaveDataByIdAsync(leaveId);
+            var leaveBal = await _leaveBalanceRepository.GetRemainingLeavesByEmpId(leaveApplicationData.EmployeeId, leaveApplicationData.LeaveTypeId);
+
+            if (leaveBal.Balance > leaveApplicationData.NoOfDays)
+            {
+                leaveBal.Balance = leaveBal.Balance - leaveApplicationData.NoOfDays;
+
+                await _leaveBalanceRepository.UpdateAsync(leaveId, leaveBal);
+                await _leaveApplicationRepository.UpdateAsync(leaveId, leaveApplication,leaveApplicationData);
+                return true;
+            }
+            return false;
+
         }
 
         public Task<IEnumerable<LeaveApplicationDto>> GetEmployeeLeaveRequest (int empId)

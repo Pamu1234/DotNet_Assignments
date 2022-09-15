@@ -49,11 +49,9 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return(_employeeRepository.DeleteEmployeeAsync(employeeId));
         }
 
-        public async Task<EmployeeDto> GetEmployeeAsync(int employeeId)
+        public async Task<IEnumerable< EmployeeDto>> GetEmployeeAsync(int employeeId)
         {
-            //
             var remainingLeaves = await _employeeRepository.GetEmployeeAsync(employeeId);
-
             return remainingLeaves;
         }
 

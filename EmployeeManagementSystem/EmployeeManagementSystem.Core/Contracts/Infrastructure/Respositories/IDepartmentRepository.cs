@@ -5,7 +5,6 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories.EntityFramework
 {
     public interface IDepartmentRepository
     {
-        //Task CreateRangeAsync(IEnumerable<Department> departments);
         Task<Department> CreateAsync(Department department);
         Task DeleteDepartmentAsync(int departmentId);
         Task<DepartmentDto> GetDepartmentAsync(int departmentId);

@@ -55,9 +55,9 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
 
         [HttpGet("leaves/{empId}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult> GetEmployeesRemainingleaves(int empId)
+        public async Task<ActionResult> GetEmployeesRemainingleaves(int empId, int leaveTypeId)
         {
-            var remainingLeaves = await _leaveBalanceService.GetRemainingLeavesByEmpId(empId);
+            var remainingLeaves = await _leaveBalanceService.GetRemainingLeavesByEmpId(empId,leaveTypeId);
             return Ok(remainingLeaves);
         }
         [HttpPut("{id}")]

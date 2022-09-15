@@ -39,20 +39,6 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
         }
 
         [MapToApiVersion("1.0")]
-        [Route("approveleave/{empId},{leaveId}")]
-        [HttpPost]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult> ApproveLeave(int empId, int leaveId)
-        {
-            _logger.LogInformation("approving leave request");
-            var leaveApproved = await _departmentService.ApproveLeaveApplication(empId, leaveId);
-            if (leaveApproved == true)
-                return Ok($"Leave approved for leave id : {leaveId}");
-            return BadRequest();
-
-        }
-
-        [MapToApiVersion("1.0")]
         [Route("")]
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
@@ -99,6 +85,8 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
         [HttpDelete]
         [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
 
+
+        //public async Task<IEnumerable<Department>> Get
         public async Task Delete(int id)
         {
             await _departmentService.DeleteDepartmentAsync(id);

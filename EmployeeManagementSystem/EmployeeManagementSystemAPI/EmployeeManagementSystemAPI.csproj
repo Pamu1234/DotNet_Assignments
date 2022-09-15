@@ -20,8 +20,4 @@
     <ProjectReference Include="..\EmployeeManagementSystem.Infrastructure\EmployeeManagementSystem.Infrastructure.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Controllers\V2\" />
-  </ItemGroup>
-
 </Project>

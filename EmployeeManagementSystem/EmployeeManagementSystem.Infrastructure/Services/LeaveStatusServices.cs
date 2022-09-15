@@ -23,11 +23,6 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return _leaveStatusRepository.CreateAsync(leaveStatus);
         }
 
-        //public Task DeleteLeaveAsync(int leaveStatusId)
-        //{
-        //    return _leaveStatusRepository.DeleteLeaveAsync(leaveStatusId);
-        //}
-
         public Task<IEnumerable<LeaveStatusDto>> GetLeavesStatusAsync()
         {
             return _leaveStatusRepository.GetLeavesStatusAsync();

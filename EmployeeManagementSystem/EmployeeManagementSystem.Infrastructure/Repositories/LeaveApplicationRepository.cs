@@ -1,6 +1,8 @@
 ﻿using Dapper;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
+using EmployeeManagementSystem.Core.Enum;
+using EmployeeManagementSystem.Infrastructure.Repositories.EntityFramework;
 using Microsoft.EntityFrameworkCore;
 using System.Data;
 
@@ -11,12 +13,17 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         private readonly EmployeemanagementDbContext _employeeManagementDataDbContext;
         private readonly IDbConnection _dapperConnection;
         private readonly ILeaveBalanceRepository _leaveBalanceRepository;
+        
+        private readonly IDepartmentRepository _departmentRepository;
+        private readonly IEmployeeRepository _employeeRepository;
 
-        public LeaveApplicationRepository(EmployeemanagementDbContext employeeManagementDataDbContext, IDbConnection dbConnection, ILeaveBalanceRepository leaveBalanceRepository)
+        public LeaveApplicationRepository(EmployeemanagementDbContext employeeManagementDataDbContext, IDbConnection dbConnection, ILeaveBalanceRepository leaveBalanceRepository,  IDepartmentRepository departmentRepository, IEmployeeRepository employeeRepository)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
             _dapperConnection = dbConnection;
             _leaveBalanceRepository = leaveBalanceRepository;
+            _departmentRepository = departmentRepository;
+            _employeeRepository = employeeRepository;
         }
 
         public async Task<LeaveApplication> CreateAsync(LeaveApplication leaveApplication)
@@ -89,15 +96,14 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             return employeeLeaveRequest;
         }
 
-        public async Task<LeaveApplication> UpdateAsync(int leaveId, LeaveApplication leaveApplication)
+
+        public async Task<LeaveApplication> UpdateAsync(int leaveId, UpdateLeaveApplicationRequestDto updateLeaveApplicationRequestDto , LeaveApplication leaveApplication )
         {
             var leaveApplicationToBeUpdate = await GetLeaveDataByIdAsync(leaveId);
             leaveApplication.EmployeeId = leaveApplication.EmployeeId;
             leaveApplication.LeaveTypeId = leaveApplication.LeaveTypeId;
             leaveApplication.DateOfApproval = DateTime.UtcNow;
-            leaveApplication.StartDate = DateTime.UtcNow;
-            leaveApplication.EndDate = DateTime.UtcNow;
-            leaveApplication.StatusId = leaveApplication.StatusId;
+            leaveApplication.StatusId = (int)updateLeaveApplicationRequestDto.Status;
             _employeeManagementDataDbContext.LeaveApplications.Update(leaveApplication);
             _employeeManagementDataDbContext.SaveChanges();
             return leaveApplication;
@@ -109,5 +115,6 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             _employeeManagementDataDbContext.LeaveApplications.Remove(leaveApplicationToBeDeleted);
             await _employeeManagementDataDbContext.SaveChangesAsync();
         }
+
     }
 }

@@ -2,6 +2,7 @@
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -43,19 +44,10 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return await _leaveBalanceRepository.GetLeaveBalanceDataByIdAsync(leaveBalanceId);
         }
 
-        public Task<IEnumerable<LeaveBalanceDto>> GetRemainingLeavesByEmpId(int empId)
+        public async Task<IEnumerable<LeaveBalanceDto>> GetRemainingLeavesByEmpId(int empId,int leaveTypeId )
         {
-            //var leaveBalancesOfEmployee = (from emp in _employeeManagementDataDbContext.Employees
-            //                               join LeaveBalance in _employeeManagementDataDbContext.LeaveBalances
-            //                               on emp.EmployeeId equals LeaveBalance.EmployeeId
-            //                               where LeaveBalance.EmployeeId == empId
-            //                               select new LeaveBalanceDto
-            //                               {
-            //                                   Balance = LeaveBalance.Balance,
-            //                                   EmployeeId = empId,
-
-            //                               }).FirstOrDefault();
-            return _leaveBalanceRepository.GetRemainingLeavesByEmpId(empId);
+           return (IEnumerable<LeaveBalanceDto>)_leaveBalanceRepository.GetRemainingLeavesByEmpId(empId, leaveTypeId);
+           
         }
 
         public Task<LeaveBalance> UpdateAsync(int leaveBalanceId, LeaveBalance leaveBalance)
@@ -63,6 +55,20 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return _leaveBalanceRepository.UpdateAsync(leaveBalanceId, leaveBalance);
         }
 
-       
+        public async Task<LeaveBalanceDto> GetEmployeesRemainingleaves(int empId)
+        {
+            var leaveBalancesOfEmployee = await (from emp in _employeeManagementDataDbContext.Employees
+                                           join LeaveBalance in _employeeManagementDataDbContext.LeaveBalances
+                               on emp.EmployeeId equals LeaveBalance.EmployeeId
+                                           where LeaveBalance.EmployeeId == empId
+                                           select new LeaveBalanceDto
+                                           {
+                                               Balance = LeaveBalance.Balance,
+                                               
+
+                                           }).FirstOrDefaultAsync();
+            return leaveBalancesOfEmployee;
+        }
+
     }
 }

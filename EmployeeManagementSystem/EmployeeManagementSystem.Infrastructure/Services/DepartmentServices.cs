@@ -35,44 +35,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return result;
         }
 
-        public async Task<bool> ApproveLeaveApplication(int empId,int leaveId)
-        {
-            var isEmployeeHR = await IsEmployeeIsHr(empId);
-            if (isEmployeeHR == true)
-            {
-                var leaveApplication = await _leaveApplicationRepository.GetLeaveDataByIdAsync(leaveId);
-                leaveApplication.ApprovedBy = 1;
-                if (leaveApplication != null)
-                {
 
-                    var data = await (from leave in _employeeManagementDataDbContext.Leaves
-                                      join leaveBlance in _employeeManagementDataDbContext.LeaveBalances
-                                      on leave.LeaveTypeId equals leaveBlance.LeaveTypeId
-                                      where leave.LeaveTypeId == leaveApplication.LeaveTypeId && leaveBlance.EmployeeId == leaveApplication.EmployeeId
-
-                                      select leaveBlance).FirstAsync();
-
-                    data.Balance = data.Balance - leaveApplication.NoOfDays;
-
-                    await _leaveBalanceRepository.UpdateAsync(data.LeaveBalanceId, data);
-                }
-                return true;
-            }
-            return false;
-        }
-        public async Task<bool> IsEmployeeIsHr(int empId)
-        {
-            var departments = await _departmentRepository.GetDepartmentsAsync();
-            var employees = await _employeeRepository.GetEmployeesAsync();
-            var employee =  from emp in employees
-                            join dept in departments
-                            on emp.DepartmentName equals dept.DepartmentName
-                            where emp.EmployeeId == empId
-                            select emp;
-            if (employee != null)
-                return true;
-            return false;
-        }
         public Task<DepartmentDto> GetDepartmentAsync(int departmentId)
         {
             var result = _departmentRepository.GetDepartmentAsync(departmentId);
@@ -89,6 +52,5 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return _departmentRepository.DeleteDepartmentAsync(departmentId);
         }
 
- 
     }
 }
