@@ -80,13 +80,29 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(await _departmentService.UpdateAsync(id, department));
         }
 
+        [Route("deptId")]
+        [HttpGet]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult<IEnumerable<Employee>>> GetCountOfEmployees(int deptId)
+        {
+            var result = await _departmentService.GetEmpWorkingInDept(deptId);
+            return Ok(result);
+        }
+
+        
+        [HttpGet("{deptId}")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<int> TotalNumbersOfEmployeeInDepsrtment(int deptId)
+        {
+            var result = await _departmentService.EmployeeInDepsrtmentCount(deptId);
+            return result;
+        }
         [MapToApiVersion("1.0")]
         [Route("id")]
         [HttpDelete]
         [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
 
 
-        //public async Task<IEnumerable<Department>> Get
         public async Task Delete(int id)
         {
             await _departmentService.DeleteDepartmentAsync(id);

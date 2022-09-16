@@ -20,6 +20,7 @@ namespace EmployeeManagementSystem.Core.Entities
         public DateTime? UpdatedDate { get; set; }
         public int NoOfDays { get; set; }
 
+        public virtual ICollection<Attendance> Attendances { get; set; }
         public virtual ICollection<LeaveApplication> LeaveApplications { get; set; }
         public virtual ICollection<LeaveBalance> LeaveBalances { get; set; }
     }

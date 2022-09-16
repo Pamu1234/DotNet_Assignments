@@ -10,5 +10,6 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories.EntityFramework
         Task<DepartmentDto> GetDepartmentAsync(int departmentId);
         Task<IEnumerable<DepartmentDto>> GetDepartmentsAsync();
         Task<Department> UpdateAsync(int departmentId, Department department);
+        public  Task<IEnumerable<EmployeeDto>> GetTotalNoOfEmpWorkingInEachDept(int deptId);
     }
 }

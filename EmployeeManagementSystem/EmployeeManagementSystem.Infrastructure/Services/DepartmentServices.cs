@@ -52,5 +52,18 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return _departmentRepository.DeleteDepartmentAsync(departmentId);
         }
 
+        public async Task<IEnumerable<EmployeeDto>> GetEmpWorkingInDept(int deptId)
+        {
+            var result =  await _departmentRepository.GetTotalNoOfEmpWorkingInEachDept(deptId);
+            return result;
+        }
+        public async Task<int> EmployeeInDepsrtmentCount(int deptId)
+        {
+            var employees = await _departmentRepository.GetTotalNoOfEmpWorkingInEachDept(deptId);
+            return employees.Count();
+        }
+
+
+
     }
 }

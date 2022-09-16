@@ -14,6 +14,7 @@ namespace EmployeeManagementSystem.Core.Entities
         {
         }
 
+        public virtual DbSet<Attendance> Attendances { get; set; } = null!;
         public virtual DbSet<Department> Departments { get; set; } = null!;
         public virtual DbSet<Employee> Employees { get; set; } = null!;
         public virtual DbSet<Leaves> Leaves { get; set; } = null!;

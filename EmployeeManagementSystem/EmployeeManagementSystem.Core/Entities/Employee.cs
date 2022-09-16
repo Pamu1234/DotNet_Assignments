@@ -20,6 +20,7 @@
 
         public virtual Department? Department { get; set; }
         public virtual Role? Role { get; set; }
+        public virtual ICollection<Attendance> Attendances { get; set; }
         public virtual ICollection<LeaveApplication> LeaveApplications { get; set; }
         public virtual ICollection<LeaveBalance> LeaveBalances { get; set; }
     }

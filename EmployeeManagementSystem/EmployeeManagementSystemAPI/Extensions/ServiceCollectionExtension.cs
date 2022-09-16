@@ -1,4 +1,5 @@
-﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Respositories;
+using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Core.Enum;
@@ -67,6 +68,7 @@ namespace EmployeeManagementSystemAPI.Extensions
             services.AddTransient<ILeaveRepository, LeaveRepository>();            
             services.AddTransient<ILeaveStatusRepository, LeaveStatusRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
+            services.AddTransient<IAttendanceRepository, AttendanceRepository>();
 
             // Services
             services.AddTransient<IDepartmentService, DepartmentServices>();
@@ -76,13 +78,10 @@ namespace EmployeeManagementSystemAPI.Extensions
             services.AddTransient<ILeavesService, LeaveService>();
             services.AddTransient<ILeaveStatusService, LeaveStatusServices>();
             services.AddTransient<IRolesService, RoleService>();
-            //services.AddTransient<enum LeaveApprovalStatus, UpdateLeaveApplicationRequestDto>();
-
+            services.AddTransient<IAttendanceService, AttendanceServices>();
 
 
         }
-
-
 
     }
 }
