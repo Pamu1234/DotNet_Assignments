@@ -13,6 +13,7 @@ namespace EmployeeManagementSystem.Infrastructure.Extensions
         internal static void RegisterEntityConfigurations(this ModelBuilder modelBuilder)
         {
             modelBuilder.ApplyConfiguration(new EmployeeEntityTypeConfiguration());
+            modelBuilder.ApplyConfiguration(new AttendanceEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new DepartmentEntityTypeConfiguration());
             modelBuilder.ApplyConfiguration(new LeaveApplicationTypeConfiguration());
             modelBuilder.ApplyConfiguration(new LeaveBalanceEntityConfiguration());

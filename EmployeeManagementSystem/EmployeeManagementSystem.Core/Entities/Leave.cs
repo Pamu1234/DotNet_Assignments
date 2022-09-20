@@ -7,6 +7,7 @@ namespace EmployeeManagementSystem.Core.Entities
     {
         public Leaves()
         {
+            Attendances = new HashSet<Attendance>();
             LeaveApplications = new HashSet<LeaveApplication>();
             LeaveBalances = new HashSet<LeaveBalance>();
         }

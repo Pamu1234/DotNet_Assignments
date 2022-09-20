@@ -10,5 +10,6 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         Task<IEnumerable< EmployeeDto>> GetEmployeeAsync(int employeeId);
         Task<IEnumerable<EmployeeDto>> GetEmployeesAsync();
         Task<Employee> UpdateAsync(int employeeId, Employee employee);
+        public DateTime EmployeeLogin(int empId);
     }
 }

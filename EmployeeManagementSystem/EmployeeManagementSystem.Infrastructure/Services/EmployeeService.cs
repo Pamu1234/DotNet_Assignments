@@ -1,8 +1,8 @@
-﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Respositories;
+using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Repositories;
-using Microsoft.EntityFrameworkCore;
 
 namespace EmployeeManagementSystem.Infrastructure.Services
 {
@@ -11,13 +11,15 @@ namespace EmployeeManagementSystem.Infrastructure.Services
         private readonly IEmployeeRepository _employeeRepository;
         private readonly ILeaveRepository _leaveRepository;
         private readonly ILeaveBalanceRepository _leaveBalanceRepository;
+        private readonly IAttendanceRepository _attendanceRepository; 
         private readonly EmployeemanagementDbContext _employeeManagementDataDbContext;
 
 
-        public EmployeeService(IEmployeeRepository employeeRepository, ILeaveRepository leaveRepository, ILeaveBalanceRepository leaveBalanceRepository, EmployeemanagementDbContext employeeManagementDataDbContext)
+        public EmployeeService(IEmployeeRepository employeeRepository, IAttendanceRepository attendanceRepository, ILeaveRepository leaveRepository, ILeaveBalanceRepository leaveBalanceRepository, EmployeemanagementDbContext employeeManagementDataDbContext)
         {
             _employeeRepository = employeeRepository;
             _leaveRepository = leaveRepository;
+            _attendanceRepository = attendanceRepository;
             _leaveBalanceRepository = leaveBalanceRepository;
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
         }
@@ -39,7 +41,6 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             }
             await _leaveBalanceRepository.CreateRangeAsync(leaveBalances);
             return emplyeeData;
-
   
         }
 
@@ -67,6 +68,37 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return _employeeRepository.UpdateAsync(employeeId, employee);
         }
 
+        //public DateTime EmployeeLogin(Attendance attendance, int empId)
+        //{
+        //    attendance.DateOfLog = DateTime.UtcNow;
+        //    attendance.Timein = DateTime.UtcNow;
+        //    return attendance;
 
+        //}
+
+        public async Task<Attendance> EmployeeLogin(int empId)
+        {
+
+            Attendance attendance = new()
+            {
+                EmployeeId=empId,
+                DateOfLog=DateTime.UtcNow,
+                Timein=DateTime.UtcNow
+            };
+            var result = await _attendanceRepository.CreateAsync(attendance);
+            return attendance;
+        }
+
+        public async Task<Attendance?> EmployeeLogout(int empId)
+        {
+            var employee = await _attendanceRepository.GetLastAttendance(empId);
+            if (employee!=null && employee.DateOfLog.Date == DateTime.UtcNow.Date) { 
+            employee.TimeOut = DateTime.UtcNow;
+            var logOut = await _attendanceRepository.UpdateAsync(employee.AttendanceId,employee);
+            return logOut;
+            }
+            return null;
+
+        }
     }
 }

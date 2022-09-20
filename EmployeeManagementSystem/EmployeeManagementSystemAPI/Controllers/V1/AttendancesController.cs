@@ -2,6 +2,7 @@
 using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
+using EmployeeManagementSystemAPI.Infrastructure.Specs;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
 
@@ -9,8 +10,10 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers.V1
 {
-    [Route("api/[controller]")]
-    [ApiController]
+    [ApiVersion("1.0")]
+    [ApiVersion("1.1")]
+    [ApiConventionType(typeof(DefaultApiConventions))]
+
     public class AttendancesController : ApiControllerBase
     {
         private readonly IAttendanceService _attendanceService;
@@ -24,16 +27,22 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             _logger = logger;
         }
 
+        [MapToApiVersion("1.0")]
+        [Route("")]
         [HttpPost]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<IEnumerable<Attendance>>> Post([FromBody] AttendanceVm attendanceVm)
         {
             _logger.LogInformation("Inserting data to Attendance entity.");
-            Attendance attendance = _mapper.Map<AttendanceVm, Attendance>(attendanceVm);
+            var attendance = _mapper.Map<AttendanceVm, Attendance>(attendanceVm);
             var result = await _attendanceService.CreateAsync(attendance);
             return Ok(result);
         }
 
+        [MapToApiVersion("1.0")]
+        [Route("")]
         [HttpGet]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<IEnumerable<AttendanceDto>>> Get()
         {
             _logger.LogInformation("Getting list of all Attendances.");
@@ -41,7 +50,10 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
+        [MapToApiVersion("1.0")]
+        [Route("id")]
+        [HttpGet]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult> Get(int attendanceId)
         {
             _logger.LogInformation("Getting Data of Attendances by ID:{attendanceId},", attendanceId);
@@ -50,8 +62,10 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
 
         }
 
-        // PUT api/<AttendancesController>/5
-        [HttpPut("{id}")]
+        [MapToApiVersion("1.0")]
+        [Route("id")]
+        [HttpPut]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult<Attendance>> Put(int attendanceId, [FromBody] AttendanceVm attendanceVm)
         {
             Attendance attendance = _mapper.Map<AttendanceVm, Attendance>(attendanceVm);
@@ -64,11 +78,23 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
         }
 
         // DELETE api/<AttendancesController>/5
-        [HttpDelete("{id}")]
-        public Task Delete(int attendanceId)
+        [MapToApiVersion("1.0")]
+        [Route("id")]
+        [HttpDelete]
+        [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
+        public async Task Delete(int attendanceId)
         {
-            return _attendanceService.DeleteAttendanceRecord(attendanceId);
+            await  _attendanceService.DeleteAttendanceRecord(attendanceId);
 
+        }
+
+        [HttpGet("EmployeeAttendance")]
+        [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
+        public async Task<ActionResult>GetEmployeeAttendanceByEmployeeId(int empId)
+        {
+            _logger.LogInformation("Gettig Employee Attendance by Employee Id: {empId}", empId);
+            var result = await _attendanceService.GetEmployeeAttendanceById(empId);
+            return Ok(result);
         }
     }
 }

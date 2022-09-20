@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Dapper;
+using EmployeeManagementSystem.Core.Contracts.Infrastructure.Respositories;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using Microsoft.EntityFrameworkCore;
@@ -10,11 +11,13 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
     public class EmployeeRepository : IEmployeeRepository
     {
         private readonly EmployeemanagementDbContext _employeeManagementDataDbContext;
+        private readonly IAttendanceRepository _attendanceRepository;
         private readonly IDbConnection _dapperConnection;
         private readonly IMapper _mapper;
-        public EmployeeRepository(EmployeemanagementDbContext employeeManagementDataDbContext,IDbConnection dbConnection,IMapper mapper)
+        public EmployeeRepository(EmployeemanagementDbContext employeeManagementDataDbContext, IAttendanceRepository attendanceRepository, IDbConnection dbConnection,IMapper mapper)
         {
             _employeeManagementDataDbContext = employeeManagementDataDbContext;
+            _attendanceRepository = attendanceRepository;
             _dapperConnection = dbConnection;
             _mapper = mapper;
         }
@@ -64,6 +67,17 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             await _employeeManagementDataDbContext.SaveChangesAsync();
         }
 
-        
+        DateTime IEmployeeRepository.EmployeeLogin(int empId)
+        {
+            throw new NotImplementedException();
+        }
+
+        //public DateTime EmployeeLogin(Attendance attendance , int empId)
+
+        //    _attendanceRepository.CreateAsync(attendance);
+        //    return clockIn;
+
+        //}
+
     }
 }

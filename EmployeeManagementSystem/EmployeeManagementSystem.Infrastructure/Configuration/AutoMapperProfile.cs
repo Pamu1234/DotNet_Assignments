@@ -11,6 +11,7 @@ namespace EmployeeManagementSystem.Infrastructure.Configuration
             CreateMap<Department, DepartmentDto>();
 
             CreateMap<EmployeeDto, Employee>();
+           // CreateMap<AttendanceVm , Attendance>();
 
             CreateMap<Leaves, LeaveDto>();
             CreateMap<LeaveApplication, LeaveApplicationDto>();

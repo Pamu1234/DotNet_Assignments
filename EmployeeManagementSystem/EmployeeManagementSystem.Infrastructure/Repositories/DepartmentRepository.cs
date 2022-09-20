@@ -54,14 +54,23 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         public async Task<IEnumerable<EmployeeDto>> GetTotalNoOfEmpWorkingInEachDept(int deptId)
         {
             var empCount =await (from emp in _employeeManagementDataDbContext.Employees
-                           where emp.DepartmentId == deptId
+                                 join dept in _employeeManagementDataDbContext.Departments
+                                 on emp.DepartmentId equals deptId
+                                 join Role in _employeeManagementDataDbContext.Roles
+                                 on emp.RoleId equals Role.RoleId
+                                 where emp.DepartmentId == deptId
                            select new EmployeeDto
                            {
                                EmployeeId = emp.EmployeeId,
                                Address = emp.Address,
                                FirstName = emp.FirstName,
                                LastName = emp.LastName,
-                               
+                               EmailId = emp.EmailId,
+                               Contact=emp.Contact,
+                               Salary=emp.Salary,
+                               DepartmentName = dept.DepartmentName,
+                               RoleName = Role.RoleName
+
                            }).ToListAsync();
             return empCount;
         }

@@ -79,5 +79,21 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
         {
             var emloyee = _employeeService.DeleteEmployeeAsync(id);
         }
+
+
+        [HttpPost("clockIn")]
+        public async Task<ActionResult> EmployeeClockin(int id)
+        {
+            var attendance =await _employeeService.EmployeeLogin(id);
+             return Ok(attendance);
+        }
+
+        [HttpPost("clockout")]
+        public async Task<ActionResult> EmployeeClockOut(int id)
+        {
+            
+            var logout = await _employeeService.EmployeeLogout(id);
+            return Ok(logout);
+        }
     }
 }

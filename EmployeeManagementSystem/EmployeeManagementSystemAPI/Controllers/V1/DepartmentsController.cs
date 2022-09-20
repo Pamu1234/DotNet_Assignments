@@ -97,12 +97,11 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             var result = await _departmentService.EmployeeInDepsrtmentCount(deptId);
             return result;
         }
+
         [MapToApiVersion("1.0")]
         [Route("id")]
         [HttpDelete]
         [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
-
-
         public async Task Delete(int id)
         {
             await _departmentService.DeleteDepartmentAsync(id);

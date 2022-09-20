@@ -20,9 +20,17 @@ namespace EmployeeManagementSystem.Infrastructure.Services
 
         public async Task<Attendance> CreateAsync(Attendance attendance)
         {
+            attendance.DateOfLog = DateTime.UtcNow;
+            attendance.Timein = ClockIn(attendance);
             var result = await  _attendanceRepository.CreateAsync(attendance);
             return result;
         }
+        public DateTime ClockIn(Attendance attendance)
+        {
+            attendance.Timein = DateTime.UtcNow;
+            return attendance.Timein;
+        }
+
         public async Task<IEnumerable<AttendanceDto>>GetAttendanceAsync()
         {
             var result = await _attendanceRepository.GetAttendanceAsync();
@@ -33,16 +41,20 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             var result = await _attendanceRepository.GetAttendanceDataByIdAsync(attendanceId);
             return result;
         }
-
+        public async Task <AttendanceDto> GetEmployeeAttendanceById(int empId)
+        {
+            var result = await _attendanceRepository.GetEmployeeAttendanceById(empId);
+            return result;
+        }
         public async Task<Attendance>UpdateAsync (int attendanceId, Attendance attendance)
         {
             var result = await _attendanceRepository.UpdateAsync(attendanceId, attendance);
             return result;
         }
-        public Task DeleteAttendanceRecord (int attendanceId)
+        public async Task DeleteAttendanceRecord (int attendanceId)
         {
-            var result = _attendanceRepository.DeleteAttendanceRecord(attendanceId);
-            return result;
+            await _attendanceRepository.DeleteAttendanceRecord(attendanceId);
+           
         }
 
     }

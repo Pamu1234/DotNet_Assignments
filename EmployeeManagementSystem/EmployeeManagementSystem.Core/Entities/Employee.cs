@@ -4,6 +4,7 @@
     {
         public Employee()
         {
+            Attendances = new HashSet<Attendance>();
             LeaveApplications = new HashSet<LeaveApplication>();
             LeaveBalances = new HashSet<LeaveBalance>();
         }

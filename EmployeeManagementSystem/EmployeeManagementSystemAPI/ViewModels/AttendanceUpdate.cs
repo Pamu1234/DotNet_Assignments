@@ -2,6 +2,7 @@
 {
     public class AttendanceUpdate
     {
-        public TimeSpan? TimeOut { get; set; }
+        public DateTime? TimeOut { get; set; }
+        public int? EffectiveHours { get; set; }
     }
 }
