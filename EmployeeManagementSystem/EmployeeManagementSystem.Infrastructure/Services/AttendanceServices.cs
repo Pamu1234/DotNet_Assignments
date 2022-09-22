@@ -15,14 +15,14 @@ namespace EmployeeManagementSystem.Infrastructure.Services
         private readonly IAttendanceRepository _attendanceRepository;
         public AttendanceServices(IAttendanceRepository attendanceRepository)
         {
-           _attendanceRepository = attendanceRepository;
+            _attendanceRepository = attendanceRepository;
         }
 
         public async Task<Attendance> CreateAsync(Attendance attendance)
         {
             attendance.DateOfLog = DateTime.UtcNow;
             attendance.Timein = ClockIn(attendance);
-            var result = await  _attendanceRepository.CreateAsync(attendance);
+            var result = await _attendanceRepository.CreateAsync(attendance);
             return result;
         }
         public DateTime ClockIn(Attendance attendance)
@@ -31,7 +31,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return attendance.Timein;
         }
 
-        public async Task<IEnumerable<AttendanceDto>>GetAttendanceAsync()
+        public async Task<IEnumerable<AttendanceDto>> GetAttendanceAsync()
         {
             var result = await _attendanceRepository.GetAttendanceAsync();
             return result;
@@ -41,11 +41,18 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             var result = await _attendanceRepository.GetAttendanceDataByIdAsync(attendanceId);
             return result;
         }
-        public async Task <AttendanceDto> GetEmployeeAttendanceById(int empId)
+        public async Task<AttendanceDto> GetEmployeeAttendanceById(int empId)
         {
             var result = await _attendanceRepository.GetEmployeeAttendanceById(empId);
             return result;
         }
+        public async Task<IEnumerable<EmployeeAttendanceWithLeaves>> GetEmployeeAttendanceWithLeaves(int empId)
+        {
+            var result = await _attendanceRepository.GetEmployeeAttendanceWithLeaves(empId);
+            return result;
+        }
+        
+            
         public async Task<Attendance>UpdateAsync (int attendanceId, Attendance attendance)
         {
             var result = await _attendanceRepository.UpdateAsync(attendanceId, attendance);

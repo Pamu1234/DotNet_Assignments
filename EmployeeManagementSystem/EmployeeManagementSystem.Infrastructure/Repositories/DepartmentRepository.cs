@@ -40,22 +40,35 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             var getDepartmentQueryById = "select * from Departments where DepartmentId = @departmentId";
             return await _dapperConnection.QueryFirstOrDefaultAsync<DepartmentDto>(getDepartmentQueryById, new { departmentId });
         }
-        public async Task<Department> UpdateAsync(int departmentId, Department department)
+
+        public async Task<DepartmentDto> GetDepartmentByNameAsync(string departmentName)
+        { 
+            var getDepartmentQueryById = "select * from Departments where DepartmentName = @departmentName";
+            return await _dapperConnection.QueryFirstOrDefaultAsync<DepartmentDto>(getDepartmentQueryById, new { departmentName });
+        }
+
+        public async Task<Department> UpdateAsync(DepartmentDto updatedDepartment)
         {
-            var departmentToBeUpdatet = await GetDepartmentAsync(departmentId);
-            department.UpdatedBy = 1;
-            department.UpdatedDate = DateTime.UtcNow;
-            department.DepartmentId = departmentId;
-            _employeeManagementDataDbContext.Departments.Update(department);
+            //department.UpdatedBy = 1;
+            //department.UpdatedDate = DateTime.UtcNow;
+            //department.DepartmentId = departmentId;
+            var departement = new Department
+            {
+                DepartmentName = updatedDepartment.DepartmentName,
+                Description = updatedDepartment.Description,
+                DepartmentId = updatedDepartment.DepartmentId,
+
+            };
+           _employeeManagementDataDbContext.Departments.Update(departement);
             _employeeManagementDataDbContext.SaveChanges();
-            return department;
+            return departement;
         }
 
         public async Task<IEnumerable<EmployeeDto>> GetTotalNoOfEmpWorkingInEachDept(int deptId)
         {
             var empCount =await (from emp in _employeeManagementDataDbContext.Employees
                                  join dept in _employeeManagementDataDbContext.Departments
-                                 on emp.DepartmentId equals deptId
+                                 on emp.DepartmentId equals dept.DepartmentId
                                  join Role in _employeeManagementDataDbContext.Roles
                                  on emp.RoleId equals Role.RoleId
                                  where emp.DepartmentId == deptId

@@ -72,12 +72,6 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             throw new NotImplementedException();
         }
 
-        //public DateTime EmployeeLogin(Attendance attendance , int empId)
-
-        //    _attendanceRepository.CreateAsync(attendance);
-        //    return clockIn;
-
-        //}
 
     }
 }

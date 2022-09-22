@@ -14,11 +14,13 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
     public class EmployeesController : ApiControllerBase
     {
         private readonly IEmployeeService _employeeService;
+        private readonly ILeaveApplicationService _leaveApplicationService;
         private readonly IMapper _mapper;
         private readonly ILogger<DepartmentsController> _logger;
-        public EmployeesController(IEmployeeService employeeService, IMapper mapper, ILogger<DepartmentsController> logger)
+        public EmployeesController(IEmployeeService employeeService, ILeaveApplicationService leaveApplicationService, IMapper mapper, ILogger<DepartmentsController> logger)
         {
             _employeeService = employeeService;
+            _leaveApplicationService = leaveApplicationService;
             _mapper = mapper;
             _logger = logger;
         }
@@ -95,5 +97,6 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             var logout = await _employeeService.EmployeeLogout(id);
             return Ok(logout);
         }
+        
     }
 }

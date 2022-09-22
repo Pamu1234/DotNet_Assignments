@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+using Serilog;
 
 namespace EmployeeManagementSystemAPI.Extensions
 {
@@ -22,6 +23,7 @@ namespace EmployeeManagementSystemAPI.Extensions
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
+            app.UseSerilogRequestLogging();
 
             app.MapControllers();
         }

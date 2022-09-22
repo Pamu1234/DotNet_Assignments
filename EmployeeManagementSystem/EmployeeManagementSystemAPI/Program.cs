@@ -15,7 +15,7 @@ Log.Logger = new LoggerConfiguration().CreateBootstrapLogger();
 builder.Host.UseSerilog(((ctx, lc) => lc.ReadFrom.Configuration(ctx.Configuration)));
 
 IConfiguration configuration = builder.Configuration;
-builder.Services.RegisterSystemService(configuration);
+builder.Services.RegisterSystemService();
 builder.Services.RegisterApplicationService(configuration);
 
 

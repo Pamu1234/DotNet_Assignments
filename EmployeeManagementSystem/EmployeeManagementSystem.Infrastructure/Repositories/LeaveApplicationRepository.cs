@@ -30,21 +30,7 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         {
             _employeeManagementDataDbContext.LeaveApplications.Add(leaveApplication);
             await _employeeManagementDataDbContext.SaveChangesAsync();
-            if (leaveApplication != null)
-            {
-
-                var data = await (from leave in _employeeManagementDataDbContext.Leaves
-                                  join leaveBlance in _employeeManagementDataDbContext.LeaveBalances
-                                  on leave.LeaveTypeId equals leaveBlance.LeaveTypeId
-                                  where leave.LeaveTypeId == leaveApplication.LeaveTypeId && leaveBlance.EmployeeId == leaveApplication.EmployeeId
-
-                                  select leaveBlance).FirstOrDefaultAsync();
-
-                data.Balance = data.Balance - leaveApplication.NoOfDays;
-                await _leaveBalanceRepository.UpdateAsync(data.LeaveBalanceId, data);
-            }
             return leaveApplication;
-
         }
 
         public async Task<IEnumerable<LeaveApplicationDto>> GetLeaveApplicationAsync()
@@ -95,6 +81,25 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
                                               }).ToListAsync();
             return employeeLeaveRequest;
         }
+        public async Task<IEnumerable<TotalLeavesOfEmployeeDto>> GetEmployeeLeavesData(int empId)
+        {
+            var employeeLeaves = await( from LeaveApplication in _employeeManagementDataDbContext.LeaveApplications
+                                        join Employee in _employeeManagementDataDbContext.Employees
+                                        on LeaveApplication.EmployeeId equals Employee.EmployeeId
+                                        join Leaves in _employeeManagementDataDbContext.Leaves 
+                                        on LeaveApplication.LeaveTypeId equals Leaves.LeaveTypeId
+                                        where Employee.EmployeeId == empId
+                                        select new TotalLeavesOfEmployeeDto
+                                        { 
+                                            DateOfApplication= LeaveApplication.DateOfApplication,
+                                            LeaveTypeName= Leaves.LeaveTypeName,
+                                            NoOfDays= LeaveApplication.NoOfDays
+                                        }).ToListAsync();
+            return employeeLeaves;
+
+
+        }
+
 
 
         public async Task<LeaveApplication> UpdateAsync(int leaveId, UpdateLeaveApplicationRequestDto updateLeaveApplicationRequestDto , LeaveApplication leaveApplication )

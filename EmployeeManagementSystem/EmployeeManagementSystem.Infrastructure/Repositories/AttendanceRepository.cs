@@ -41,12 +41,11 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         {
             var result = await GetAttendanceDataByIdAsync(attendanceId);
             var effectiveHours = attendance.TimeOut - attendance.Timein;
-            attendance.EffectiveHours =Convert.ToInt32(effectiveHours);
-/* Convert.ToDateTime(effectiveHours.ToString()).Hour;*//*Convert.ToInt32(effectiveHours);*//*Convert.ToDateTime(effectiveHours.ToString()); ;*//*(DateTime)Convert.ToDateTime( effectiveHours);*/
+            attendance.EffectiveHours = Convert.ToString(effectiveHours.Value.Hours);
+            //attendance.LeaveTypeId = leaves.LeaveTypeId;
             _employeeManagementDataDbContext.Attendances.Update(attendance);
            await  _employeeManagementDataDbContext.SaveChangesAsync();
             return attendance;
-
         }
 
         public async Task<IEnumerable<AttendanceDto>> GetAttendanceAsync()
@@ -65,7 +64,29 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         public async Task<AttendanceDto> GetEmployeeAttendanceById(int empId)
         {
             var getEmployeeAttendance = "execute spEmployeeAttendance @empId";
-            return await _dapperConnection.QueryFirstOrDefaultAsync<AttendanceDto>(getEmployeeAttendance, new { empId });
+            var result = await _dapperConnection.QueryFirstOrDefaultAsync<AttendanceDto>(getEmployeeAttendance, new { empId });
+            return result;
+        }
+        public async Task<IEnumerable<EmployeeAttendanceWithLeaves>> GetEmployeeAttendanceWithLeaves(int empId)
+        {
+            var data = await (from Employee in _employeeManagementDataDbContext.Employees
+                              join Attendance in _employeeManagementDataDbContext.Attendances
+                              on Employee.EmployeeId equals Attendance.EmployeeId
+                              join LeaveApplication in _employeeManagementDataDbContext.LeaveApplications
+                              on Employee.EmployeeId equals LeaveApplication.EmployeeId
+                              where Attendance.EmployeeId == empId
+                              select new EmployeeAttendanceWithLeaves
+                              {
+                                  EmployeeId = empId,
+                                  DateOfLog = Attendance.DateOfLog,
+                                  Timein = Attendance.Timein,
+                                  TimeOut = Attendance.TimeOut,
+                                  EffectiveHours = Attendance.EffectiveHours,
+                                  LeaveTypeName = LeaveApplication.LeaveType.LeaveTypeName,
+                                  NoOfDays = LeaveApplication.NoOfDays
+                              }).ToListAsync();
+            return data;
+                
         }
         public async Task<Attendance> GetLastAttendance(int empId)
         {
@@ -74,5 +95,6 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             return result;
 
         }
+
     }
 }

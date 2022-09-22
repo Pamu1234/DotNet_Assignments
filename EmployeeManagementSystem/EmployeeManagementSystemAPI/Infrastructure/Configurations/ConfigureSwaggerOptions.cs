@@ -9,10 +9,14 @@ namespace EmployeeManagementSystemAPI.Infrastructure.Configurations
     {
         private readonly IApiVersionDescriptionProvider provider;
 
+
+
         public ConfigureSwaggerOptions(IApiVersionDescriptionProvider provider)
         {
             this.provider = provider;
         }
+
+
 
         public void Configure(SwaggerGenOptions options)
         {
@@ -23,10 +27,14 @@ namespace EmployeeManagementSystemAPI.Infrastructure.Configurations
             }
         }
 
+
+
         public void Configure(string name, SwaggerGenOptions options)
         {
             Configure(options);
         }
+
+
 
         private OpenApiInfo CreateInfoForApiVersion(ApiVersionDescription description)
         {
@@ -36,10 +44,14 @@ namespace EmployeeManagementSystemAPI.Infrastructure.Configurations
                 Version = description.ApiVersion.ToString()
             };
 
+
+
             if (description.IsDeprecated)
             {
                 info.Description += " This API version has been deprecated.";
             }
+
+
 
             return info;
         }

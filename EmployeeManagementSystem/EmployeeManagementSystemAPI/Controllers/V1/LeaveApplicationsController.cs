@@ -67,6 +67,12 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(leaveApplicationRequest);
         }
 
+        [HttpGet("EmployeeLeaves")]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
+        public async Task<IEnumerable<TotalLeavesOfEmployeeDto>> GetEmployeeLeavesData(int empId)
+        {
+            return await _leaveApplicationService.GetEmployeeLeavesData(empId);
+        }
         [Route("id")]
         [HttpDelete()]
         [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
@@ -83,5 +89,6 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
         {
             return Ok(await _leaveApplicationService.UpdateAsync(id, leaveApplicationApprove));
         }
+
     }
 }

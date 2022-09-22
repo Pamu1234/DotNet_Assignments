@@ -11,5 +11,6 @@ namespace EmployeeManagementSystem.Core.Contracts.Infrastructure.Services
         public Task<AttendanceDto> GetEmployeeAttendanceById(int empId);
         public Task<Attendance> UpdateAsync(int attendanceId, Attendance attendance);
         public Task DeleteAttendanceRecord(int attendanceId);
+        Task<IEnumerable<EmployeeAttendanceWithLeaves>> GetEmployeeAttendanceWithLeaves(int empId);
     }
 }

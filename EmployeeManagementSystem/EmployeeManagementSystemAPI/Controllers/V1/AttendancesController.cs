@@ -77,7 +77,6 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(await _attendanceService.UpdateAsync(attendanceId, attendance));
         }
 
-        // DELETE api/<AttendancesController>/5
         [MapToApiVersion("1.0")]
         [Route("id")]
         [HttpDelete]
@@ -96,5 +95,14 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             var result = await _attendanceService.GetEmployeeAttendanceById(empId);
             return Ok(result);
         }
+
+        [HttpGet("EmployeeAttendanceWithLeaves")]
+        public async Task<ActionResult> GetEmployeeAttendanceWithLeaves(int empId)
+        {
+            _logger.LogInformation("Gettig Employee Attendance and Leaves by Employee Id: {empId}", empId);
+            var result = await _attendanceService.GetEmployeeAttendanceWithLeaves(empId);
+            return Ok(result);
+        }
+
     }
 }

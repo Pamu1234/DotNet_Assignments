@@ -17,8 +17,10 @@ namespace EmployeeManagementSystemAPI.Extensions
 {
     public static  class ServiceCollectionExtension
     {
-        public static void RegisterSystemService(this IServiceCollection services, IConfiguration configuration)
+        public static void RegisterSystemService(this IServiceCollection services)
         {
+            services.AddControllers();
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
             services.AddVersionedApiExplorer(setup =>
             {
@@ -41,6 +43,10 @@ namespace EmployeeManagementSystemAPI.Extensions
                 options.ReportApiVersions = true;
             });
 
+        }
+        public static void RegisterApplicationService(this IServiceCollection services, IConfiguration configuration)
+        {
+
             services.AddDbContext<EmployeemanagementDbContext>(data =>
             {
                 data.UseSqlServer(configuration.GetConnectionString("EmployeeDbContext"));
@@ -49,16 +55,6 @@ namespace EmployeeManagementSystemAPI.Extensions
             // Dapper
             services.AddTransient<IDbConnection>(db => new SqlConnection(
                                 configuration.GetConnectionString("EmployeeDbContext")));
-
-            // Add services to the container.
-            services.AddControllers();
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            //services.AddEndpointsApiExplorer();
-            //services.AddSwaggerGen();
-            
-        }
-        public static void RegisterApplicationService(this IServiceCollection services, IConfiguration configuration)
-        {
 
             // Repositories
             services.AddTransient<IDepartmentRepository, DepartmentRepository>();

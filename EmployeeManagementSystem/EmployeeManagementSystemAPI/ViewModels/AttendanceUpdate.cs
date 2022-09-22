@@ -3,6 +3,6 @@
     public class AttendanceUpdate
     {
         public DateTime? TimeOut { get; set; }
-        public int? EffectiveHours { get; set; }
+        public string? EffectiveHours { get; set; }
     }
 }

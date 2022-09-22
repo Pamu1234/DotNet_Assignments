@@ -11,7 +11,7 @@
         public DateTime Timein { get; set; }
         public DateTime? TimeOut { get; set; }
         public DateTime? LateTime { get; set; }
-        public int? EffectiveHours { get; set; }
+        public string? EffectiveHours { get; set; }
 
         public virtual Employee? Employee { get; set; }
         public virtual Leaves? LeaveType { get; set; }

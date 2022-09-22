@@ -42,9 +42,12 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return result;
         }
 
-        public Task<Department> UpdateAsync(int departmentId, Department department)
+        public DepartmentDto UpdateAsync(int departmentId, DepartmentDto department,Department departmentToBeUpdate )
         {
-            return _departmentRepository.UpdateAsync(departmentId, department);
+            department.DepartmentName = departmentToBeUpdate.DepartmentName;
+            department.DepartmentId= departmentId;
+            department.Description = departmentToBeUpdate.Description;
+            return department;
         }
 
         public Task DeleteDepartmentAsync(int departmentId)
@@ -63,7 +66,11 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return employees.Count();
         }
 
+        public async Task<DepartmentDto> GetDepartmentByNameAsync(string departmentName)
+        {
 
-
+            var result = await _departmentRepository.GetDepartmentByNameAsync(departmentName);
+            return result;
+        }
     }
 }

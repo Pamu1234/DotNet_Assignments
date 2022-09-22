@@ -68,14 +68,6 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return _employeeRepository.UpdateAsync(employeeId, employee);
         }
 
-        //public DateTime EmployeeLogin(Attendance attendance, int empId)
-        //{
-        //    attendance.DateOfLog = DateTime.UtcNow;
-        //    attendance.Timein = DateTime.UtcNow;
-        //    return attendance;
-
-        //}
-
         public async Task<Attendance> EmployeeLogin(int empId)
         {
 
@@ -89,16 +81,18 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return attendance;
         }
 
-        public async Task<Attendance?> EmployeeLogout(int empId)
+        public async Task<Attendance> EmployeeLogout(int empId)
         {
             var employee = await _attendanceRepository.GetLastAttendance(empId);
-            if (employee!=null && employee.DateOfLog.Date == DateTime.UtcNow.Date) { 
-            employee.TimeOut = DateTime.UtcNow;
-            var logOut = await _attendanceRepository.UpdateAsync(employee.AttendanceId,employee);
-            return logOut;
+            if (employee!=null && employee.DateOfLog.Date == DateTime.UtcNow.Date) 
+            { 
+                employee.TimeOut = DateTime.UtcNow;
+                var logOut = await _attendanceRepository.UpdateAsync(employee.AttendanceId,employee);
+                return logOut;
             }
             return null;
 
         }
+
     }
 }

@@ -7,9 +7,10 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories.EntityFramework
     {
         Task<Department> CreateAsync(Department department);
         Task DeleteDepartmentAsync(int departmentId);
+        Task<DepartmentDto> GetDepartmentByNameAsync(string departmentName);
         Task<DepartmentDto> GetDepartmentAsync(int departmentId);
         Task<IEnumerable<DepartmentDto>> GetDepartmentsAsync();
-        Task<Department> UpdateAsync(int departmentId, Department department);
+        Task<Department> UpdateAsync(DepartmentDto updatedDepartment);
         public  Task<IEnumerable<EmployeeDto>> GetTotalNoOfEmpWorkingInEachDept(int deptId);
     }
 }

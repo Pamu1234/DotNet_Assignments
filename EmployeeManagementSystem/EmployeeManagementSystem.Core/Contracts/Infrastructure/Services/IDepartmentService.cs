@@ -7,9 +7,10 @@ namespace EmployeeManagementSystem.Core.Contracts.Infrastructure.Services
     {
         Task<Department> CreateAsync(Department department);
         Task DeleteDepartmentAsync(int departmentId);
+        Task<DepartmentDto> GetDepartmentByNameAsync(string departmentName);
         Task<DepartmentDto> GetDepartmentAsync(int departmentId);
         Task<IEnumerable<DepartmentDto>> GetDepartmentsAsync();
-        Task<Department> UpdateAsync(int departmentId, Department department);
+        DepartmentDto UpdateAsync(int departmentId, DepartmentDto department, Department departmentToBeUpdate);
         Task<IEnumerable<EmployeeDto>> GetEmpWorkingInDept(int deptId);
         Task<int> EmployeeInDepsrtmentCount(int deptId);
     }

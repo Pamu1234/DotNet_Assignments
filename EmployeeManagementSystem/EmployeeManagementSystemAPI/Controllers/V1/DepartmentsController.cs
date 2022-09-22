@@ -2,6 +2,7 @@
 using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
+using EmployeeManagementSystem.Infrastructure.Repositories.EntityFramework;
 using EmployeeManagementSystemAPI.Infrastructure.Specs;
 using EmployeeManagementSystemAPI.ViewModels;
 using Microsoft.AspNetCore.Mvc;
@@ -16,11 +17,13 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
     public class DepartmentsController : ApiControllerBase
     {
         private readonly IDepartmentService _departmentService;
+        private readonly IDepartmentRepository _departmentRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<DepartmentsController> _logger;
-        public DepartmentsController(IDepartmentService departmentService, IMapper mapper, ILogger<DepartmentsController> logger)
+        public DepartmentsController(IDepartmentService departmentService,IDepartmentRepository departmentRepository, IMapper mapper, ILogger<DepartmentsController> logger)
         {
             _departmentService = departmentService;
+            _departmentRepository = departmentRepository;
             _mapper = mapper;
             _logger = logger;
         }
@@ -71,13 +74,17 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
         public async Task<ActionResult<Department>> Put(int id, [FromBody] DepartmentVm departmentVm)
         {
             Department department = _mapper.Map<DepartmentVm, Department>(departmentVm);
-            if (id <= 0 || id != department.DepartmentId)
+            var existingDepartment = await _departmentRepository.GetDepartmentAsync(department.DepartmentId);
+            if(existingDepartment != null)
             {
-                _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
-                return BadRequest();
+
+                var departmentToBeUpdate = _departmentService.UpdateAsync(id, existingDepartment, department);
+                var updatedDepartment = await _departmentRepository.UpdateAsync(departmentToBeUpdate);
+
+                return Ok(updatedDepartment);
             }
 
-            return Ok(await _departmentService.UpdateAsync(id, department));
+            return BadRequest();
         }
 
         [Route("deptId")]
@@ -97,6 +104,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             var result = await _departmentService.EmployeeInDepsrtmentCount(deptId);
             return result;
         }
+
 
         [MapToApiVersion("1.0")]
         [Route("id")]
