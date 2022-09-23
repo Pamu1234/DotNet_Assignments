@@ -16,6 +16,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
         {
             _leaveApplicationRepository = leaveApplicationRepository;
             _leaveBalanceRepository = leaveBalanceRepository;
+            _attendanceRepository = attendanceRepository;
         }
 
         public async Task<LeaveApplication> CreateAsync(LeaveApplication leaveApplication)
@@ -53,7 +54,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
 
             var leaveApplicationData = await _leaveApplicationRepository.GetLeaveDataByIdAsync(leaveId);
             var leaveBal = await _leaveBalanceRepository.GetRemainingLeavesByEmpId(leaveApplicationData.EmployeeId, leaveApplicationData.LeaveTypeId);
-
+            
             if (leaveBal.Balance > leaveApplicationData.NoOfDays)
             {
                 leaveBal.Balance = leaveBal.Balance - leaveApplicationData.NoOfDays;
@@ -61,16 +62,21 @@ namespace EmployeeManagementSystem.Infrastructure.Services
                 await _leaveBalanceRepository.UpdateAsync(leaveId, leaveBal);
                 await _leaveApplicationRepository.UpdateAsync(leaveId, leaveApplication, leaveApplicationData);
 
-                    //var attendance = new Attendance
-                    //{
-                    //    EmployeeId = leaveApplicationData.EmployeeId,
-                    //    LeaveTypeId = leaveApplicationData.LeaveTypeId,
-                    //    DateOfLog = leaveApplicationData.,
-                    //    Timein = empAttendance.Timein,
-                    //    EffectiveHours = empAttendance.EffectiveHours,
-                    //};
-                    //await _attendanceRepository.UpdateAsync(empAttendance.AttendanceId, attendance);
-                    //return true;
+                
+                List<Attendance> attendances = new();
+                for (int i = 0; i < leaveApplicationData.NoOfDays; i++)
+                {
+                    var attendance = new Attendance
+                    {
+                        EmployeeId = leaveApplicationData.EmployeeId,
+                        LeaveTypeId = leaveApplicationData.LeaveTypeId,
+                        DateOfLog = leaveApplicationData.StartDate.AddDays(i),
+                    };
+                        attendances.Add(attendance);
+                }
+                await _attendanceRepository.CreateRangeAsync(attendances);
+
+                return true;
             }
             return false;
 

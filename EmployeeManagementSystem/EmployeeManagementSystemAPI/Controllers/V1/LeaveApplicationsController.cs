@@ -12,6 +12,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
 {
     [ApiVersion("1.0")]
     [ApiVersion("1.1")]
+    [Route("leaveapplication")]
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class LeaveApplicationsController : ApiControllerBase
     {
@@ -26,6 +27,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             _logger = logger;
         }
 
+        [MapToApiVersion("1.0")]
         [Route("")]
         [HttpPost]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
@@ -36,6 +38,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(await _leaveApplicationService.CreateAsync(leaveApplication));
         }
 
+        [MapToApiVersion("1.0")]
         [Route("")]
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
@@ -46,6 +49,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(result);
         }
 
+        [MapToApiVersion("1.0")]
         [Route("id")]
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
@@ -59,7 +63,9 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
 
         }
 
-        [HttpGet("empId")]
+        [MapToApiVersion("1.0")]
+        [Route("getspecificemployeeleavesrequest/{empId}")]
+        [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<IEnumerable<LeaveApplication>>> GetEmployeeLeaveApplicationRequest(int empId)
         {
@@ -67,12 +73,16 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(leaveApplicationRequest);
         }
 
-        [HttpGet("EmployeeLeaves")]
+        [MapToApiVersion("1.0")]
+        [Route("getspecificemployeeleaves/{empId}")]
+        [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<IEnumerable<TotalLeavesOfEmployeeDto>> GetEmployeeLeavesData(int empId)
         {
             return await _leaveApplicationService.GetEmployeeLeavesData(empId);
         }
+
+        [MapToApiVersion("1.0")]
         [Route("id")]
         [HttpDelete()]
         [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]

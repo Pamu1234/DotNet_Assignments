@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers.V1
 {
+    [ApiVersion("1.0")]
+    [ApiVersion("1.1")]
+    [Route("leaveblance")]
     [ApiConventionType(typeof(DefaultApiConventions))]
 
     public class LeaveBalancesController : ApiControllerBase
@@ -42,7 +45,8 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
+        [Route("id")]
+        [HttpGet()]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<LeaveBalance>> Get(int id)
         {
@@ -53,16 +57,8 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(result);
         }
 
-        [HttpGet("leaves/{empId}")]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult> GetEmployeesRemainingleaves(int empId, int leaveTypeId)
-        {
-            var remainingLeaves = await _leaveBalanceService.GetRemainingLeavesByEmpId(empId,leaveTypeId);
-            return Ok(remainingLeaves);
-        }
         [HttpPut("{id}")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-
         public async Task<ActionResult<IEnumerable<LeaveBalance>>> Put(int id, [FromBody] LeaveBalanceVm leaveBalanceVm)
         {
             LeaveBalance leaveBalance = _mapper.Map<LeaveBalanceVm, LeaveBalance>(leaveBalanceVm);
@@ -74,6 +70,16 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
 
             return Ok(await _leaveBalanceService.UpdateAsync(id, leaveBalance));
         }
+
+        [Route("getemployeeremainingleaves/{empId}")]
+        [HttpGet]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<ActionResult> GetEmployeesRemainingleaves(int empId, int leaveTypeId)
+        {
+            var remainingLeaves = await _leaveBalanceService.GetRemainingLeavesByEmpId(empId,leaveTypeId);
+            return Ok(remainingLeaves);
+        }
+
 
         [HttpDelete("{id}")]
         [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]

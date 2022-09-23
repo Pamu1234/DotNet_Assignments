@@ -93,7 +93,10 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
                                         { 
                                             DateOfApplication= LeaveApplication.DateOfApplication,
                                             LeaveTypeName= Leaves.LeaveTypeName,
-                                            NoOfDays= LeaveApplication.NoOfDays
+                                            NoOfDays= LeaveApplication.NoOfDays,
+                                            LeaveTypeId = LeaveApplication.LeaveTypeId
+                                            
+                                            
                                         }).ToListAsync();
             return employeeLeaves;
 

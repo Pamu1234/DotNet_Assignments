@@ -10,6 +10,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers.V1
 {
+    [ApiVersion("1.0")]
+    [ApiVersion("1.1")]
+    [Route("employee")]
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class EmployeesController : ApiControllerBase
     {
@@ -26,6 +29,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
         }
 
         // Insert data
+        [MapToApiVersion("1.0")]
         [Route("")]
         [HttpPost]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
@@ -37,6 +41,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(result);
         }
 
+        [MapToApiVersion("1.0")]
         [Route("")]
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
@@ -49,6 +54,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(result);
         }
 
+        [MapToApiVersion("1.0")]
         [Route("id")]
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
@@ -59,6 +65,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(employee);
         }
 
+        [MapToApiVersion("1.0")]
         [Route("id")]
         [HttpPut]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
@@ -74,6 +81,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(result);
         }
 
+        [MapToApiVersion("1.0")]
         [Route("id")]
         [HttpDelete]
         [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
@@ -83,17 +91,18 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
         }
 
 
-        [HttpPost("clockIn")]
+        [Route("employeeclockin/{id}")]
+        [HttpPost]
         public async Task<ActionResult> EmployeeClockin(int id)
         {
             var attendance =await _employeeService.EmployeeLogin(id);
              return Ok(attendance);
         }
 
-        [HttpPost("clockout")]
+        [Route("employeeclockout/{id}")]
+        [HttpPut]
         public async Task<ActionResult> EmployeeClockOut(int id)
-        {
-            
+        {            
             var logout = await _employeeService.EmployeeLogout(id);
             return Ok(logout);
         }

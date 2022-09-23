@@ -12,6 +12,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
 {
     [ApiVersion("1.0")]
     [ApiVersion("1.1")]
+    [Route("attendance")]
     [ApiConventionType(typeof(DefaultApiConventions))]
 
     public class AttendancesController : ApiControllerBase
@@ -87,7 +88,8 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
 
         }
 
-        [HttpGet("EmployeeAttendance")]
+        [Route("getemployeeattendanceby/{empId}")]
+        [HttpGet]
         [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
         public async Task<ActionResult>GetEmployeeAttendanceByEmployeeId(int empId)
         {
@@ -96,7 +98,8 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(result);
         }
 
-        [HttpGet("EmployeeAttendanceWithLeaves")]
+        [Route("employeeattendancewithleaves/{empId}")]
+        [HttpGet]
         public async Task<ActionResult> GetEmployeeAttendanceWithLeaves(int empId)
         {
             _logger.LogInformation("Gettig Employee Attendance and Leaves by Employee Id: {empId}", empId);

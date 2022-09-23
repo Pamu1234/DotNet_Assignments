@@ -13,6 +13,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
 {
     [ApiVersion("1.0")]
     [ApiVersion("1.1")]
+    [Route("department")]
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class DepartmentsController : ApiControllerBase
     {
@@ -87,7 +88,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return BadRequest();
         }
 
-        [Route("deptId")]
+        [Route("listofemployeesinspecificdepartment/{deptId}")]
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<IEnumerable<Employee>>> GetCountOfEmployees(int deptId)
@@ -96,8 +97,8 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(result);
         }
 
-        
-        [HttpGet("{deptId}")]
+        [Route("totalnumberofemployeeworkinginspecificdepartment/{deptId}")]
+        [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<int> TotalNumbersOfEmployeeInDepsrtment(int deptId)
         {

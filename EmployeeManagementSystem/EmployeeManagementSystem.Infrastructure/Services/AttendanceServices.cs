@@ -2,20 +2,21 @@
 using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using EmployeeManagementSystem.Infrastructure.Repositories;
 
 namespace EmployeeManagementSystem.Infrastructure.Services
 {
     public class AttendanceServices : IAttendanceService
     {
         private readonly IAttendanceRepository _attendanceRepository;
-        public AttendanceServices(IAttendanceRepository attendanceRepository)
+        private readonly ILeaveApplicationRepository _leaveApplicationRepository;
+        private readonly ILeaveRepository _leaveRepository;
+
+        public AttendanceServices(IAttendanceRepository attendanceRepository, ILeaveApplicationRepository leaveApplicationRepository, ILeaveRepository leaveRepository)
         {
             _attendanceRepository = attendanceRepository;
+            _leaveApplicationRepository = leaveApplicationRepository;
+            _leaveRepository = leaveRepository;
         }
 
         public async Task<Attendance> CreateAsync(Attendance attendance)
@@ -48,8 +49,27 @@ namespace EmployeeManagementSystem.Infrastructure.Services
         }
         public async Task<IEnumerable<EmployeeAttendanceWithLeaves>> GetEmployeeAttendanceWithLeaves(int empId)
         {
-            var result = await _attendanceRepository.GetEmployeeAttendanceWithLeaves(empId);
-            return result;
+            var attendanceDataOfEmp= await _attendanceRepository.GetEmployeeAttendanceWithLeaves(empId);
+            var leavesOfEmployee = await _leaveApplicationRepository.GetEmployeeLeavesData(empId);
+
+            var attendanceWithLeaves =  (from att in attendanceDataOfEmp
+                                       join leave in leavesOfEmployee
+                                       on att.LeaveTypeId equals leave.LeaveTypeId into leaveType
+                                       from leaveRecord in leaveType.DefaultIfEmpty()
+                                       where att.EmployeeId == empId
+                                       select new EmployeeAttendanceWithLeaves
+                                       {
+                                           LeaveTypeId = att.LeaveTypeId,
+                                           LeaveTypeName = att.LeaveTypeName,
+                                           NoOfDays= att.NoOfDays,
+                                           Timein= att.Timein,
+                                           DateOfLog = att.DateOfLog,
+                                           EffectiveHours =  att.EffectiveHours,
+                                           EmployeeId = empId,
+                                           TimeOut= att.TimeOut
+                                       }).ToList();
+
+            return attendanceWithLeaves;
         }
         
             

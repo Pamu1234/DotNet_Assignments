@@ -13,5 +13,7 @@ namespace EmployeeManagementSystem.Core.Contracts.Infrastructure.Respositories
         public Task DeleteAttendanceRecord(int attendanceId);
         Task<Attendance> GetLastAttendance(int empId);
         Task<IEnumerable<EmployeeAttendanceWithLeaves>> GetEmployeeAttendanceWithLeaves(int empId);
+        Task CreateRangeAsync(IEnumerable<Attendance> attendances);
+
     }
 }

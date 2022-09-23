@@ -9,6 +9,9 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace EmployeeManagementSystemAPI.Controllers.V1
 {
+    [ApiVersion("1.0")]
+    [ApiVersion("1.1")]
+    [Route("leaves")]
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class LeavesController : ApiControllerBase
     {
@@ -23,6 +26,8 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
         }
 
         // Insert data
+        [MapToApiVersion("1.0")]
+        [Route("")]
         [HttpPost]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<IEnumerable<Role>>> Post([FromBody] LeaveVm leaveVm)
@@ -33,6 +38,8 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
 
         }
 
+        [MapToApiVersion("1.0")]
+        [Route("")]
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<IEnumerable<Leaves>>> Get()
@@ -42,7 +49,9 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(result);
         }
 
-        [HttpGet("{id}")]
+        [MapToApiVersion("1.0")]
+        [Route("id")]
+        [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<Role>> Get(int id)
         {
@@ -54,7 +63,9 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
         }
 
         // Update Data
-        [HttpPut("{id}")]
+        [MapToApiVersion("1.0")]
+        [Route("id")]
+        [HttpPut]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<ActionResult<IEnumerable<Leaves>>> Put(int id, [FromBody] LeaveVm leaveVm)
         {
@@ -68,7 +79,9 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(await _leavesService.UpdateAsync(id, leave));
         }
 
-        [HttpDelete("{id}")]
+        [MapToApiVersion("1.0")]
+        [Route("id")]
+        [HttpDelete]
         [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
         public async Task Delete(int id)
         {

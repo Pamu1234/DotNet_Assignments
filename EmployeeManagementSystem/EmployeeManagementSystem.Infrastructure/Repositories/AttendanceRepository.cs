@@ -69,6 +69,7 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         }
         public async Task<IEnumerable<EmployeeAttendanceWithLeaves>> GetEmployeeAttendanceWithLeaves(int empId)
         {
+           
             var data = await (from Employee in _employeeManagementDataDbContext.Employees
                               join Attendance in _employeeManagementDataDbContext.Attendances
                               on Employee.EmployeeId equals Attendance.EmployeeId
@@ -87,6 +88,12 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
                               }).ToListAsync();
             return data;
                 
+        }
+
+        public async Task CreateRangeAsync(IEnumerable<Attendance> attendances)
+        {
+            _employeeManagementDataDbContext.Attendances.AddRange(attendances);
+            await _employeeManagementDataDbContext.SaveChangesAsync();
         }
         public async Task<Attendance> GetLastAttendance(int empId)
         {
