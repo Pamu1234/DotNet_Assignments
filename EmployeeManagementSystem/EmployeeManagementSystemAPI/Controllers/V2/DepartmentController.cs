@@ -32,5 +32,15 @@ namespace EmployeeManagementSystemAPI.Controllers.V2
             }
             return Ok(result);
         }
+
+        [MapToApiVersion("2.0")]
+        [Route("totalnumberofemployeeworkinginspecificdepartment/{deptId}")]
+        [HttpGet]
+        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
+        public async Task<int> TotalNumbersOfEmployeeInDepsrtment(int deptId)
+        {
+            var result = await _departmentService.EmployeeInDepsrtmentCount(deptId);
+            return result;
+        }
     }
 }

@@ -4,6 +4,7 @@ using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Core.Enum;
 using EmployeeManagementSystem.Infrastructure.Repositories;
+using System.Runtime;
 
 namespace EmployeeManagementSystem.Infrastructure.Services
 {
@@ -21,14 +22,34 @@ namespace EmployeeManagementSystem.Infrastructure.Services
 
         public async Task<LeaveApplication> CreateAsync(LeaveApplication leaveApplication)
         {
-            var totalLeaveDays = (leaveApplication.EndDate - leaveApplication.StartDate).TotalDays;
+            //// CURRENT WEEK START DATE:
+            DayOfWeek dayOfWeek = DateTime.Now.DayOfWeek;
+
+            var x = (int)(DateTime.Now.DayOfWeek);
+            if(x==6|| x==0)
+            {
+
+            }
+            //int daysTillCurrentDay = dayOfWeek - DayOfWeek.Monday;
+            //DateTime CurrentWeekStartDate = DateTime.Now.AddDays(-daysTillCurrentDay);
+
+
+            var totalLeaveDays = (leaveApplication.EndDate - leaveApplication.StartDate).Days;
             leaveApplication.NoOfDays = (int)totalLeaveDays;
             leaveApplication.DateOfApplication = DateTime.UtcNow;
             leaveApplication.StatusId = (int)LeaveApprovalStatus.Pending;
             return await _leaveApplicationRepository.CreateAsync(leaveApplication);
 
         }
+        //public async Task<IEnumerable<DateTime>> GetTotalLeaveDays(this DateTime start, DateTime end)
+        //{
+        //    DateTime endDate = end.Date;
+        //    for (DateTime date = start.Date; date<= endDate; date=date.AddDays(1))
+        //    {
+        //        yield return date; 
+        //    }
 
+        //}
         public Task DeleteLeaveApplicationAsync(int leaveId)
         {
             return _leaveApplicationRepository.DeleteLeaveApplicationAsync(leaveId);
@@ -57,12 +78,8 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             
             if (leaveBal.Balance > leaveApplicationData.NoOfDays)
             {
-                leaveBal.Balance = leaveBal.Balance - leaveApplicationData.NoOfDays;
 
-                await _leaveBalanceRepository.UpdateAsync(leaveId, leaveBal);
-                await _leaveApplicationRepository.UpdateAsync(leaveId, leaveApplication, leaveApplicationData);
 
-                
                 List<Attendance> attendances = new();
                 for (int i = 0; i < leaveApplicationData.NoOfDays; i++)
                 {
@@ -75,6 +92,12 @@ namespace EmployeeManagementSystem.Infrastructure.Services
                         attendances.Add(attendance);
                 }
                 await _attendanceRepository.CreateRangeAsync(attendances);
+
+                leaveBal.Balance = leaveBal.Balance - leaveApplicationData.NoOfDays;
+                await _leaveBalanceRepository.UpdateAsync(leaveId, leaveBal);
+                await _leaveApplicationRepository.UpdateAsync(leaveId, leaveApplication, leaveApplicationData);
+
+                
 
                 return true;
             }

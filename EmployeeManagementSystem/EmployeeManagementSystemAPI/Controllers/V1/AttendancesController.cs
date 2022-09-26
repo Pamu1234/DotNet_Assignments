@@ -98,14 +98,5 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(result);
         }
 
-        [Route("employeeattendancewithleaves/{empId}")]
-        [HttpGet]
-        public async Task<ActionResult> GetEmployeeAttendanceWithLeaves(int empId)
-        {
-            _logger.LogInformation("Gettig Employee Attendance and Leaves by Employee Id: {empId}", empId);
-            var result = await _attendanceService.GetEmployeeAttendanceWithLeaves(empId);
-            return Ok(result);
-        }
-
     }
 }
