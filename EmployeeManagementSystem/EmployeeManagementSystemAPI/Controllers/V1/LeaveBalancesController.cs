@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
+using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystemAPI.Infrastructure.Specs;
 using EmployeeManagementSystemAPI.ViewModels;
@@ -71,13 +72,14 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(await _leaveBalanceService.UpdateAsync(id, leaveBalance));
         }
 
-        [Route("getemployeeremainingleaves/{empId}")]
+        [Route("getemployeeremainingleaves/{empId}/{leaveTypeId}")]
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult> GetEmployeesRemainingleaves(int empId, int leaveTypeId)
         {
             var remainingLeaves = await _leaveBalanceService.GetRemainingLeavesByEmpId(empId,leaveTypeId);
-            return Ok(remainingLeaves);
+            var result = _mapper.Map<LeaveBalance, LeaveBalanceDto>(remainingLeaves);
+            return Ok(result);
         }
 
 

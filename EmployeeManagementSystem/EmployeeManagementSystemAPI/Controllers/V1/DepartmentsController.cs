@@ -97,9 +97,6 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(result);
         }
 
-
-
-
         [MapToApiVersion("1.0")]
         [Route("id")]
         [HttpDelete]

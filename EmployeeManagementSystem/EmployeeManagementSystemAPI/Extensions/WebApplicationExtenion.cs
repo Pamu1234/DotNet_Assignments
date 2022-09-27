@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc.ApiExplorer;
+﻿using EmployeeManagementSystemAPI.Middleware;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Serilog;
 
 namespace EmployeeManagementSystemAPI.Extensions
@@ -20,11 +21,10 @@ namespace EmployeeManagementSystemAPI.Extensions
                     }
                 });
             }
+            app.UseMiddleware<ExceptionMiddleware>();
             app.UseHttpsRedirection();
-
             app.UseAuthorization();
             app.UseSerilogRequestLogging();
-
             app.MapControllers();
         }
     }

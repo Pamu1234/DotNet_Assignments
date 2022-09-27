@@ -60,7 +60,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult> Get(int id)
         {
-            _logger.LogInformation("Getting list of  employee by ID:{id},", id);
+            _logger.LogInformation("Getting Data of  employee by ID:{id},", id);
             var employee = await _employeeService.GetEmployeeAsync(id);
             return Ok(employee);
         }

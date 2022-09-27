@@ -60,6 +60,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             var result =  await _departmentRepository.GetTotalNoOfEmpWorkingInEachDept(deptId);
             return result;
         }
+
         public async Task<int> EmployeeInDepsrtmentCount(int deptId)
         {
             var employees = await _departmentRepository.GetTotalNoOfEmpWorkingInEachDept(deptId);

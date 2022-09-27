@@ -22,34 +22,24 @@ namespace EmployeeManagementSystem.Infrastructure.Services
 
         public async Task<LeaveApplication> CreateAsync(LeaveApplication leaveApplication)
         {
-            //// CURRENT WEEK START DATE:
-            DayOfWeek dayOfWeek = DateTime.Now.DayOfWeek;
-
-            var x = (int)(DateTime.Now.DayOfWeek);
-            if(x==6|| x==0)
-            {
-
-            }
-            //int daysTillCurrentDay = dayOfWeek - DayOfWeek.Monday;
-            //DateTime CurrentWeekStartDate = DateTime.Now.AddDays(-daysTillCurrentDay);
-
-
-            var totalLeaveDays = (leaveApplication.EndDate - leaveApplication.StartDate).Days;
+            var totalDays = GetBusinessDays (leaveApplication.StartDate, leaveApplication.EndDate);
+            var totalLeaveDays = totalDays;
             leaveApplication.NoOfDays = (int)totalLeaveDays;
             leaveApplication.DateOfApplication = DateTime.UtcNow;
             leaveApplication.StatusId = (int)LeaveApprovalStatus.Pending;
             return await _leaveApplicationRepository.CreateAsync(leaveApplication);
-
         }
-        //public async Task<IEnumerable<DateTime>> GetTotalLeaveDays(this DateTime start, DateTime end)
-        //{
-        //    DateTime endDate = end.Date;
-        //    for (DateTime date = start.Date; date<= endDate; date=date.AddDays(1))
-        //    {
-        //        yield return date; 
-        //    }
 
-        //}
+        public static double GetBusinessDays(DateTime startD,DateTime endD)
+        {
+            double calculateDays = 1+((endD-startD).TotalDays*5-(startD.DayOfWeek-endD.DayOfWeek)*2)/ 7;
+            if (endD.DayOfWeek==DayOfWeek.Saturday || endD.DayOfWeek==DayOfWeek.Sunday)
+            {
+                return calculateDays;
+            }
+            return calculateDays;
+        }
+
         public Task DeleteLeaveApplicationAsync(int leaveId)
         {
             return _leaveApplicationRepository.DeleteLeaveApplicationAsync(leaveId);
@@ -76,29 +66,33 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             var leaveApplicationData = await _leaveApplicationRepository.GetLeaveDataByIdAsync(leaveId);
             var leaveBal = await _leaveBalanceRepository.GetRemainingLeavesByEmpId(leaveApplicationData.EmployeeId, leaveApplicationData.LeaveTypeId);
             
-            if (leaveBal.Balance > leaveApplicationData.NoOfDays)
+            if (leaveBal.Balance >= leaveApplicationData.NoOfDays)
             {
-
-
-                List<Attendance> attendances = new();
-                for (int i = 0; i < leaveApplicationData.NoOfDays; i++)
-                {
-                    var attendance = new Attendance
-                    {
-                        EmployeeId = leaveApplicationData.EmployeeId,
-                        LeaveTypeId = leaveApplicationData.LeaveTypeId,
-                        DateOfLog = leaveApplicationData.StartDate.AddDays(i),
-                    };
-                        attendances.Add(attendance);
-                }
-                await _attendanceRepository.CreateRangeAsync(attendances);
 
                 leaveBal.Balance = leaveBal.Balance - leaveApplicationData.NoOfDays;
                 await _leaveBalanceRepository.UpdateAsync(leaveId, leaveBal);
                 await _leaveApplicationRepository.UpdateAsync(leaveId, leaveApplication, leaveApplicationData);
 
-                
+                List<Attendance> attendances = new();
+                int loopCount = (int)(leaveApplicationData.EndDate - leaveApplicationData.StartDate).TotalDays;
+                for (int i = 0; i < loopCount; i++)
+                {
+                    var dateofLog = leaveApplicationData.StartDate;
+                    if (leaveApplicationData.StartDate.DayOfWeek == DayOfWeek.Saturday
+                        || leaveApplicationData.StartDate.DayOfWeek == DayOfWeek.Sunday) 
+                    {
+                        continue;
+                    }
 
+                    var attendance = new Attendance
+                    {
+                        EmployeeId = leaveApplicationData.EmployeeId,
+                        LeaveTypeId = leaveApplicationData.LeaveTypeId,
+                        DateOfLog = dateofLog.AddDays(i),
+                    };
+                        attendances.Add(attendance);
+                }
+                await _attendanceRepository.CreateRangeAsync(attendances);
                 return true;
             }
             return false;

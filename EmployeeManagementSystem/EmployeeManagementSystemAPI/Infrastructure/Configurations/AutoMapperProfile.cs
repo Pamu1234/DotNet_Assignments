@@ -19,6 +19,7 @@ namespace EmployeeManagementSystemAPI.Configurations
             CreateMap<AttendanceVm, Attendance>();
 
             CreateMap<Employee, EmployeeDto>();
+            CreateMap<LeaveBalance, LeaveBalanceDto>();
 
 
         }

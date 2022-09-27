@@ -55,7 +55,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<ActionResult<LeaveApplication>> Get(int id)
         {
-            _logger.LogInformation("Getting list of  leaveApplication by ID:{id},", id);
+            _logger.LogInformation("Getting Data of  leaveApplication by ID:{id},", id);
             var result = await _leaveApplicationService.GetLeaveDataByIdAsync(id);
             if (result is null)
                 return NotFound();
@@ -71,15 +71,6 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
         {
             var leaveApplicationRequest = await _leaveApplicationService.GetEmployeeLeaveRequest(empId);
             return Ok(leaveApplicationRequest);
-        }
-
-        [MapToApiVersion("1.0")]
-        [Route("getspecificemployeeleaves/{empId}")]
-        [HttpGet]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        public async Task<IEnumerable<TotalLeavesOfEmployeeDto>> GetEmployeeLeavesData(int empId)
-        {
-            return await _leaveApplicationService.GetEmployeeLeavesData(empId);
         }
 
         [MapToApiVersion("1.0")]

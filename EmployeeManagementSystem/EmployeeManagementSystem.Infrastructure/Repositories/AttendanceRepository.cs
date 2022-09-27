@@ -41,8 +41,8 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         {
             var result = await GetAttendanceDataByIdAsync(attendanceId);
             var effectiveHours = attendance.TimeOut - attendance.Timein;
-            attendance.EffectiveHours = Convert.ToString(effectiveHours.Value.Hours);
-            //attendance.LeaveTypeId = leaves.LeaveTypeId;
+            attendance.EffectiveHours = Convert.ToString(effectiveHours);
+            attendance.LeaveTypeId = attendance.LeaveTypeId;
             _employeeManagementDataDbContext.Attendances.Update(attendance);
            await  _employeeManagementDataDbContext.SaveChangesAsync();
             return attendance;
@@ -50,7 +50,7 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<AttendanceDto>> GetAttendanceAsync()
         {
-            var getAttendanceQuery = "SELECT * FROM Attendance";
+            var getAttendanceQuery = "select * from Attendance;";
             var result = await _dapperConnection.QueryAsync<AttendanceDto>(getAttendanceQuery);
             return result;
         }

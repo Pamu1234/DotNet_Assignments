@@ -8,7 +8,7 @@
         public int? EmployeeId { get; set; }
         public int? LeaveTypeId { get; set; }
         public DateTime DateOfLog { get; set; }
-        public DateTime Timein { get; set; }
+        public DateTime? Timein { get; set; }
         public DateTime? TimeOut { get; set; }
         public DateTime? LateTime { get; set; }
         public string? EffectiveHours { get; set; }

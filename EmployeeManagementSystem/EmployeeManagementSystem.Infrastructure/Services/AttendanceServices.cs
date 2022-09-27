@@ -26,7 +26,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             var result = await _attendanceRepository.CreateAsync(attendance);
             return result;
         }
-        public DateTime ClockIn(Attendance attendance)
+        public DateTime? ClockIn(Attendance attendance)
         {
             attendance.Timein = DateTime.UtcNow;
             return attendance.Timein;

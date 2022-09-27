@@ -1,5 +1,6 @@
 ﻿using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Dtos;
+using EmployeeManagementSystem.Core.Entities;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -42,5 +43,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V2
             var result = await _departmentService.EmployeeInDepsrtmentCount(deptId);
             return result;
         }
+
+
     }
 }

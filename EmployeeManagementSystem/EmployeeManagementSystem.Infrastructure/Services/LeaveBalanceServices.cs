@@ -3,11 +3,6 @@ using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystem.Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeManagementSystem.Infrastructure.Services
 {
@@ -44,9 +39,9 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return await _leaveBalanceRepository.GetLeaveBalanceDataByIdAsync(leaveBalanceId);
         }
 
-        public async Task<IEnumerable<LeaveBalanceDto>> GetRemainingLeavesByEmpId(int empId,int leaveTypeId )
+        public async Task<LeaveBalance> GetRemainingLeavesByEmpId(int empId,int leaveTypeId )
         {
-           return (IEnumerable<LeaveBalanceDto>)_leaveBalanceRepository.GetRemainingLeavesByEmpId(empId, leaveTypeId);
+           return  await _leaveBalanceRepository.GetRemainingLeavesByEmpId(empId, leaveTypeId);
            
         }
 

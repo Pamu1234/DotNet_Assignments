@@ -16,6 +16,7 @@ namespace EmployeeManagementSystem.Infrastructure.EntityConfigurations
             builder.ToTable("Attendance");
 
                 builder.Property(e => e.DateOfLog).HasColumnType("datetime");
+
                 builder.Property(e => e.EffectiveHours)
                 .HasMaxLength(60)
                 .IsUnicode(false);
