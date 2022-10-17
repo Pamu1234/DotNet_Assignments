@@ -15,9 +15,8 @@ namespace EmployeeManagementSystem.Core.Entities
         public int NoOfDays { get; set; }
         public DateTime DateOfApplication { get; set; }
         public DateTime? DateOfApproval { get; set; }
-        public int StatusId { get; set; }
-        public int ApprovedBy { get; set; } = 0;
-
+        public int? StatusId { get; set; }
+        public int ApprovedBy { get; set; }
 
         public virtual Employee? Employee { get; set; }
         public virtual Leaves? LeaveType { get; set; }

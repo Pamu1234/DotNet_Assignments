@@ -38,34 +38,42 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             return result;
 
         } 
-        public async Task<IEnumerable< EmployeeDto>> GetEmployeeAsync(int employeeId)
+        public async Task<EmployeeDto> GetEmployeeAsync(int employeeId)
         {
             var GetEmployeeById = "execute GetEmployeesDataById @employeeId";
-            var result = await _dapperConnection.QueryAsync<EmployeeDto>(GetEmployeeById, new {employeeId});
+            var result = await _dapperConnection.QueryFirstOrDefaultAsync<EmployeeDto>(GetEmployeeById, new {employeeId});
             return result; 
         }
 
-        public async Task<Employee> UpdateAsync(int employeeId, Employee employee)
+        public async Task<Employee> GetEmployeeByIdAsync(int empId)
         {
-            var employeToBeUpdate = await GetEmployeeAsync(employeeId);
-            employee.EmployeeId = employeeId;
-            employee.FirstName = employee.FirstName;
-            employee.LastName = employee.LastName;
-            employee.EmailId = employee.EmailId;
-            employee.Contact = employee.Contact;
-            employee.Address = employee.Address;
-            employee.Salary = employee.Salary;
+            var getData = "SELECT * FROM Employees where EmployeeId = @empId";
+            var result = await _dapperConnection.QueryFirstOrDefaultAsync<Employee>(getData, new { empId });
+            return result;
+        }
+        public async Task<Employee> UpdateAsync(Employee employee)
+        {
+
             _employeeManagementDataDbContext.Employees.Update(employee);
-            _employeeManagementDataDbContext.SaveChanges();
+            await _employeeManagementDataDbContext.SaveChangesAsync();
             return employee;
         }
 
-        public async Task DeleteEmployeeAsync(int employeeId)
+        public async Task<Employee> DeleteEmployeeAsync(int employeeId)
         {
             var employee = await _employeeManagementDataDbContext.Employees.FirstOrDefaultAsync(s => s.EmployeeId == employeeId);
             _employeeManagementDataDbContext.Employees.Remove(employee);
             await _employeeManagementDataDbContext.SaveChangesAsync();
+            return employee;
         }
+
+        public async Task<Employee> GetUserDetails(string email)
+        {
+            var employee = "select * from Employees where EmailId=@email";
+            var result = await _dapperConnection.QueryFirstOrDefaultAsync<Employee>(employee, new { email });
+            return result;
+        }
+
 
         DateTime IEmployeeRepository.EmployeeLogin(int empId)
         {

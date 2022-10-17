@@ -4,6 +4,7 @@ using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
 using EmployeeManagementSystemAPI.Infrastructure.Specs;
 using EmployeeManagementSystemAPI.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,6 +13,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
 {
     [ApiVersion("1.0")]
     [ApiVersion("1.1")]
+    [Authorize]
     [Route("leaveblance")]
     [ApiConventionType(typeof(DefaultApiConventions))]
 
@@ -27,6 +29,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             _logger = logger;
         }
 
+        [Route(""),AllowAnonymous]
         [HttpPost]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
         public async Task<ActionResult<LeaveBalance>> Post([FromBody] LeaveBalanceVm leaveBalanceVm)
@@ -39,7 +42,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
 
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<IEnumerable<LeaveBalance>>> Get()
+        public async Task<ActionResult<LeaveBalanceDto>> Get()
         {
             _logger.LogInformation("Getting list of all LeaveBalance entity.");
             var result = await _leaveBalanceService.GetLeavesBalanceAsync();
@@ -72,16 +75,15 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
             return Ok(await _leaveBalanceService.UpdateAsync(id, leaveBalance));
         }
 
-        [Route("getemployeeremainingleaves/{empId}/{leaveTypeId}")]
+        [Route("employee/{empId}")]
         [HttpGet]
+        [Authorize(Roles = "Software Developer,Web Developer,Manager,Team Leader,Developer,Admin")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult> GetEmployeesRemainingleaves(int empId, int leaveTypeId)
+        public async Task<ActionResult> GetRemainingLeaveBalanceOfEmployee(int empId)
         {
-            var remainingLeaves = await _leaveBalanceService.GetRemainingLeavesByEmpId(empId,leaveTypeId);
-            var result = _mapper.Map<LeaveBalance, LeaveBalanceDto>(remainingLeaves);
+            var result = await _leaveBalanceService.GetRemainingLeaveBalanceOfEmployee(empId);
             return Ok(result);
         }
-
 
         [HttpDelete("{id}")]
         [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]

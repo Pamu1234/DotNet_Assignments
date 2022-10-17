@@ -22,9 +22,8 @@ namespace EmployeeManagementSystem.Infrastructure.Services
 
         public async Task<LeaveApplication> CreateAsync(LeaveApplication leaveApplication)
         {
-            var totalDays = GetBusinessDays (leaveApplication.StartDate, leaveApplication.EndDate);
-            var totalLeaveDays = totalDays;
-            leaveApplication.NoOfDays = (int)totalLeaveDays;
+            var totalDays = GetBusinessDays (leaveApplication.StartDate, leaveApplication.EndDate);          
+            leaveApplication.NoOfDays = (int)totalDays;
             leaveApplication.DateOfApplication = DateTime.UtcNow;
             leaveApplication.StatusId = (int)LeaveApprovalStatus.Pending;
             return await _leaveApplicationRepository.CreateAsync(leaveApplication);
@@ -45,9 +44,9 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return _leaveApplicationRepository.DeleteLeaveApplicationAsync(leaveId);
         }
 
-        public Task<IEnumerable<LeaveApplicationDto>> GetLeaveApplicationAsync()
+        public Task<IEnumerable<LeaveApplicationDto>> GetLeaveApplicationAsync(int? LeaveApplicationId = null, int? EmployeeId = null)
         {
-            return _leaveApplicationRepository.GetLeaveApplicationAsync();
+            return _leaveApplicationRepository.GetLeaveApplicationAsync(LeaveApplicationId, EmployeeId);
         }
 
         public Task<LeaveApplication> GetLeaveDataByIdAsync(int leaveId)
@@ -65,7 +64,7 @@ namespace EmployeeManagementSystem.Infrastructure.Services
 
             var leaveApplicationData = await _leaveApplicationRepository.GetLeaveDataByIdAsync(leaveId);
             var leaveBal = await _leaveBalanceRepository.GetRemainingLeavesByEmpId(leaveApplicationData.EmployeeId, leaveApplicationData.LeaveTypeId);
-            
+
             if (leaveBal.Balance >= leaveApplicationData.NoOfDays)
             {
 

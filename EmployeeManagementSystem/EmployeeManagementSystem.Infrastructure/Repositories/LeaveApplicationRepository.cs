@@ -33,25 +33,11 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             return leaveApplication;
         }
 
-        public async Task<IEnumerable<LeaveApplicationDto>> GetLeaveApplicationAsync()
+        public async Task<IEnumerable<LeaveApplicationDto>> GetLeaveApplicationAsync(int? LeaveApplicationId=null,int? EmployeeId=null)
         {
-            var getLeaveApplicationDataQuery = await (from LeaveApplication in _employeeManagementDataDbContext.LeaveApplications
-                                                      join Employee in _employeeManagementDataDbContext.Employees
-                                                      on LeaveApplication.EmployeeId equals Employee.EmployeeId
-                                                      join Leaves in _employeeManagementDataDbContext.Leaves
-                                                      on LeaveApplication.LeaveTypeId equals Leaves.LeaveTypeId
-                                                      select new LeaveApplicationDto
-                                                      {
-                                                          Firstname = Employee.FirstName,
-                                                          Lastname = Employee.LastName,
-                                                          LeaveTypeName = Leaves.LeaveTypeName,
-                                                          DateOfApplication = LeaveApplication.DateOfApplication,
-                                                          Purpose = LeaveApplication.Purpose,
-                                                          NoOfDays = LeaveApplication.NoOfDays,
-                                                          StatusId = LeaveApplication.StatusId,
-
-                                                      }).ToListAsync();
-            return getLeaveApplicationDataQuery;
+            var query = "execute sPGetLeaveApplicationDat @LeaveApplicationId,@EmployeeId";
+            var result = await _dapperConnection.QueryAsync<LeaveApplicationDto>(query, new { LeaveApplicationId, EmployeeId });
+            return result;
         }
 
         public async Task<LeaveApplication> GetLeaveDataByIdAsync(int leaveId)
@@ -94,7 +80,7 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
                                             DateOfApplication= LeaveApplication.DateOfApplication,
                                             LeaveTypeName= Leaves.LeaveTypeName,
                                             NoOfDays= LeaveApplication.NoOfDays,
-                                            LeaveTypeId = LeaveApplication.LeaveTypeId
+                                            LeaveTypeId = Leaves.LeaveTypeId,
                                             
                                             
                                         }).ToListAsync();
@@ -111,6 +97,7 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             leaveApplication.EmployeeId = leaveApplication.EmployeeId;
             leaveApplication.LeaveTypeId = leaveApplication.LeaveTypeId;
             leaveApplication.DateOfApproval = DateTime.UtcNow;
+            leaveApplication.ApprovedBy = updateLeaveApplicationRequestDto.ApprovedBy;
             leaveApplication.StatusId = (int)updateLeaveApplicationRequestDto.Status;
             _employeeManagementDataDbContext.LeaveApplications.Update(leaveApplication);
             _employeeManagementDataDbContext.SaveChanges();

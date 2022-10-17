@@ -13,6 +13,7 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
         Task<LeaveBalanceDto> GetLeaveBalanceDataByIdAsync(int leaveBalanceId);
         Task<IEnumerable<LeaveBalanceDto>> GetLeavesBalanceAsync();
         Task<LeaveBalance> UpdateAsync(int leaveBalanceId, LeaveBalance leaveBalance);
+        Task<IEnumerable<EmployeeAvailableLeavesDto>> GetRemainingLeaveBalanceOfEmployee(int empId);
         //Task<LeaveBalance> GetCheckLeaveBalanceAsync(LeaveApplication leaveApplication);
 
 

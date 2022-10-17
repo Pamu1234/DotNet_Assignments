@@ -7,21 +7,62 @@ using EmployeeManagementSystem.Infrastructure.Repositories;
 using EmployeeManagementSystem.Infrastructure.Repositories.EntityFramework;
 using EmployeeManagementSystem.Infrastructure.Services;
 using EmployeeManagementSystemAPI.Infrastructure.Configurations;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.IdentityModel.Tokens;
+using Microsoft.OpenApi.Models;
+using Swashbuckle.AspNetCore.Filters;
 using System.Data;
+using System.Text;
+using System.Text.Json.Serialization;
 
 namespace EmployeeManagementSystemAPI.Extensions
 {
     public static  class ServiceCollectionExtension
     {
-        public static void RegisterSystemService(this IServiceCollection services)
+        public static void RegisterSystemService(this IServiceCollection services, IConfiguration configuration)
         {
+            #region Authentication 
+            services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+                .AddJwtBearer(options =>
+                {
+                    options.RequireHttpsMetadata = false;
+                    options.SaveToken = false;
+                    options.TokenValidationParameters = new TokenValidationParameters()
+                    {
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateIssuerSigningKey = true,
+                        ValidIssuer = configuration["Jwt:Issuer"],
+                        ValidAudience = configuration["Jwt:Audience"],
+                        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(configuration["Jwt:Key"])),
+                        ClockSkew = TimeSpan.FromHours(2)
+                    };
+                });
+            #endregion
+
+            #region Swagger
+
+            services.AddSwaggerGen(option =>
+            {
+                option.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
+                {
+                    Type = SecuritySchemeType.ApiKey,
+                    In = ParameterLocation.Header,
+                    Name = "Authorization",
+                    Description = "Jwt Authentication"
+                });
+                option.OperationFilter<SecurityRequirementsOperationFilter>();
+            });
+            #endregion
             services.AddControllers();
+            services.AddCors();
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             services.AddEndpointsApiExplorer();
+            services.AddControllersWithViews().AddJsonOptions(options => options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles);
             services.AddVersionedApiExplorer(setup =>
             {
                 setup.GroupNameFormat = "'v'VVV";
@@ -65,6 +106,7 @@ namespace EmployeeManagementSystemAPI.Extensions
             services.AddTransient<ILeaveStatusRepository, LeaveStatusRepository>();
             services.AddTransient<IRoleRepository, RoleRepository>();
             services.AddTransient<IAttendanceRepository, AttendanceRepository>();
+            
 
             // Services
             services.AddTransient<IDepartmentService, DepartmentServices>();
@@ -75,7 +117,7 @@ namespace EmployeeManagementSystemAPI.Extensions
             services.AddTransient<ILeaveStatusService, LeaveStatusServices>();
             services.AddTransient<IRolesService, RoleService>();
             services.AddTransient<IAttendanceService, AttendanceServices>();
-
+           
 
         }
 

@@ -2,11 +2,11 @@
 
 namespace EmployeeManagementSystemAPI.ViewModels
 {
-    public class AttendanceUpdate
+    public class LoginVm
     {
         [Required]
-        public DateTime? TimeOut { get; set; }
+        public string EmailId { get; set; }
         [Required]
-        public string? EffectiveHours { get; set; }
+        public string? Password { get; set; }
     }
 }

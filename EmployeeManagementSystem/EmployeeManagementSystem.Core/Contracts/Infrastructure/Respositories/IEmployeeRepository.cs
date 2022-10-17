@@ -6,10 +6,12 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
     public interface IEmployeeRepository
     {
         Task<Employee> CreateAsync(Employee employee);
-        Task DeleteEmployeeAsync(int employeeId);
-        Task<IEnumerable< EmployeeDto>> GetEmployeeAsync(int employeeId);
+        Task<Employee>DeleteEmployeeAsync(int employeeId);
+        Task< EmployeeDto> GetEmployeeAsync(int employeeId);
         Task<IEnumerable<EmployeeDto>> GetEmployeesAsync();
-        Task<Employee> UpdateAsync(int employeeId, Employee employee);
+        Task<Employee> UpdateAsync(Employee employee);
+        Task<Employee> GetEmployeeByIdAsync(int empId);
         public DateTime EmployeeLogin(int empId);
+        Task<Employee> GetUserDetails(string email);
     }
 }

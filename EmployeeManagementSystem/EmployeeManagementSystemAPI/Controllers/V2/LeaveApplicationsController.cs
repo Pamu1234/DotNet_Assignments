@@ -23,7 +23,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V2
         }
 
         [MapToApiVersion("2.0")]
-        [Route("getspecificemployeeleaves/{empId}")]
+        [Route("leaves/{empId}")]
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
         public async Task<IEnumerable<TotalLeavesOfEmployeeDto>> GetEmployeeLeavesData(int empId)

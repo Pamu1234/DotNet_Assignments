@@ -35,7 +35,7 @@ namespace EmployeeManagementSystemAPI.Controllers.V2
         }
 
         [MapToApiVersion("2.0")]
-        [Route("totalnumberofemployeeworkinginspecificdepartment/{deptId}")]
+        [Route("employeecount/{deptId}")]
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
         public async Task<int> TotalNumbersOfEmployeeInDepsrtment(int deptId)

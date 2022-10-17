@@ -10,7 +10,7 @@ namespace EmployeeManagementSystem.Core.Contracts.Infrastructure.Services
         Task<DepartmentDto> GetDepartmentByNameAsync(string departmentName);
         Task<DepartmentDto> GetDepartmentAsync(int departmentId);
         Task<IEnumerable<DepartmentDto>> GetDepartmentsAsync();
-        DepartmentDto UpdateAsync(int departmentId, DepartmentDto department, Department departmentToBeUpdate);
+        Task<DepartmentDto> UpdateAsync(int deptId, DepartmentToBeUpdatedDto departmentToBeUpdatedDto);
         Task<IEnumerable<EmployeeDto>> GetEmpWorkingInDept(int deptId);
         Task<int> EmployeeInDepsrtmentCount(int deptId);
     }

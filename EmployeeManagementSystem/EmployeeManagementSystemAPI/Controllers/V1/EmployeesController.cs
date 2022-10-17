@@ -2,8 +2,10 @@
 using EmployeeManagementSystem.Core.Contracts.Infrastructure.Services;
 using EmployeeManagementSystem.Core.Dtos;
 using EmployeeManagementSystem.Core.Entities;
+using EmployeeManagementSystem.Infrastructure.Repositories;
 using EmployeeManagementSystemAPI.Infrastructure.Specs;
 using EmployeeManagementSystemAPI.ViewModels;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 // For more information on enabling Web API for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
@@ -12,17 +14,20 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
 {
     [ApiVersion("1.0")]
     [ApiVersion("1.1")]
+    [Authorize]
     [Route("employee")]
     [ApiConventionType(typeof(DefaultApiConventions))]
     public class EmployeesController : ApiControllerBase
     {
         private readonly IEmployeeService _employeeService;
+        private readonly IEmployeeRepository _employeeRepository;
         private readonly ILeaveApplicationService _leaveApplicationService;
         private readonly IMapper _mapper;
         private readonly ILogger<DepartmentsController> _logger;
-        public EmployeesController(IEmployeeService employeeService, ILeaveApplicationService leaveApplicationService, IMapper mapper, ILogger<DepartmentsController> logger)
+        public EmployeesController(IEmployeeService employeeService, IEmployeeRepository employeeReository, ILeaveApplicationService leaveApplicationService, IMapper mapper, ILogger<DepartmentsController> logger)
         {
             _employeeService = employeeService;
+            _employeeRepository = employeeReository;
             _leaveApplicationService = leaveApplicationService;
             _mapper = mapper;
             _logger = logger;
@@ -32,20 +37,24 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
         [MapToApiVersion("1.0")]
         [Route("")]
         [HttpPost]
+        [Authorize(Roles = "Manager")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Post))]
-        public async Task<ActionResult<IEnumerable<Employee>>> Post([FromBody] EmployeeVm employeeVm)
+        public async Task<ActionResult<Employee>> Post([FromBody] EmployeeVm employeeVm)
         {
             _logger.LogInformation("Inserting data to Employee entity.");
             Employee employee = _mapper.Map<EmployeeVm, Employee>(employeeVm);
+
             var result = await _employeeService.CreateAsync(employee);
-            return Ok(result);
+            var employeeDto = _mapper.Map<Employee, EmployeeVm>(result);
+            return Ok(employeeDto);
         }
 
         [MapToApiVersion("1.0")]
         [Route("")]
+        [Authorize(Roles = "Software Developer,Web Developer,Manager,Team Leader,Developer,Admin")]
         [HttpGet]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-        public async Task<ActionResult<IEnumerable<EmployeeDto>>> Get()
+        public async Task<ActionResult<EmployeeDto>> Get()
         {
             _logger.LogInformation("Getting list of all Employee's.");
             var result = await _employeeService.GetEmployeesAsync();
@@ -68,44 +77,46 @@ namespace EmployeeManagementSystemAPI.Controllers.V1
         [MapToApiVersion("1.0")]
         [Route("id")]
         [HttpPut]
+        [Authorize(Roles = "Manager")]
         [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Put))]
-        public async Task<ActionResult<IEnumerable<Employee>>> Put(int id, [FromBody] EmployeeVm employeeVm)
+        public async Task<ActionResult<Employee>> Put(int id, [FromBody] EmployeeVm employeeVm)
         {
-            Employee employee = _mapper.Map<EmployeeVm, Employee>(employeeVm);
-            if (id <= 0 || id != employee.EmployeeId)
+            if(id<=0)
             {
-                _logger.LogError(new ArgumentOutOfRangeException(nameof(id)), "Id field can't be <= zero OR it doesn't match with model's Id.");
-                return BadRequest();
+                return BadRequest("Id field can't be <= zero OR it doesn't match with model's Id.");
             }
-            var result = await _employeeService.UpdateAsync(id, employee);
-            return Ok(result);
+            Employee employee = _mapper.Map<EmployeeVm, Employee>(employeeVm);
+            var employeeDataa = await _employeeService.UpdateAsync(id, employee);
+            if(employeeDataa is null)
+            {
+                return BadRequest("Employee is not available");
+            }
+            
+            return Ok(employeeDataa);
         }
 
         [MapToApiVersion("1.0")]
         [Route("id")]
         [HttpDelete]
+        [Authorize(Roles = "Manager")]
         [ApiConventionMethod(typeof(CustomApiConventions), nameof(CustomApiConventions.Delete))]
-        public async Task Delete(int id)
+        public async Task<ActionResult> Delete(int id)
         {
-            var emloyee = _employeeService.DeleteEmployeeAsync(id);
+            var existingEmployee = await _employeeRepository.GetEmployeeByIdAsync(id);
+            if(existingEmployee !=null)
+            {
+                 var result = await _employeeRepository.DeleteEmployeeAsync(id);
+                if(result != null)
+                {
+                    return NoContent();
+                }
+            }
+            return BadRequest();
+            
         }
 
 
-        [Route("employeeclockin/{id}")]
-        [HttpPost]
-        public async Task<ActionResult> EmployeeClockin(int id)
-        {
-            var attendance =await _employeeService.EmployeeLogin(id);
-             return Ok(attendance);
-        }
-
-        [Route("employeeclockout/{id}")]
-        [HttpPut]
-        public async Task<ActionResult> EmployeeClockOut(int id)
-        {            
-            var logout = await _employeeService.EmployeeLogout(id);
-            return Ok(logout);
-        }
+        
         
     }
 }

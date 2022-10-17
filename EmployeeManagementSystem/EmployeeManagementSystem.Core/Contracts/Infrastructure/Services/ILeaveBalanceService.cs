@@ -11,5 +11,7 @@ namespace EmployeeManagementSystem.Core.Contracts.Infrastructure.Services
         Task<LeaveBalanceDto> GetLeaveBalanceDataByIdAsync(int leaveBalanceId);
         Task<IEnumerable<LeaveBalanceDto>> GetLeavesBalanceAsync();
         Task<LeaveBalance> UpdateAsync(int leaveBalanceId, LeaveBalance leaveBalance);
+
+        Task<IEnumerable<EmployeeAvailableLeavesDto>> GetRemainingLeaveBalanceOfEmployee(int empId);
     }
 }

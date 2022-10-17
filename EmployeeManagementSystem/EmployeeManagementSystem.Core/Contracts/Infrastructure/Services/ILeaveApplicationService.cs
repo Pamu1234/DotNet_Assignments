@@ -14,7 +14,7 @@ namespace EmployeeManagementSystem.Core.Contracts.Infrastructure.Services
         Task DeleteLeaveApplicationAsync(int leaveId);
         Task<IEnumerable<LeaveApplicationDto>> GetEmployeeLeaveRequest(int empId);
         Task<IEnumerable<TotalLeavesOfEmployeeDto>> GetEmployeeLeavesData(int empId);
-        Task<IEnumerable<LeaveApplicationDto>> GetLeaveApplicationAsync();
+        Task<IEnumerable<LeaveApplicationDto>> GetLeaveApplicationAsync(int? LeaveApplicationId = null, int? EmployeeId = null);
         Task<LeaveApplication> GetLeaveDataByIdAsync(int leaveId);
         Task<bool> UpdateAsync(int leaveId, UpdateLeaveApplicationRequestDto leaveApplication);
     }

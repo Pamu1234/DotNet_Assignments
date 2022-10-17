@@ -24,9 +24,10 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             _leaveBalanceRepository = leaveBalanceRepository;
         }
 
-        public Task<Department> CreateAsync(Department department)
+        public async Task<Department> CreateAsync(Department department)
         {
-            return _departmentRepository.CreateAsync(department);
+             var result =  await _departmentRepository.CreateAsync(department);
+            return result;
         }
 
         public Task<IEnumerable<DepartmentDto>> GetDepartmentsAsync()
@@ -42,12 +43,27 @@ namespace EmployeeManagementSystem.Infrastructure.Services
             return result;
         }
 
-        public DepartmentDto UpdateAsync(int departmentId, DepartmentDto department,Department departmentToBeUpdate )
+        public async Task<DepartmentDto> UpdateAsync(int deptId, DepartmentToBeUpdatedDto department)
         {
-            department.DepartmentName = departmentToBeUpdate.DepartmentName;
-            department.DepartmentId= departmentId;
-            department.Description = departmentToBeUpdate.Description;
-            return department;
+            var departmentData = await _departmentRepository.GetDepartmentById(deptId);
+            if(departmentData != null)
+            {
+                departmentData.DepartmentName = department.DepartmentName;
+                departmentData.Description = department.Description;
+                departmentData.UpdatedBy = department.UpdatedBy;
+                departmentData.UpdatedDate = DateTime.UtcNow;
+                
+                var data = await _departmentRepository.UpdateAsync(departmentData);
+
+                if(data !=null)
+                {
+                    var result = await _departmentRepository.GetDepartmentAsync(deptId);
+                    return result;
+                }
+
+            }
+            return null;
+
         }
 
         public Task DeleteDepartmentAsync(int departmentId)
@@ -57,13 +73,13 @@ namespace EmployeeManagementSystem.Infrastructure.Services
 
         public async Task<IEnumerable<EmployeeDto>> GetEmpWorkingInDept(int deptId)
         {
-            var result =  await _departmentRepository.GetTotalNoOfEmpWorkingInEachDept(deptId);
+            var result =  await _departmentRepository.GetListOfEmpWorkingInEachDept(deptId);
             return result;
         }
 
         public async Task<int> EmployeeInDepsrtmentCount(int deptId)
         {
-            var employees = await _departmentRepository.GetTotalNoOfEmpWorkingInEachDept(deptId);
+            var employees = await _departmentRepository.GetListOfEmpWorkingInEachDept(deptId);
             return employees.Count();
         }
 

@@ -44,7 +44,12 @@ namespace EmployeeManagementSystem.Infrastructure.Services
            return  await _leaveBalanceRepository.GetRemainingLeavesByEmpId(empId, leaveTypeId);
            
         }
-
+         
+        public async Task<IEnumerable<EmployeeAvailableLeavesDto>> GetRemainingLeaveBalanceOfEmployee(int empId)
+        {
+            var data = await _leaveBalanceRepository.GetRemainingLeaveBalanceOfEmployee(empId);
+            return data;
+        }
         public Task<LeaveBalance> UpdateAsync(int leaveBalanceId, LeaveBalance leaveBalance)
         {
             return _leaveBalanceRepository.UpdateAsync(leaveBalanceId, leaveBalance);
@@ -52,9 +57,9 @@ namespace EmployeeManagementSystem.Infrastructure.Services
 
         public async Task<LeaveBalanceDto> GetEmployeesRemainingleaves(int empId)
         {
-            var leaveBalancesOfEmployee = await (from emp in _employeeManagementDataDbContext.Employees
+            var leaveBalancesOfEmployee =  await (from emp in _employeeManagementDataDbContext.Employees
                                            join LeaveBalance in _employeeManagementDataDbContext.LeaveBalances
-                               on emp.EmployeeId equals LeaveBalance.EmployeeId
+                                           on emp.EmployeeId equals LeaveBalance.EmployeeId
                                            where LeaveBalance.EmployeeId == empId
                                            select new LeaveBalanceDto
                                            {

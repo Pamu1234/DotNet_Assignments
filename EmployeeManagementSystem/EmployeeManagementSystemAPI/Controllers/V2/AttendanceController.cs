@@ -17,16 +17,5 @@ namespace EmployeeManagementSystemAPI.Controllers.V2
             _logger = logger;
         }
 
-        [MapToApiVersion("2.0")]
-        [Route("getemployeeattendancewithleaves/{empId}")]
-        [HttpGet]
-        [ApiConventionMethod(typeof(DefaultApiConventions), nameof(DefaultApiConventions.Get))]
-
-        public async Task<ActionResult> GetEmployeeAttendanceWithLeaves(int empId)
-        {
-            _logger.LogInformation("Gettig Employee Attendance and Leaves by Employee Id: {empId}", empId);
-            var result = await _attendanceService.GetEmployeeAttendanceWithLeaves(empId);
-            return Ok(result);
-        }
     }
 }

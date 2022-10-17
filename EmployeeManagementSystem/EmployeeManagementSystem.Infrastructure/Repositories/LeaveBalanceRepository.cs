@@ -35,7 +35,7 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 
         public async Task<IEnumerable<LeaveBalanceDto>> GetLeavesBalanceAsync()
         {
-            var getLeaveBalanceDataQuery = "Execute GetLeaveBalanceData ";
+            var getLeaveBalanceDataQuery = "execute GetLeaveBalanceData";
             var result = await _dapperConnection.QueryAsync<LeaveBalanceDto>(getLeaveBalanceDataQuery);
             return result;
         }
@@ -56,6 +56,12 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 
         }
 
+        public async Task<IEnumerable<EmployeeAvailableLeavesDto>> GetRemainingLeaveBalanceOfEmployee(int empId)
+        {
+            var leaveBalanceQuery = "execute GetLeaveBalanceOfEmployeeById @empId";
+            var result = await _dapperConnection.QueryAsync<EmployeeAvailableLeavesDto>(leaveBalanceQuery, new { empId });
+            return result;
+        }
         public async Task<LeaveBalance> UpdateAsync(int leaveBalanceId, LeaveBalance leaveBalance)
         {
             var leaveBalanceToBeUpdate = await GetLeaveBalanceDataByIdAsync(leaveBalanceId);

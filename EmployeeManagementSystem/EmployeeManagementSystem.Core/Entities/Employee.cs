@@ -18,6 +18,8 @@
         public decimal Salary { get; set; }
         public int? DepartmentId { get; set; }
         public int? RoleId { get; set; }
+        public string Password { get; set; } = null!;
+        public string? PasswordSalt { get; set; } = null!;
 
         public virtual Department? Department { get; set; }
         public virtual Role? Role { get; set; }

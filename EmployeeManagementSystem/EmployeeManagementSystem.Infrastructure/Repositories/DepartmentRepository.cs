@@ -23,7 +23,7 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
 
         public async Task<Department> CreateAsync(Department department)
         {
-            _employeeManagementDataDbContext.Departments.Add(department);
+            await _employeeManagementDataDbContext.Departments.AddAsync(department);
             await _employeeManagementDataDbContext.SaveChangesAsync();
             return department;
 
@@ -46,25 +46,21 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories
             var getDepartmentQueryById = "select * from Departments where DepartmentName = @departmentName";
             return await _dapperConnection.QueryFirstOrDefaultAsync<DepartmentDto>(getDepartmentQueryById, new { departmentName });
         }
-
-        public async Task<Department> UpdateAsync(DepartmentDto updatedDepartment)
+        public async Task<Department> GetDepartmentById(int deptId)
         {
-            //department.UpdatedBy = 1;
-            //department.UpdatedDate = DateTime.UtcNow;
-            //department.DepartmentId = departmentId;
-            var departement = new Department
-            {
-                DepartmentName = updatedDepartment.DepartmentName,
-                Description = updatedDepartment.Description,
-                DepartmentId = updatedDepartment.DepartmentId,
-
-            };
-           _employeeManagementDataDbContext.Departments.Update(departement);
-            _employeeManagementDataDbContext.SaveChanges();
-            return departement;
+            var departmentData= "select * from Departments where DepartmentId = @deptId";
+            var result = await _dapperConnection.QueryFirstOrDefaultAsync<Department>(departmentData, new { deptId });
+            return result;
         }
 
-        public async Task<IEnumerable<EmployeeDto>> GetTotalNoOfEmpWorkingInEachDept(int deptId)
+        public async Task<Department> UpdateAsync(Department updatedDepartment)
+        {            
+             _employeeManagementDataDbContext.Departments.Update(updatedDepartment);
+            await _employeeManagementDataDbContext.SaveChangesAsync();
+            return updatedDepartment;
+        }
+
+        public async Task<IEnumerable<EmployeeDto>> GetListOfEmpWorkingInEachDept(int deptId)
         {
             var empCount =await (from emp in _employeeManagementDataDbContext.Employees
                                  join dept in _employeeManagementDataDbContext.Departments

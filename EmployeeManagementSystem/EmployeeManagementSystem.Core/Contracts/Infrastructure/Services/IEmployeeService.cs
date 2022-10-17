@@ -7,12 +7,12 @@ namespace EmployeeManagementSystem.Core.Contracts.Infrastructure.Services
     {
         Task<Employee> CreateAsync(Employee employee);
         Task DeleteEmployeeAsync(int employeeId);
-        Task<IEnumerable< EmployeeDto>> GetEmployeeAsync(int employeeId);
+        Task<EmployeeDto> GetEmployeeAsync(int employeeId);
         Task<IEnumerable<EmployeeDto>> GetEmployeesAsync();
-        Task<Employee> UpdateAsync(int employeeId, Employee employee);
+        Task<EmployeeDto> UpdateAsync(int employeeId, Employee employee);
         Task<Attendance> EmployeeLogin(int empId);
         //Task<Attendance> EmployeeLogout(int empId);
-        Task<Attendance?> EmployeeLogout(int empId);
+        Task<Attendance> EmployeeLogout(int empId);
 
 
     }

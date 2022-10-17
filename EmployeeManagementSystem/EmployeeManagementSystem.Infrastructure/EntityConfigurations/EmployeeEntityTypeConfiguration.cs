@@ -1,11 +1,6 @@
 ﻿using EmployeeManagementSystem.Core.Entities;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace EmployeeManagementSystem.Infrastructure.EntityConfigurations
 {
@@ -14,8 +9,8 @@ namespace EmployeeManagementSystem.Infrastructure.EntityConfigurations
         public void Configure(EntityTypeBuilder<Employee> builder)
         {
             builder.Property(e => e.Address)
-                    .HasMaxLength(200)
-                    .IsUnicode(false);
+                     .HasMaxLength(200)
+                     .IsUnicode(false);
 
             builder.Property(e => e.Contact)
                 .HasMaxLength(50)
@@ -31,6 +26,14 @@ namespace EmployeeManagementSystem.Infrastructure.EntityConfigurations
 
             builder.Property(e => e.LastName)
                 .HasMaxLength(50)
+                .IsUnicode(false);
+
+            builder.Property(e => e.Password)
+                .HasMaxLength(30)
+                .IsUnicode(false);
+
+            builder.Property(e => e.PasswordSalt)
+                .HasMaxLength(30)
                 .IsUnicode(false);
 
             builder.Property(e => e.Salary).HasColumnType("decimal(8, 3)");

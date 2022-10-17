@@ -9,9 +9,10 @@ namespace EmployeeManagementSystem.Infrastructure.Repositories.EntityFramework
         Task DeleteDepartmentAsync(int departmentId);
         Task<DepartmentDto> GetDepartmentByNameAsync(string departmentName);
         Task<DepartmentDto> GetDepartmentAsync(int departmentId);
+        Task<Department> GetDepartmentById(int deptId);
         Task<IEnumerable<DepartmentDto>> GetDepartmentsAsync();
-        Task<Department> UpdateAsync(DepartmentDto updatedDepartment);
-        Task<IEnumerable<EmployeeDto>> GetTotalNoOfEmpWorkingInEachDept(int deptId);
+        Task<Department> UpdateAsync(Department updatedDepartment);
+        Task<IEnumerable<EmployeeDto>> GetListOfEmpWorkingInEachDept(int deptId);
         
     }
 }
